@@ -11,6 +11,8 @@ using System.ComponentModel;
 using System.Linq;
 using System.Windows.Forms;
 
+using Libraries;
+
 namespace Classes.GUI {
   partial class GuiMediaItem{
     
@@ -59,7 +61,15 @@ namespace Classes.GUI {
     [DisplayName("Bitrate")]
     [DataGridViewCellStyle(backColor:"<#=VIDEO_BACKGROUND_COLORS[i%VIDEO_BACKGROUND_COLORS.Length]#>")]
     [DataGridViewColumnWidth(DataGridViewAutoSizeColumnMode.AllCells)]
-    public string Video<#=i#>BitRateInBitsPerSecond => ((this.MediaFile.VideoStreams.Skip(<#=i#>).FirstOrDefault()?.BitRateInBitsPerSecond ?? 0)/1000000)+"MBit/s";
+    public string Video<#=i#>BitRateInBitsPerSecond {
+      get {
+        var result = this.MediaFile.VideoStreams.Skip(<#=i#>).FirstOrDefault()?.BitRateInBitsPerSecond ?? 0;
+        if(result < 1)
+          return null;
+
+        return FilesizeFormatter.FormatUnit(result,true)+"Bit/s";
+      }
+    }
     
     private StereoscopicMode _OriginalVideo<#=i#>StereoscopicMode => this.MediaFile.VideoStreams.Skip(<#=i#>).FirstOrDefault()?.StereoscopicMode ?? StereoscopicMode.Unknown;
     
@@ -113,19 +123,27 @@ namespace Classes.GUI {
         if(result==null)
           return null;
 
-        return (result.Value/1000)+"kHz";
+        return FilesizeFormatter.FormatUnit(result.Value,true,format: "0.#")+"Hz";
       }
     }
 
     [DisplayName("Channels")]
     [DataGridViewCellStyle(backColor:"<#=AUDIO_BACKGROUND_COLORS[i%AUDIO_BACKGROUND_COLORS.Length]#>")]
     [DataGridViewColumnWidth(DataGridViewAutoSizeColumnMode.AllCells)]
-    public int Audio<#=i#>Channels => this.MediaFile.AudioStreams.Skip(<#=i#>).FirstOrDefault()?.Channels ?? 0;
+    public int? Audio<#=i#>Channels => this.MediaFile.AudioStreams.Skip(<#=i#>).FirstOrDefault()?.Channels;
     
     [DisplayName("Bitrate")]
     [DataGridViewCellStyle(backColor:"<#=AUDIO_BACKGROUND_COLORS[i%AUDIO_BACKGROUND_COLORS.Length]#>")]
     [DataGridViewColumnWidth(DataGridViewAutoSizeColumnMode.AllCells)]
-    public string Audio<#=i#>BitRateInBitsPerSecond => ((this.MediaFile.AudioStreams.Skip(<#=i#>).FirstOrDefault()?.BitRateInBitsPerSecond ?? 0)/1000)+"kBit/s";
+    public string Audio<#=i#>BitRateInBitsPerSecond {
+      get {
+        var result=this.MediaFile.AudioStreams.Skip(<#=i#>).FirstOrDefault()?.BitRateInBitsPerSecond;
+        if(result == null)
+          return null;
+
+        return FilesizeFormatter.FormatUnit(result.Value,true)+"Bit/s";
+      }
+    }
     
 <#}#>
 
