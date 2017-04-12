@@ -29,7 +29,11 @@ namespace Classes {
         if (result == null)
           return null;
 
-        return CultureInfo.GetCultureInfoByIetfLanguageTag(_LANGUAGE_CONVERTERS.GetValueOrDefault(result, result));
+        try {
+          return CultureInfo.GetCultureInfoByIetfLanguageTag(_LANGUAGE_CONVERTERS.GetValueOrDefault(result, result));
+        } catch {
+          return null;
+        }
       }
     }
 

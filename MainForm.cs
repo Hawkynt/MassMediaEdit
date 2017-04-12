@@ -1,8 +1,11 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Classes;
@@ -26,7 +29,7 @@ namespace MassMediaEdit {
       if (items == null)
         return;
 
-      this._items.AddRange(items);
+      this.SafelyInvoke(() => this._items.AddRange(items));
     }
 
     /// <summary>
@@ -48,6 +51,36 @@ namespace MassMediaEdit {
 
       this._AddResults(items.ToArray());
 
+    }
+
+    private readonly ConcurrentDictionary<string, int[]> _runningBackgroundTasks = new ConcurrentDictionary<string, int[]>();
+
+    /// <summary>
+    /// Executes a background task.
+    /// Shows/Hides an indicator and keeps track of actions using the same indicator, identified by a tag name.
+    /// </summary>
+    /// <param name="tag">The tag.</param>
+    /// <param name="task">The task.</param>
+    /// <param name="progressIndicator">The progress indicator.</param>
+    private void _ExecuteBackgroundTask(string tag, Action task, ToolStripItem progressIndicator) {
+      this.Async(() => {
+
+        var taskCounter = this._runningBackgroundTasks.GetOrAdd(tag, () => new[] { 0 });
+        try {
+
+          // increment running number of tasks and show indicator
+          Interlocked.Increment(ref taskCounter[0]);
+          this.SafelyInvoke(() => progressIndicator.Visible = true);
+
+          task();
+
+        } finally {
+
+          // when no more tasks with this tag, hide indicator
+          if (Interlocked.Decrement(ref taskCounter[0]) < 1)
+            this.SafelyInvoke(() => progressIndicator.Visible = false);
+        }
+      });
     }
 
     #region events 
@@ -78,9 +111,11 @@ namespace MassMediaEdit {
       if (infos == null || infos.Length < 1)
         return;
 
-      this._AddFiles(infos.OfType<FileInfo>());
-      foreach (var info in infos.OfType<DirectoryInfo>())
-        this._AddFiles(info.EnumerateFiles("*.*", SearchOption.AllDirectories));
+      this._ExecuteBackgroundTask("DragDrop", () => {
+        this._AddFiles(infos.OfType<FileInfo>());
+        foreach (var info in infos.OfType<DirectoryInfo>())
+          this._AddFiles(info.EnumerateFiles("*.*", SearchOption.AllDirectories));
+      }, this.tsslLoadingFiles);
     }
 
     /// <summary>
@@ -109,8 +144,11 @@ namespace MassMediaEdit {
     private void tsmiCommitSelected_Click(object sender, System.EventArgs e) {
       var items = this.dgvResults.GetSelectedItems<GuiMediaItem>().ToArray();
       this._items.RemoveRange(items);
-      Parallel.ForEach(items, i => i.CommitChanges());
-      this._items.AddRange(items);
+
+      this._ExecuteBackgroundTask("Commit", () => {
+        Parallel.ForEach(items, i => i.CommitChanges());
+        this.SafelyInvoke(() => this._items.AddRange(items));
+      }, this.tsslCommittingChanges);
     }
 
     /// <summary>
