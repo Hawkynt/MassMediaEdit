@@ -53,9 +53,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\..\..\..\HMP\C#\Libraries\ApplicationTitler.cs">
-      <Link>Libraries\ApplicationTitler.cs</Link>
-    </Compile>
     <Compile Include="..\..\Framework\System.Collections.EnumerableExtensions.cs">
       <Link>Framework\System.Collections.EnumerableExtensions.cs</Link>
     </Compile>
@@ -85,6 +82,9 @@
     </Compile>
     <Compile Include="..\..\Framework\System.Windows.Forms.DataGridViewExtensions.cs">
       <Link>Framework\System.Windows.Forms.DataGridViewExtensions.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Libraries\ApplicationTitler.cs">
+      <Link>Libraries\ApplicationTitler.cs</Link>
     </Compile>
     <Compile Include="..\..\Libraries\FilesizeFormatter.cs">
       <Link>Libraries\FilesizeFormatter.cs</Link>
