@@ -23,7 +23,7 @@ namespace Classes.GUI {
     public string FileName => this.MediaFile.File.FullName;
 
     [DataGridViewColumnWidth(DataGridViewAutoSizeColumnMode.ColumnHeader)]
-    public string Size => FilesizeFormatter.FormatIEC(this.MediaFile.File.Length);
+    public string Size => FilesizeFormatter.FormatUnit(this.MediaFile.File.Length) + "B";
 
     [DataGridViewColumnWidth(DataGridViewAutoSizeColumnMode.ColumnHeader)]
     public string Container => this.MediaFile.GeneralStream?.Codec;
