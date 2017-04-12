@@ -63,6 +63,16 @@ namespace MassMediaEdit.Properties {
         /// <summary>
         ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap _16x11_Loading_Animation {
+            get {
+                object obj = ResourceManager.GetObject("_16x11_Loading_Animation", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap _16x16_Blue_Disk {
             get {
                 object obj = ResourceManager.GetObject("_16x16_Blue_Disk", resourceCulture);

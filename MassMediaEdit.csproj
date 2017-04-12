@@ -80,6 +80,9 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>System.StringExtensions.Parsers.tt</DependentUpon>
     </Compile>
+    <Compile Include="..\..\Framework\System.Windows.Forms.ControlExtensions.cs">
+      <Link>Framework\System.Windows.Forms.ControlExtensions.cs</Link>
+    </Compile>
     <Compile Include="..\..\Framework\System.Windows.Forms.DataGridViewExtensions.cs">
       <Link>Framework\System.Windows.Forms.DataGridViewExtensions.cs</Link>
     </Compile>
@@ -136,6 +139,7 @@
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>GuiMediaItem.t4.cs</LastGenOutput>
     </Content>
+    <None Include="Resources\16x11 Loading Animation.gif" />
     <None Include="Resources\Clear.png" />
     <None Include="Resources\24x24 Delete %282%29.png" />
     <None Include="Resources\16x16 Blue Disk.png" />

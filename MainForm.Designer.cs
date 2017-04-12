@@ -26,19 +26,21 @@
       this.components = new System.ComponentModel.Container();
       System.Windows.Forms.StatusStrip statusStrip1;
       System.Windows.Forms.ContextMenuStrip cmsItems;
-      System.Windows.Forms.ToolStripMenuItem tsmiRemoveItem;
-      System.Windows.Forms.ToolStripMenuItem tsmiClearItems;
       System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
+      System.Windows.Forms.ToolStripMenuItem tsmiClearItems;
+      System.Windows.Forms.ToolStripMenuItem tsmiRemoveItem;
       System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
       this.tsslDragDropInfo = new System.Windows.Forms.ToolStripStatusLabel();
       this.dgvResults = new System.Windows.Forms.DataGridView();
       this.tsmiCommitSelected = new System.Windows.Forms.ToolStripMenuItem();
       this.tsmiRevertChanges = new System.Windows.Forms.ToolStripMenuItem();
+      this.tsslCommittingChanges = new System.Windows.Forms.ToolStripStatusLabel();
+      this.tsslLoadingFiles = new System.Windows.Forms.ToolStripStatusLabel();
       statusStrip1 = new System.Windows.Forms.StatusStrip();
       cmsItems = new System.Windows.Forms.ContextMenuStrip(this.components);
-      tsmiRemoveItem = new System.Windows.Forms.ToolStripMenuItem();
-      tsmiClearItems = new System.Windows.Forms.ToolStripMenuItem();
       toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+      tsmiClearItems = new System.Windows.Forms.ToolStripMenuItem();
+      tsmiRemoveItem = new System.Windows.Forms.ToolStripMenuItem();
       statusStrip1.SuspendLayout();
       cmsItems.SuspendLayout();
       ((System.ComponentModel.ISupportInitialize)(this.dgvResults)).BeginInit();
@@ -47,6 +49,8 @@
       // statusStrip1
       // 
       statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.tsslCommittingChanges,
+            this.tsslLoadingFiles,
             this.tsslDragDropInfo});
       statusStrip1.Location = new System.Drawing.Point(0, 405);
       statusStrip1.Name = "statusStrip1";
@@ -69,24 +73,13 @@
             this.tsmiCommitSelected,
             this.tsmiRevertChanges});
       cmsItems.Name = "cmsItems";
-      cmsItems.Size = new System.Drawing.Size(153, 120);
+      cmsItems.Size = new System.Drawing.Size(119, 98);
       cmsItems.Opening += new System.ComponentModel.CancelEventHandler(this.cmsItems_Opening);
       // 
-      // tsmiRemoveItem
+      // toolStripSeparator1
       // 
-      tsmiRemoveItem.Image = global::MassMediaEdit.Properties.Resources._24x24_Delete__2_;
-      tsmiRemoveItem.Name = "tsmiRemoveItem";
-      tsmiRemoveItem.Size = new System.Drawing.Size(152, 22);
-      tsmiRemoveItem.Text = "Remove";
-      tsmiRemoveItem.Click += new System.EventHandler(this.tsmiRemoveItem_Click);
-      // 
-      // tsmiClearItems
-      // 
-      tsmiClearItems.Image = global::MassMediaEdit.Properties.Resources.Clear;
-      tsmiClearItems.Name = "tsmiClearItems";
-      tsmiClearItems.Size = new System.Drawing.Size(152, 22);
-      tsmiClearItems.Text = "Clear";
-      tsmiClearItems.Click += new System.EventHandler(this.tsmiClearItems_Click);
+      toolStripSeparator1.Name = "toolStripSeparator1";
+      toolStripSeparator1.Size = new System.Drawing.Size(115, 6);
       // 
       // dgvResults
       // 
@@ -108,11 +101,27 @@
       this.dgvResults.DragDrop += new System.Windows.Forms.DragEventHandler(this.dgvResults_DragDrop);
       this.dgvResults.DragEnter += new System.Windows.Forms.DragEventHandler(this.dgvResults_DragEnter);
       // 
+      // tsmiClearItems
+      // 
+      tsmiClearItems.Image = global::MassMediaEdit.Properties.Resources.Clear;
+      tsmiClearItems.Name = "tsmiClearItems";
+      tsmiClearItems.Size = new System.Drawing.Size(118, 22);
+      tsmiClearItems.Text = "Clear";
+      tsmiClearItems.Click += new System.EventHandler(this.tsmiClearItems_Click);
+      // 
+      // tsmiRemoveItem
+      // 
+      tsmiRemoveItem.Image = global::MassMediaEdit.Properties.Resources._24x24_Delete__2_;
+      tsmiRemoveItem.Name = "tsmiRemoveItem";
+      tsmiRemoveItem.Size = new System.Drawing.Size(118, 22);
+      tsmiRemoveItem.Text = "Remove";
+      tsmiRemoveItem.Click += new System.EventHandler(this.tsmiRemoveItem_Click);
+      // 
       // tsmiCommitSelected
       // 
       this.tsmiCommitSelected.Image = global::MassMediaEdit.Properties.Resources._16x16_Blue_Disk;
       this.tsmiCommitSelected.Name = "tsmiCommitSelected";
-      this.tsmiCommitSelected.Size = new System.Drawing.Size(152, 22);
+      this.tsmiCommitSelected.Size = new System.Drawing.Size(118, 22);
       this.tsmiCommitSelected.Text = "Commit";
       this.tsmiCommitSelected.Click += new System.EventHandler(this.tsmiCommitSelected_Click);
       // 
@@ -120,14 +129,25 @@
       // 
       this.tsmiRevertChanges.Image = global::MassMediaEdit.Properties.Resources._16x16_Undo;
       this.tsmiRevertChanges.Name = "tsmiRevertChanges";
-      this.tsmiRevertChanges.Size = new System.Drawing.Size(152, 22);
+      this.tsmiRevertChanges.Size = new System.Drawing.Size(118, 22);
       this.tsmiRevertChanges.Text = "Revert";
       this.tsmiRevertChanges.Click += new System.EventHandler(this.tsmiRevertChanges_Click);
       // 
-      // toolStripSeparator1
+      // tsslCommittingChanges
       // 
-      toolStripSeparator1.Name = "toolStripSeparator1";
-      toolStripSeparator1.Size = new System.Drawing.Size(149, 6);
+      this.tsslCommittingChanges.Image = global::MassMediaEdit.Properties.Resources._16x11_Loading_Animation;
+      this.tsslCommittingChanges.Name = "tsslCommittingChanges";
+      this.tsslCommittingChanges.Size = new System.Drawing.Size(118, 17);
+      this.tsslCommittingChanges.Text = "Writing changes...";
+      this.tsslCommittingChanges.Visible = false;
+      // 
+      // tsslLoadingFiles
+      // 
+      this.tsslLoadingFiles.Image = global::MassMediaEdit.Properties.Resources._16x11_Loading_Animation;
+      this.tsslLoadingFiles.Name = "tsslLoadingFiles";
+      this.tsslLoadingFiles.Size = new System.Drawing.Size(99, 17);
+      this.tsslLoadingFiles.Text = "Loading files...";
+      this.tsslLoadingFiles.Visible = false;
       // 
       // MainForm
       // 
@@ -154,5 +174,7 @@
     private System.Windows.Forms.ToolStripStatusLabel tsslDragDropInfo;
     private System.Windows.Forms.ToolStripMenuItem tsmiCommitSelected;
     private System.Windows.Forms.ToolStripMenuItem tsmiRevertChanges;
+    private System.Windows.Forms.ToolStripStatusLabel tsslCommittingChanges;
+    private System.Windows.Forms.ToolStripStatusLabel tsslLoadingFiles;
   }
 }
