@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Text;
 
 namespace Classes {
   public class MediaFile {
@@ -35,6 +36,7 @@ namespace Classes {
         RedirectStandardOutput = true,
         CreateNoWindow = true,
         UseShellExecute = false,
+        StandardOutputEncoding = Encoding.UTF8,
       };
       using (var process = Process.Start(procStart))
         return process.StandardOutput.ReadToEnd().Split(new[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);

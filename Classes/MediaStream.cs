@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Text.RegularExpressions;
@@ -23,6 +24,8 @@ namespace Classes {
       {"english","en" },
     };
 
+    private static readonly ConcurrentDictionary<string, CultureInfo> _FOUND_CULTURES = new ConcurrentDictionary<string, CultureInfo>();
+
     public CultureInfo Language {
       get {
         var result = this.GetStringOrDefault("language");
@@ -30,7 +33,10 @@ namespace Classes {
           return null;
 
         try {
-          return CultureInfo.GetCultureInfoByIetfLanguageTag(_LANGUAGE_CONVERTERS.GetValueOrDefault(result, result));
+          var lookupValue = _LANGUAGE_CONVERTERS.GetValueOrDefault(result, result);
+          var culture = _FOUND_CULTURES.GetOrAdd(lookupValue, CultureInfo.GetCultureInfoByIetfLanguageTag(lookupValue));
+          var dummy = culture.DisplayName;
+          return culture;
         } catch {
           return null;
         }
