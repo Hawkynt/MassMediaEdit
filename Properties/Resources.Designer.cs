@@ -103,6 +103,36 @@ namespace MassMediaEdit.Properties {
         /// <summary>
         ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap _24x24_Rename_Files {
+            get {
+                object obj = ResourceManager.GetObject("_24x24_Rename_Files", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap _24x24_Rename_Folders {
+            get {
+                object obj = ResourceManager.GetObject("_24x24_Rename_Folders", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap _24x24_Tags_From_Data {
+            get {
+                object obj = ResourceManager.GetObject("_24x24_Tags_From_Data", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap Clear {
             get {
                 object obj = ResourceManager.GetObject("Clear", resourceCulture);

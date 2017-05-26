@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Globalization;
 using System.IO;
 using System.Runtime.CompilerServices;
 using System.Windows.Forms;
@@ -8,12 +9,82 @@ using Libraries;
 
 namespace Classes.GUI {
   internal partial class GuiMediaItem : INotifyPropertyChanged {
-    protected MediaFile MediaFile { get; private set; }
+
+
+    #region messing with languages
+
+    public enum LanguageType {
+      [FieldDisplayName("")]
+      None,
+      [FieldDisplayName("Other")]
+      Other,
+      [FieldDisplayName("German")]
+      German,
+      [FieldDisplayName("English")]
+      English,
+      [FieldDisplayName("Spanish")]
+      Spanish,
+      [FieldDisplayName("Japanese")]
+      Japanese
+    }
+
+    private static LanguageType _FromCulture(CultureInfo culture) {
+      if (culture == null)
+        return LanguageType.None;
+
+      switch (culture.ThreeLetterISOLanguageName) {
+        case "deu":
+        return LanguageType.German;
+        case "eng":
+        return LanguageType.English;
+        case "jpn":
+        return LanguageType.Japanese;
+        case "spa":
+        return LanguageType.Spanish;
+        default:
+        return LanguageType.Other;
+      }
+    }
+
+    private static CultureInfo _ToCulture(LanguageType language) {
+      switch (language) {
+        case LanguageType.None:
+        return null;
+        case LanguageType.Other:
+        return null;
+        case LanguageType.German:
+        return new CultureInfo("de");
+        case LanguageType.English:
+        return new CultureInfo("en");
+        case LanguageType.Spanish:
+        return new CultureInfo("es");
+        case LanguageType.Japanese:
+        return new CultureInfo("ja");
+        default:
+        throw new ArgumentOutOfRangeException(nameof(language), language, null);
+      }
+    }
+
+    #endregion
+
+    [Browsable(false)]
+    public MediaFile MediaFile {
+      get { return this._mediaFile; }
+      private set {
+        this._mediaFile = value;
+        this._RefreshAllProperties();
+      }
+    }
+
     protected readonly Dictionary<string, object> commitData = new Dictionary<string, object>();
+    private MediaFile _mediaFile;
 
     protected GuiMediaItem(MediaFile mediaFile) {
       this.MediaFile = mediaFile;
     }
+
+    [Browsable(false)]
+    public bool IsReadOnly => this is ReadOnlyGuiMediaItem;
 
     [DisplayName("Changed")]
     [DataGridViewColumnWidth(56)]
@@ -31,9 +102,7 @@ namespace Classes.GUI {
     private string _OriginalTitle => this.MediaFile.GeneralStream?.Title;
 
     public string Title {
-      get {
-        return (string)this.commitData.GetValueOrDefault(nameof(this.Title), () => this._OriginalTitle);
-      }
+      get { return (string)this.commitData.GetValueOrDefault(nameof(this.Title), () => this._OriginalTitle); }
       set {
         value = value.DefaultIfNullOrWhiteSpace();
 
@@ -51,22 +120,40 @@ namespace Classes.GUI {
     }
 
     public event PropertyChangedEventHandler PropertyChanged;
-    protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
-      => this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName))
-      ;
-    protected void OnNeedsCommitChanged()
-      => this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(this.NeedsCommit)))
-      ;
+    protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null) => this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+    protected void OnNeedsCommitChanged() => this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(this.NeedsCommit)));
 
     private void _RefreshAllProperties() {
       this.OnPropertyChanged(nameof(this.Title));
       this.OnPropertyChanged(nameof(this.Video0StereoscopicMode));
+      this.OnPropertyChanged(nameof(this.FileName));
+      this.OnPropertyChanged(nameof(this.Container));
+      this.OnPropertyChanged(nameof(this.Size));
+      this.OnPropertyChanged(nameof(this.Video0Name));
+      this.OnPropertyChanged(nameof(this.Audio0Language));
+      this.OnPropertyChanged(nameof(this.Audio1Language));
       this.OnNeedsCommitChanged();
     }
 
     public void RevertChanges() {
       this.commitData.Clear();
       this._RefreshAllProperties();
+    }
+
+    public void RenameFileToMask(string mask) {
+      var sourceFile = this.MediaFile.File;
+      var directory = sourceFile.Directory;
+
+      mask = mask.MultipleReplace(new Dictionary<string, string> {
+        { "{filename}", sourceFile.Name },
+        { "{extension}", sourceFile.Extension.Substring(1)},
+        { "{title}", this.Title},
+        { "{video:name}", this.Video0Name},
+      });
+
+      var targetFile = directory.File(mask);
+      sourceFile.MoveTo(targetFile.FullName);
+      this.MediaFile = MediaFile.FromFile(targetFile);
     }
 
     public void CommitChanges() {
@@ -88,9 +175,14 @@ namespace Classes.GUI {
       if (data.ContainsKey(nameof(this.Video0StereoscopicMode)))
         MkvPropEdit.SetVideo0StereoscopicMode(file, (int)data[(nameof(this.Video0StereoscopicMode))]);
 
-      this.MediaFile = MediaFile.FromFile(file);
+      if (data.ContainsKey(nameof(this.Audio0Language)) && (LanguageType)data[nameof(this.Audio0Language)] != LanguageType.Other)
+        MkvPropEdit.SetAudio0Language(file, _ToCulture((LanguageType)data[nameof(this.Audio0Language)]));
+
+      if (data.ContainsKey(nameof(this.Audio1Language)) && (LanguageType)data[nameof(this.Audio1Language)] != LanguageType.Other)
+        MkvPropEdit.SetAudio1Language(file, _ToCulture((LanguageType)data[nameof(this.Audio1Language)]));
+
       data.Clear();
-      this._RefreshAllProperties();
+      this.MediaFile = MediaFile.FromFile(file);
     }
 
     public static bool IsWriteableMediaType(FileInfo file) {
@@ -126,6 +218,17 @@ namespace Classes.GUI {
       set { throw new NotSupportedException("Read-only instance"); }
     }
 
-  }
+    [ReadOnly(true)]
+    public new LanguageType Audio0Language {
+      get { return base.Audio0Language; }
+      set { throw new NotSupportedException("Read-only instance"); }
+    }
 
+    [ReadOnly(true)]
+    public new LanguageType Audio1Language {
+      get { return base.Audio1Language; }
+      set { throw new NotSupportedException("Read-only instance"); }
+    }
+
+  }
 }

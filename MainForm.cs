@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -13,23 +14,72 @@ using Classes.GUI;
 
 namespace MassMediaEdit {
   public partial class MainForm : Form {
+    private const string _MN_RENAME_FILES_TO = "Rename to {0}";
 
     private readonly SortableBindingList<GuiMediaItem> _items = new SortableBindingList<GuiMediaItem>();
+
+    // TODO: should be configured by the user and stored in configuration
+    private readonly string[] _fileRenameMasks = {
+      "{title}.{extension}",
+      "{video:name}.{extension}",
+    };
 
     public MainForm() {
       this.InitializeComponent();
       this.SetFormTitle();
+      this._BuildFileRenameMenu();
 
       this.dgvResults.EnableExtendedAttributes();
       this.dgvResults.DataSource = this._items;
       this.dgvResults.Sort(this.dgvResults.Columns[0], ListSortDirection.Ascending);
     }
 
+    private void _BuildFileRenameMenu() {
+      var parent = this.tsddbRenameFiles;
+      parent.DropDownItems.Clear();
+      foreach (var entry in this._fileRenameMasks) {
+        parent.DropDownItems.Add(
+          new ToolStripMenuItem(
+            string.Format(_MN_RENAME_FILES_TO, entry),
+            null,
+            (_, __) => this.dgvResults.GetSelectedItems<GuiMediaItem>().ForEach<GuiMediaItem>(i => i.RenameFileToMask(entry))
+          )
+        );
+      }
+    }
+
     private void _AddResults(IEnumerable<GuiMediaItem> items) {
       if (items == null)
         return;
 
-      this.SafelyInvoke(() => this._items.AddRange(items));
+      this.SafelyInvoke(
+        () => {
+          this._items.AddRange(items);
+          this._ReapplySorting();
+        }
+      );
+    }
+
+    private void _AddResult(GuiMediaItem item) {
+      if (item == null)
+        return;
+
+      this.SafelyInvoke(
+        () => {
+          this._items.Add(item);
+          this._ReapplySorting();
+        }
+      );
+    }
+
+    /// <summary>
+    /// Reapplies sorting of the dgv.
+    /// </summary>
+    private void _ReapplySorting() {
+      if (this.dgvResults.SortedColumn != null)
+        this.dgvResults.Sort(
+          this.dgvResults.SortedColumn,
+          this.dgvResults.SortOrder == SortOrder.Ascending ? ListSortDirection.Ascending : ListSortDirection.Descending);
     }
 
     /// <summary>
@@ -49,8 +99,8 @@ namespace MassMediaEdit {
         .Select(GuiMediaItem.FromMediaFile)                       /* convert to GUI item instance */
         ;
 
-      this._AddResults(items.ToArray());
-
+      foreach (var item in items.WithMergeOptions(ParallelMergeOptions.NotBuffered))
+        this._AddResult(item);
     }
 
     private readonly ConcurrentDictionary<string, int[]> _runningBackgroundTasks = new ConcurrentDictionary<string, int[]>();
@@ -173,7 +223,77 @@ namespace MassMediaEdit {
         selectedItems.Any(i => i.NeedsCommit);
     }
 
+    /// <summary>
+    /// Handles the SelectionChanged event of the dgvResults control.
+    /// </summary>
+    /// <param name="_">The source of the event.</param>
+    /// <param name="__">The <see cref="System.EventArgs" /> instance containing the event data.</param>
+    private void dgvResults_SelectionChanged(object _, EventArgs __) {
+      var isAnyFileSelected = this.dgvResults.GetSelectedItems<GuiMediaItem>().Any();
+      this.tsddbTagsFromName.Enabled =
+        this.tsddbRenameFiles.Enabled =
+        this.tsddbRenameFolders.Enabled =
+        isAnyFileSelected
+        ;
+    }
+
     #endregion
 
+    private void tsmiTitleFromFilename_Click(object sender, EventArgs e) {
+      foreach (var item in this.dgvResults.GetSelectedItems<GuiMediaItem>().Where(i => !i.IsReadOnly))
+        item.Title = item.MediaFile.File.Name;
+    }
+
+    private void tsmiVideNameFromFileName_Click(object sender, EventArgs e) {
+      foreach (var item in this.dgvResults.GetSelectedItems<GuiMediaItem>().Where(i => !i.IsReadOnly))
+        item.Video0Name = item.MediaFile.File.Name;
+    }
+
+    private void tsmiFixTitleAndName_Click(object sender, EventArgs e) {
+      var regex = new Regex(@"s(?<season>\d+)e(?<episode>\d+)(?:(?:\s*[-\._]\s*)|(?:\s+))(?<title>.*?)\s*$", RegexOptions.IgnoreCase);
+      foreach (var item in this.dgvResults.GetSelectedItems<GuiMediaItem>().Where(i => !i.IsReadOnly)) {
+        var match = regex.Match(item.Title ?? string.Empty);
+        if (!match.Success)
+          match = regex.Match(item.Video0Name ?? string.Empty);
+
+        if (!match.Success)
+          continue;
+
+        item.Title = $"s{match.Groups["season"].Value}e{match.Groups["episode"].Value}";
+        var name = match.Groups["title"].Value;
+        if (name.IsNotNullOrWhiteSpace())
+          item.Video0Name = name;
+      }
+    }
+
+    private void tsddbTagsFromName_Click(object _, EventArgs __) {
+      // TODO: this should open a window where one can build his template
+    }
+
+    private void tsddbRenameFiles_Click(object _, EventArgs __) {
+      // TODO: this should open a window where one can build his template
+    }
+
+    private void tsddbRenameFolders_Click(object _, EventArgs __) {
+      // TODO: this should open a window where one can build his template
+    }
+
+    private void tsmiClearTitle_Click(object _, EventArgs __) {
+      foreach (var item in this.dgvResults.GetSelectedItems<GuiMediaItem>().Where(i => !i.IsReadOnly))
+        item.Title = null;
+    }
+
+    private void tsmiClearVideoName_Click(object _, EventArgs __) {
+      foreach (var item in this.dgvResults.GetSelectedItems<GuiMediaItem>().Where(i => !i.IsReadOnly))
+        item.Video0Name = null;
+    }
+
+    private void tsmiSwapTitleAndName_Click(object _, EventArgs __) {
+      foreach (var item in this.dgvResults.GetSelectedItems<GuiMediaItem>().Where(i => !i.IsReadOnly)) {
+        var temp = item.Video0Name;
+        item.Video0Name = item.Title;
+        item.Title = temp;
+      }
+    }
   }
 }
