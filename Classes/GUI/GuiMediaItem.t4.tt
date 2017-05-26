@@ -89,23 +89,28 @@ namespace Classes.GUI {
         this.OnPropertyChanged();
         this.OnNeedsCommitChanged();
       }
-      
     }
         
 <#}#>
 <#for(var i=0;i<AUDIO_STREAM_COUNT;++i){#>
     
+    private LanguageType _OriginalAudio<#=i#>Language => _FromCulture(this.MediaFile.AudioStreams.Skip(<#=i#>).FirstOrDefault()?.Language);
+
     [DisplayName("Language")]
     [DataGridViewCellStyle(backColor:"<#=AUDIO_BACKGROUND_COLORS[i%AUDIO_BACKGROUND_COLORS.Length]#>")]
     [DataGridViewColumnWidth(DataGridViewAutoSizeColumnMode.AllCells)]
-    public string Audio<#=i#>Language {
+    public LanguageType Audio<#=i#>Language {
       get{
-        var stream = this.MediaFile.AudioStreams.Skip(<#=i#>).FirstOrDefault();
-        var culture = stream?.Language;
-        if(culture == null)
-          return null;
+        return (LanguageType)this.commitData.GetValueOrDefault(nameof(this.Audio<#=i#>Language), () => this._OriginalAudio<#=i#>Language);
+      }
+      set{
+        if (value == this._OriginalAudio<#=i#>Language)
+          this.commitData.Remove(nameof(this.Audio<#=i#>Language));
+        else
+          this.commitData.AddOrUpdate(nameof(this.Audio<#=i#>Language), value);
 
-        return culture.DisplayName;
+        this.OnPropertyChanged();
+        this.OnNeedsCommitChanged();
       }
     }
 

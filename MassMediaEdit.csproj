@@ -68,6 +68,9 @@
     <Compile Include="..\..\Framework\System.ComponentModel.SortComparer.cs">
       <Link>Framework\System.ComponentModel.SortComparer.cs</Link>
     </Compile>
+    <Compile Include="..\..\Framework\System.IO.DirectoryInfoExtensions.cs">
+      <Link>Framework\System.IO.DirectoryInfoExtensions.cs</Link>
+    </Compile>
     <Compile Include="..\..\Framework\System.StringExtensions.cs">
       <Link>Framework\System.StringExtensions.cs</Link>
     </Compile>
@@ -102,6 +105,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>GuiMediaItem.t4.tt</DependentUpon>
     </Compile>
+    <Compile Include="Libraries\FieldDisplayNameAttribute.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -127,6 +131,9 @@
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
+    <None Include="Tools\GPAC\Source.url">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Content Include="..\..\Framework\System.StringExtensions.Parsers.tt">
@@ -139,6 +146,18 @@
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>GuiMediaItem.t4.cs</LastGenOutput>
     </Content>
+    <Content Include="Tools\GPAC\gpac.mp4">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Tools\GPAC\js.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Tools\GPAC\mp4box.exe">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <None Include="Resources\24x24 Tags From Data.png" />
+    <None Include="Resources\24x24 Rename Files.png" />
+    <None Include="Resources\24x24 Rename Folders.png" />
     <None Include="Resources\16x11 Loading Animation.gif" />
     <None Include="Resources\Clear.png" />
     <None Include="Resources\24x24 Delete %282%29.png" />
@@ -157,6 +176,7 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

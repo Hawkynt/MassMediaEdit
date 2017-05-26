@@ -1,5 +1,6 @@
 using System;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 
 namespace Classes {
@@ -25,6 +26,20 @@ namespace Classes {
         (value == 0)
         ? $"\"{file.FullName}\" --edit track:v1 --delete \"stereo-mode\""
         : $"\"{file.FullName}\" --edit track:v1 --set \"stereo-mode={value}\""
+      );
+
+    public static void SetAudio0Language(FileInfo file, CultureInfo value)
+      => _Execute(
+        (value == null)
+        ? $"\"{file.FullName}\" --edit track:a1 --delete \"language\""
+        : $"\"{file.FullName}\" --edit track:a1 --set \"language={value.ThreeLetterISOLanguageName}\""
+      );
+
+    public static void SetAudio1Language(FileInfo file, CultureInfo value)
+      => _Execute(
+        (value == null)
+        ? $"\"{file.FullName}\" --edit track:a2 --delete \"language\""
+        : $"\"{file.FullName}\" --edit track:a2 --set \"language={value.ThreeLetterISOLanguageName}\""
       );
 
     private static void _Execute(string arguments) {
