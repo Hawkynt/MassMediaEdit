@@ -155,6 +155,12 @@
     <Content Include="Tools\GPAC\mp4box.exe">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Tools\MediaInfo\MediaInfo-CLI.exe">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Tools\MKVToolNix\mkvpropedit.exe">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <None Include="Resources\24x24 Tags From Data.png" />
     <None Include="Resources\24x24 Rename Files.png" />
     <None Include="Resources\24x24 Rename Folders.png" />

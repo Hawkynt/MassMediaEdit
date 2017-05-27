@@ -25,7 +25,7 @@ namespace MassMediaEdit.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("X:\\PortableApps\\Video - MediaInfo v0.7.94\\MediaInfo-CLI.exe")]
+        [global::System.Configuration.DefaultSettingValueAttribute(".\\Tools\\MediaInfo\\MediaInfo-CLI.exe")]
         public string MediaInfoCLIPath {
             get {
                 return ((string)(this["MediaInfoCLIPath"]));
@@ -34,7 +34,7 @@ namespace MassMediaEdit.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("X:\\PortableApps\\Video - MKVToolNix v10.0.0\\mkvpropedit.exe")]
+        [global::System.Configuration.DefaultSettingValueAttribute(".\\Tools\\MKVToolNix\\mkvpropedit.exe")]
         public string MKVPropEditPath {
             get {
                 return ((string)(this["MKVPropEditPath"]));
