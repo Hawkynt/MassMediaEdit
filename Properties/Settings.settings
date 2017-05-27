@@ -1,12 +1,12 @@
 ﻿<?xml version='1.0' encoding='utf-8'?>
-<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="MediaInfo.Properties" GeneratedClassName="Settings">
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="MassMediaEdit.Properties" GeneratedClassName="Settings">
   <Profiles />
   <Settings>
     <Setting Name="MediaInfoCLIPath" Type="System.String" Scope="Application">
-      <Value Profile="(Default)">X:\PortableApps\Video - MediaInfo v0.7.94\MediaInfo-CLI.exe</Value>
+      <Value Profile="(Default)">.\Tools\MediaInfo\MediaInfo-CLI.exe</Value>
     </Setting>
     <Setting Name="MKVPropEditPath" Type="System.String" Scope="Application">
-      <Value Profile="(Default)">X:\PortableApps\Video - MKVToolNix v10.0.0\mkvpropedit.exe</Value>
+      <Value Profile="(Default)">.\Tools\MKVToolNix\mkvpropedit.exe</Value>
     </Setting>
   </Settings>
 </SettingsFile>
