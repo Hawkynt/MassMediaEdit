@@ -173,7 +173,7 @@ namespace MassMediaEdit {
     /// </summary>
     /// <param name="_">The source of the event.</param>
     /// <param name="__">The <see cref="System.EventArgs" /> instance containing the event data.</param>
-    private void tsmiRemoveItem_Click(object _, System.EventArgs __)
+    private void tsmiRemoveItem_Click(object _, EventArgs __)
           => this._items.RemoveRange(this.dgvResults.GetSelectedItems<GuiMediaItem>())
           ;
 
@@ -182,16 +182,16 @@ namespace MassMediaEdit {
     /// </summary>
     /// <param name="_">The source of the event.</param>
     /// <param name="__">The <see cref="System.EventArgs" /> instance containing the event data.</param>
-    private void tsmiClearItems_Click(object _, System.EventArgs __)
+    private void tsmiClearItems_Click(object _, EventArgs __)
           => this._items.Clear()
           ;
 
     /// <summary>
     /// Commits changes in all selected items.
     /// </summary>
-    /// <param name="sender">The source of the event.</param>
-    /// <param name="e">The <see cref="System.EventArgs" /> instance containing the event data.</param>
-    private void tsmiCommitSelected_Click(object sender, System.EventArgs e) {
+    /// <param name="_">The source of the event.</param>
+    /// <param name="__">The <see cref="System.EventArgs" /> instance containing the event data.</param>
+    private void tsmiCommitSelected_Click(object _, EventArgs __) {
       var items = this.dgvResults.GetSelectedItems<GuiMediaItem>().ToArray();
       this._items.RemoveRange(items);
 
@@ -204,9 +204,9 @@ namespace MassMediaEdit {
     /// <summary>
     /// Reverts any changes made in selected items.
     /// </summary>
-    /// <param name="sender">The source of the event.</param>
-    /// <param name="e">The <see cref="System.EventArgs" /> instance containing the event data.</param>
-    private void tsmiRevertChanges_Click(object sender, System.EventArgs e)
+    /// <param name="_">The source of the event.</param>
+    /// <param name="__">The <see cref="System.EventArgs" /> instance containing the event data.</param>
+    private void tsmiRevertChanges_Click(object _, EventArgs __)
              => this.dgvResults.GetSelectedItems<GuiMediaItem>().ForEach<GuiMediaItem>(i => i.RevertChanges())
           ;
 
@@ -237,19 +237,32 @@ namespace MassMediaEdit {
         ;
     }
 
-    #endregion
-
-    private void tsmiTitleFromFilename_Click(object sender, EventArgs e) {
+    /// <summary>
+    /// Handles the Click event of the tsmiTitleFromFilename control.
+    /// </summary>
+    /// <param name="_">The source of the event.</param>
+    /// <param name="__">The <see cref="System.EventArgs" /> instance containing the event data.</param>
+    private void tsmiTitleFromFilename_Click(object _, EventArgs __) {
       foreach (var item in this.dgvResults.GetSelectedItems<GuiMediaItem>().Where(i => !i.IsReadOnly))
         item.Title = item.MediaFile.File.Name;
     }
 
-    private void tsmiVideNameFromFileName_Click(object sender, EventArgs e) {
+    /// <summary>
+    /// Handles the Click event of the tsmiVideNameFromFileName control.
+    /// </summary>
+    /// <param name="_">The source of the event.</param>
+    /// <param name="__">The <see cref="System.EventArgs" /> instance containing the event data.</param>
+    private void tsmiVideNameFromFileName_Click(object _, EventArgs __) {
       foreach (var item in this.dgvResults.GetSelectedItems<GuiMediaItem>().Where(i => !i.IsReadOnly))
         item.Video0Name = item.MediaFile.File.Name;
     }
 
-    private void tsmiFixTitleAndName_Click(object sender, EventArgs e) {
+    /// <summary>
+    /// Handles the Click event of the tsmiFixTitleAndName control.
+    /// </summary>
+    /// <param name="_">The source of the event.</param>
+    /// <param name="__">The <see cref="System.EventArgs" /> instance containing the event data.</param>
+    private void tsmiFixTitleAndName_Click(object _, EventArgs __) {
       var regex = new Regex(@"s(?<season>\d+)e(?<episode>\d+)(?:(?:\s*[-\._]\s*)|(?:\s+))(?<title>.*?)\s*$", RegexOptions.IgnoreCase);
       foreach (var item in this.dgvResults.GetSelectedItems<GuiMediaItem>().Where(i => !i.IsReadOnly)) {
         var match = regex.Match(item.Title ?? string.Empty);
@@ -278,16 +291,31 @@ namespace MassMediaEdit {
       // TODO: this should open a window where one can build his template
     }
 
+    /// <summary>
+    /// Handles the Click event of the tsmiClearTitle control.
+    /// </summary>
+    /// <param name="_">The source of the event.</param>
+    /// <param name="__">The <see cref="System.EventArgs" /> instance containing the event data.</param>
     private void tsmiClearTitle_Click(object _, EventArgs __) {
       foreach (var item in this.dgvResults.GetSelectedItems<GuiMediaItem>().Where(i => !i.IsReadOnly))
         item.Title = null;
     }
 
+    /// <summary>
+    /// Handles the Click event of the tsmiClearVideoName control.
+    /// </summary>
+    /// <param name="_">The source of the event.</param>
+    /// <param name="__">The <see cref="System.EventArgs" /> instance containing the event data.</param>
     private void tsmiClearVideoName_Click(object _, EventArgs __) {
       foreach (var item in this.dgvResults.GetSelectedItems<GuiMediaItem>().Where(i => !i.IsReadOnly))
         item.Video0Name = null;
     }
 
+    /// <summary>
+    /// Handles the Click event of the tsmiSwapTitleAndName control.
+    /// </summary>
+    /// <param name="_">The source of the event.</param>
+    /// <param name="__">The <see cref="System.EventArgs" /> instance containing the event data.</param>
     private void tsmiSwapTitleAndName_Click(object _, EventArgs __) {
       foreach (var item in this.dgvResults.GetSelectedItems<GuiMediaItem>().Where(i => !i.IsReadOnly)) {
         var temp = item.Video0Name;
@@ -295,5 +323,53 @@ namespace MassMediaEdit {
         item.Title = temp;
       }
     }
+
+    /// <summary>
+    /// Handles the Click event of the tsmiRecoverSpaces control.
+    /// </summary>
+    /// <param name="_">The source of the event.</param>
+    /// <param name="__">The <see cref="System.EventArgs" /> instance containing the event data.</param>
+    private void tsmiRecoverSpaces_Click(object _, EventArgs __) {
+      foreach (var item in this.dgvResults.GetSelectedItems<GuiMediaItem>().Where(i => !i.IsReadOnly)) {
+        item.Video0Name = _RecoverSpacesFrom(item.Video0Name);
+        item.Title = _RecoverSpacesFrom(item.Title);
+      }
+    }
+
+    #endregion
+
+    #region statics
+
+    /// <summary>
+    /// Tries to recover spaces from a text without ones.
+    /// </summary>
+    /// <param name="text">The text.</param>
+    /// <returns></returns>
+    private static string _RecoverSpacesFrom(string text) {
+
+      // no text - no result
+      if (text == null)
+        return null;
+
+      // if already spaces in it, we won't recover anything
+      if (text.Contains(" "))
+        return text;
+
+      // replace url type space
+      if (text.Contains("%20"))
+        return text.Replace("%20", " ");
+
+      // try characters which are normally used to replace a space character
+      const string charactersKnownToReplaceSpace = "_.%-+";
+      foreach (var character in charactersKnownToReplaceSpace)
+        if (text.Contains(character))
+          return text.Replace(character, ' ');
+
+      // couldn't find anything to recover
+      return text;
+    }
+
+    #endregion
+
   }
 }
