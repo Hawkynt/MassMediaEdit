@@ -14,32 +14,25 @@ namespace Classes {
         : $"\"{file.FullName}\" --edit info --set \"title={title}\""
       );
 
-    public static void SetVideo0Name(FileInfo file, string name)
+    public static void SetVideoName(FileInfo file, string name, byte videoStreamIndex = 0)
       => _Execute(
         (name == null)
-        ? $"\"{file.FullName}\" --edit track:v1 --delete \"name\""
-        : $"\"{file.FullName}\" --edit track:v1 --set \"name={name}\""
+        ? $"\"{file.FullName}\" --edit track:v{videoStreamIndex + 1} --delete \"name\""
+        : $"\"{file.FullName}\" --edit track:v{videoStreamIndex + 1} --set \"name={name}\""
       );
 
-    public static void SetVideo0StereoscopicMode(FileInfo file, int value)
+    public static void SetVideoStereoscopicMode(FileInfo file, int value, byte videoStreamIndex = 0)
       => _Execute(
         (value == 0)
-        ? $"\"{file.FullName}\" --edit track:v1 --delete \"stereo-mode\""
-        : $"\"{file.FullName}\" --edit track:v1 --set \"stereo-mode={value}\""
+        ? $"\"{file.FullName}\" --edit track:v{videoStreamIndex + 1} --delete \"stereo-mode\""
+        : $"\"{file.FullName}\" --edit track:v{videoStreamIndex + 1} --set \"stereo-mode={value}\""
       );
 
-    public static void SetAudio0Language(FileInfo file, CultureInfo value)
+    public static void SetAudioLanguage(FileInfo file, CultureInfo value, byte audioStreamIndex = 0)
       => _Execute(
         (value == null)
-        ? $"\"{file.FullName}\" --edit track:a1 --delete \"language\""
-        : $"\"{file.FullName}\" --edit track:a1 --set \"language={value.ThreeLetterISOLanguageName}\""
-      );
-
-    public static void SetAudio1Language(FileInfo file, CultureInfo value)
-      => _Execute(
-        (value == null)
-        ? $"\"{file.FullName}\" --edit track:a2 --delete \"language\""
-        : $"\"{file.FullName}\" --edit track:a2 --set \"language={value.ThreeLetterISOLanguageName}\""
+        ? $"\"{file.FullName}\" --edit track:a{audioStreamIndex + 1} --delete \"language\""
+        : $"\"{file.FullName}\" --edit track:a{audioStreamIndex + 1} --set \"language={value.ThreeLetterISOLanguageName}\""
       );
 
     private static void _Execute(string arguments) {

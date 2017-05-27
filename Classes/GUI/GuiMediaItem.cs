@@ -170,16 +170,16 @@ namespace Classes.GUI {
         MkvPropEdit.SetTitle(file, (string)data[(nameof(this.Title))]);
 
       if (data.ContainsKey(nameof(this.Video0Name)))
-        MkvPropEdit.SetVideo0Name(file, (string)data[(nameof(this.Video0Name))]);
+        MkvPropEdit.SetVideoName(file, (string)data[(nameof(this.Video0Name))]);
 
       if (data.ContainsKey(nameof(this.Video0StereoscopicMode)))
-        MkvPropEdit.SetVideo0StereoscopicMode(file, (int)data[(nameof(this.Video0StereoscopicMode))]);
+        MkvPropEdit.SetVideoStereoscopicMode(file, (int)data[(nameof(this.Video0StereoscopicMode))]);
 
       if (data.ContainsKey(nameof(this.Audio0Language)) && (LanguageType)data[nameof(this.Audio0Language)] != LanguageType.Other)
-        MkvPropEdit.SetAudio0Language(file, _ToCulture((LanguageType)data[nameof(this.Audio0Language)]));
+        MkvPropEdit.SetAudioLanguage(file, _ToCulture((LanguageType)data[nameof(this.Audio0Language)]));
 
       if (data.ContainsKey(nameof(this.Audio1Language)) && (LanguageType)data[nameof(this.Audio1Language)] != LanguageType.Other)
-        MkvPropEdit.SetAudio1Language(file, _ToCulture((LanguageType)data[nameof(this.Audio1Language)]));
+        MkvPropEdit.SetAudioLanguage(file, _ToCulture((LanguageType)data[nameof(this.Audio1Language)]), 1);
 
       data.Clear();
       this.MediaFile = MediaFile.FromFile(file);

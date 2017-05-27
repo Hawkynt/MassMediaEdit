@@ -38,7 +38,6 @@
       this.tsmiRevertChanges = new System.Windows.Forms.ToolStripMenuItem();
       this.tsddbRenameFiles = new System.Windows.Forms.ToolStripDropDownButton();
       this.tsddbRenameFolders = new System.Windows.Forms.ToolStripDropDownButton();
-      this.dgvResults = new System.Windows.Forms.DataGridView();
       this.tsddbTagsFromName = new System.Windows.Forms.ToolStripDropDownButton();
       this.tsmiTitleFromFileName = new System.Windows.Forms.ToolStripMenuItem();
       this.tsmiVideNameFromFileName = new System.Windows.Forms.ToolStripMenuItem();
@@ -46,6 +45,8 @@
       this.tsmiClearTitle = new System.Windows.Forms.ToolStripMenuItem();
       this.tsmiClearVideoName = new System.Windows.Forms.ToolStripMenuItem();
       this.tsmiSwapTitleAndName = new System.Windows.Forms.ToolStripMenuItem();
+      this.dgvResults = new System.Windows.Forms.DataGridView();
+      this.tsmiRecoverSpaces = new System.Windows.Forms.ToolStripMenuItem();
       statusStrip1 = new System.Windows.Forms.StatusStrip();
       cmsItems = new System.Windows.Forms.ContextMenuStrip(this.components);
       tsmiClearItems = new System.Windows.Forms.ToolStripMenuItem();
@@ -177,27 +178,6 @@
       this.tsddbRenameFolders.Text = "Rename Source Folder";
       this.tsddbRenameFolders.Click += new System.EventHandler(this.tsddbRenameFolders_Click);
       // 
-      // dgvResults
-      // 
-      this.dgvResults.AllowDrop = true;
-      this.dgvResults.AllowUserToAddRows = false;
-      this.dgvResults.AllowUserToDeleteRows = false;
-      this.dgvResults.AllowUserToResizeRows = false;
-      this.dgvResults.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
-      this.dgvResults.BackgroundColor = System.Drawing.SystemColors.Window;
-      this.dgvResults.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-      this.dgvResults.ContextMenuStrip = cmsItems;
-      this.dgvResults.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.dgvResults.Location = new System.Drawing.Point(0, 31);
-      this.dgvResults.Name = "dgvResults";
-      this.dgvResults.RowHeadersVisible = false;
-      this.dgvResults.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-      this.dgvResults.Size = new System.Drawing.Size(818, 374);
-      this.dgvResults.TabIndex = 0;
-      this.dgvResults.SelectionChanged += new System.EventHandler(this.dgvResults_SelectionChanged);
-      this.dgvResults.DragDrop += new System.Windows.Forms.DragEventHandler(this.dgvResults_DragDrop);
-      this.dgvResults.DragEnter += new System.Windows.Forms.DragEventHandler(this.dgvResults_DragEnter);
-      // 
       // tsddbTagsFromName
       // 
       this.tsddbTagsFromName.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
@@ -207,7 +187,8 @@
             this.tsmiFixTitleAndName,
             this.tsmiClearTitle,
             this.tsmiClearVideoName,
-            this.tsmiSwapTitleAndName});
+            this.tsmiSwapTitleAndName,
+            this.tsmiRecoverSpaces});
       this.tsddbTagsFromName.Enabled = false;
       this.tsddbTagsFromName.Image = global::MassMediaEdit.Properties.Resources._24x24_Tags_From_Data;
       this.tsddbTagsFromName.ImageTransparentColor = System.Drawing.Color.Magenta;
@@ -258,6 +239,34 @@
       this.tsmiSwapTitleAndName.Text = "Swap Title && Name";
       this.tsmiSwapTitleAndName.Click += new System.EventHandler(this.tsmiSwapTitleAndName_Click);
       // 
+      // dgvResults
+      // 
+      this.dgvResults.AllowDrop = true;
+      this.dgvResults.AllowUserToAddRows = false;
+      this.dgvResults.AllowUserToDeleteRows = false;
+      this.dgvResults.AllowUserToResizeRows = false;
+      this.dgvResults.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
+      this.dgvResults.BackgroundColor = System.Drawing.SystemColors.Window;
+      this.dgvResults.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+      this.dgvResults.ContextMenuStrip = cmsItems;
+      this.dgvResults.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.dgvResults.Location = new System.Drawing.Point(0, 31);
+      this.dgvResults.Name = "dgvResults";
+      this.dgvResults.RowHeadersVisible = false;
+      this.dgvResults.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
+      this.dgvResults.Size = new System.Drawing.Size(818, 374);
+      this.dgvResults.TabIndex = 0;
+      this.dgvResults.SelectionChanged += new System.EventHandler(this.dgvResults_SelectionChanged);
+      this.dgvResults.DragDrop += new System.Windows.Forms.DragEventHandler(this.dgvResults_DragDrop);
+      this.dgvResults.DragEnter += new System.Windows.Forms.DragEventHandler(this.dgvResults_DragEnter);
+      // 
+      // tsmiRecoverSpaces
+      // 
+      this.tsmiRecoverSpaces.Name = "tsmiRecoverSpaces";
+      this.tsmiRecoverSpaces.Size = new System.Drawing.Size(188, 22);
+      this.tsmiRecoverSpaces.Text = "Recover Spaces";
+      this.tsmiRecoverSpaces.Click += new System.EventHandler(this.tsmiRecoverSpaces_Click);
+      // 
       // MainForm
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -297,5 +306,6 @@
     private System.Windows.Forms.ToolStripMenuItem tsmiClearTitle;
     private System.Windows.Forms.ToolStripMenuItem tsmiClearVideoName;
     private System.Windows.Forms.ToolStripMenuItem tsmiSwapTitleAndName;
+    private System.Windows.Forms.ToolStripMenuItem tsmiRecoverSpaces;
   }
 }
