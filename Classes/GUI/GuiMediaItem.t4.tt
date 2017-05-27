@@ -28,7 +28,7 @@ namespace Classes.GUI {
         return (string)this.commitData.GetValueOrDefault(nameof(this.Video<#=i#>Name), () => this._OriginalVideo<#=i#>Name);
       }
       set {
-        value = value.DefaultIfNullOrWhiteSpace();
+        value = value.DefaultIfNullOrWhiteSpace()?.Trim();
 
         if (value == this.Video<#=i#>Name)
           return;

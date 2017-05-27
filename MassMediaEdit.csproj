@@ -71,6 +71,12 @@
     <Compile Include="..\..\Framework\System.IO.DirectoryInfoExtensions.cs">
       <Link>Framework\System.IO.DirectoryInfoExtensions.cs</Link>
     </Compile>
+    <Compile Include="..\..\Framework\System.IO.FileInfoExtensions.cs">
+      <Link>Framework\System.IO.FileInfoExtensions.cs</Link>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>System.IO.FileInfoExtensions.tt</DependentUpon>
+    </Compile>
     <Compile Include="..\..\Framework\System.StringExtensions.cs">
       <Link>Framework\System.StringExtensions.cs</Link>
     </Compile>
@@ -136,6 +142,11 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="..\..\Framework\System.IO.FileInfoExtensions.tt">
+      <Link>Framework\System.IO.FileInfoExtensions.tt</Link>
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>System.IO.FileInfoExtensions.cs</LastGenOutput>
+    </Content>
     <Content Include="..\..\Framework\System.StringExtensions.Parsers.tt">
       <Link>Framework\System.StringExtensions.Parsers.tt</Link>
       <Generator>TextTemplatingFileGenerator</Generator>

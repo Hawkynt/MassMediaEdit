@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Runtime.CompilerServices;
@@ -25,7 +26,9 @@ namespace Classes.GUI {
       [FieldDisplayName("Spanish")]
       Spanish,
       [FieldDisplayName("Japanese")]
-      Japanese
+      Japanese,
+      [FieldDisplayName("French")]
+      French,
     }
 
     private static LanguageType _FromCulture(CultureInfo culture) {
@@ -41,6 +44,8 @@ namespace Classes.GUI {
         return LanguageType.Japanese;
         case "spa":
         return LanguageType.Spanish;
+        case "fra":
+        return LanguageType.French;
         default:
         return LanguageType.Other;
       }
@@ -60,6 +65,8 @@ namespace Classes.GUI {
         return new CultureInfo("es");
         case LanguageType.Japanese:
         return new CultureInfo("ja");
+        case LanguageType.French:
+        return new CultureInfo("fr");
         default:
         throw new ArgumentOutOfRangeException(nameof(language), language, null);
       }
@@ -104,7 +111,7 @@ namespace Classes.GUI {
     public string Title {
       get { return (string)this.commitData.GetValueOrDefault(nameof(this.Title), () => this._OriginalTitle); }
       set {
-        value = value.DefaultIfNullOrWhiteSpace();
+        value = value.DefaultIfNullOrWhiteSpace().Trim();
 
         if (value == this.Title)
           return;
@@ -164,24 +171,40 @@ namespace Classes.GUI {
       if (!IsWriteableMediaType(file))
         throw new NotSupportedException("Can not write this media type.");
 
-      var data = this.commitData;
+      try {
 
-      if (data.ContainsKey(nameof(this.Title)))
-        MkvPropEdit.SetTitle(file, (string)data[(nameof(this.Title))]);
+        var data = this.commitData;
 
-      if (data.ContainsKey(nameof(this.Video0Name)))
-        MkvPropEdit.SetVideoName(file, (string)data[(nameof(this.Video0Name))]);
+        if (data.ContainsKey(nameof(this.Title)))
+          MkvPropEdit.SetTitle(file, (string)data[(nameof(this.Title))]);
 
-      if (data.ContainsKey(nameof(this.Video0StereoscopicMode)))
-        MkvPropEdit.SetVideoStereoscopicMode(file, (int)data[(nameof(this.Video0StereoscopicMode))]);
+        if (data.ContainsKey(nameof(this.Video0Name)))
+          MkvPropEdit.SetVideoName(file, (string)data[(nameof(this.Video0Name))]);
 
-      if (data.ContainsKey(nameof(this.Audio0Language)) && (LanguageType)data[nameof(this.Audio0Language)] != LanguageType.Other)
-        MkvPropEdit.SetAudioLanguage(file, _ToCulture((LanguageType)data[nameof(this.Audio0Language)]));
+        if (data.ContainsKey(nameof(this.Video0StereoscopicMode)))
+          MkvPropEdit.SetVideoStereoscopicMode(file, (int)data[(nameof(this.Video0StereoscopicMode))]);
 
-      if (data.ContainsKey(nameof(this.Audio1Language)) && (LanguageType)data[nameof(this.Audio1Language)] != LanguageType.Other)
-        MkvPropEdit.SetAudioLanguage(file, _ToCulture((LanguageType)data[nameof(this.Audio1Language)]), 1);
+        if (data.ContainsKey(nameof(this.Audio0Language)) &&
+            (LanguageType)data[nameof(this.Audio0Language)] != LanguageType.Other)
+          MkvPropEdit.SetAudioLanguage(file, _ToCulture((LanguageType)data[nameof(this.Audio0Language)]));
 
-      data.Clear();
+        if (data.ContainsKey(nameof(this.Audio1Language)) &&
+            (LanguageType)data[nameof(this.Audio1Language)] != LanguageType.Other)
+          MkvPropEdit.SetAudioLanguage(file, _ToCulture((LanguageType)data[nameof(this.Audio1Language)]), 1);
+
+        data.Clear();
+
+      } catch (Exception e) {
+
+#if DEBUG
+        if (!Debugger.IsAttached)
+          Debugger.Launch();
+
+        Debugger.Break();
+#endif
+
+      }
+
       this.MediaFile = MediaFile.FromFile(file);
     }
 
