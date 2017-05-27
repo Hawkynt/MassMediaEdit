@@ -244,7 +244,7 @@ namespace MassMediaEdit {
     /// <param name="__">The <see cref="System.EventArgs" /> instance containing the event data.</param>
     private void tsmiTitleFromFilename_Click(object _, EventArgs __) {
       foreach (var item in this.dgvResults.GetSelectedItems<GuiMediaItem>().Where(i => !i.IsReadOnly))
-        item.Title = item.MediaFile.File.Name;
+        item.Title = item.MediaFile.File.GetFilenameWithoutExtension();
     }
 
     /// <summary>
@@ -254,7 +254,7 @@ namespace MassMediaEdit {
     /// <param name="__">The <see cref="System.EventArgs" /> instance containing the event data.</param>
     private void tsmiVideNameFromFileName_Click(object _, EventArgs __) {
       foreach (var item in this.dgvResults.GetSelectedItems<GuiMediaItem>().Where(i => !i.IsReadOnly))
-        item.Video0Name = item.MediaFile.File.Name;
+        item.Video0Name = item.MediaFile.File.GetFilenameWithoutExtension();
     }
 
     /// <summary>
@@ -336,6 +336,18 @@ namespace MassMediaEdit {
       }
     }
 
+    /// <summary>
+    /// Handles the Click event of the tsmiRemoveBracketContent control.
+    /// </summary>
+    /// <param name="_">The source of the event.</param>
+    /// <param name="__">The <see cref="System.EventArgs" /> instance containing the event data.</param>
+    private void tsmiRemoveBracketContent_Click(object _, EventArgs __) {
+      foreach (var item in this.dgvResults.GetSelectedItems<GuiMediaItem>().Where(i => !i.IsReadOnly)) {
+        item.Video0Name = _RemoveBracketContentFrom(item.Video0Name);
+        item.Title = _RemoveBracketContentFrom(item.Title);
+      }
+    }
+
     #endregion
 
     #region statics
@@ -367,6 +379,19 @@ namespace MassMediaEdit {
 
       // couldn't find anything to recover
       return text;
+    }
+
+    /// <summary>
+    /// Removes bracketed content from the given text.
+    /// </summary>
+    /// <param name="text">The text.</param>
+    /// <returns></returns>
+    private static string _RemoveBracketContentFrom(string text) {
+      var regex = new Regex(@"\s*((\(.*?\))|(\[\.*?])|(\{.*?\})|(\<.*?\>))\s*");
+      if (text == null)
+        return null;
+
+      return regex.Replace(text, string.Empty);
     }
 
     #endregion
