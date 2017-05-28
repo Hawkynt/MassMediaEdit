@@ -5,6 +5,12 @@ using System.IO;
 
 namespace Classes {
   static internal class MkvPropEdit {
+    private enum ReturnCode {
+      Success = 0,
+      Warning = 1,
+      Error = 2
+    }
+
     public static FileInfo MkvPropEditExecutable { get; set; }
 
     public static void SetTitle(FileInfo file, string title)
@@ -45,8 +51,20 @@ namespace Classes {
       using (var process = new Process { StartInfo = new ProcessStartInfo(executable.FullName, arguments) { WindowStyle = ProcessWindowStyle.Hidden } }) {
         process.Start();
         process.WaitForExit();
-        if (process.ExitCode != 0)
-          throw new Exception($"Something went wrong during MKVPropEdit. Arguments: {arguments}") { Data = { { nameof(arguments), arguments } } };
+        var result = (ReturnCode)process.ExitCode;
+        if (result == ReturnCode.Success || result == ReturnCode.Warning)
+          return;
+
+        var output = process.StandardOutput.ReadToEnd();
+        var error = process.StandardError.ReadToEnd();
+
+        throw new Exception($"Something went wrong during MKVPropEdit. Arguments: {arguments}") {
+          Data = {
+            { nameof(arguments), arguments },
+            { nameof(output),output },
+            { nameof(error),error }
+          }
+        };
       }
     }
 
