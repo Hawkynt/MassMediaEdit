@@ -8,5 +8,8 @@
     <Setting Name="MKVPropEditPath" Type="System.String" Scope="Application">
       <Value Profile="(Default)">.\Tools\MKVToolNix\mkvpropedit.exe</Value>
     </Setting>
+    <Setting Name="MKVMergePath" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">.\Tools\MKVToolNix\mkvmerge.exe</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

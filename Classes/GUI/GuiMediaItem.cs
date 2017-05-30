@@ -126,6 +126,13 @@ namespace Classes.GUI {
       }
     }
 
+    [DisplayName("Convert to MKV")]
+    [DataGridViewButtonColumn(isEnabledWhen: nameof(IsMkvConversionEnabled), targetMethod: nameof(ConvertToMkv))]
+    public string ConvertTo => this.IsMkvConversionEnabled ? "Convert" : "Unavailable";
+
+    [Browsable(false)]
+    public bool IsMkvConversionEnabled => !".mkv".Equals(this.MediaFile.File.Extension, StringComparison.OrdinalIgnoreCase);
+
     public event PropertyChangedEventHandler PropertyChanged;
     protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null) => this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     protected void OnNeedsCommitChanged() => this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(this.NeedsCommit)));
@@ -139,12 +146,23 @@ namespace Classes.GUI {
       this.OnPropertyChanged(nameof(this.Video0Name));
       this.OnPropertyChanged(nameof(this.Audio0Language));
       this.OnPropertyChanged(nameof(this.Audio1Language));
+      this.OnPropertyChanged(nameof(this.ConvertTo));
+      this.OnPropertyChanged(nameof(this.IsMkvConversionEnabled));
       this.OnNeedsCommitChanged();
     }
 
     public void RevertChanges() {
       this.commitData.Clear();
       this._RefreshAllProperties();
+    }
+
+    public void ConvertToMkv() {
+      var sourceFile = this.MediaFile.File;
+      var targetFile = sourceFile.WithNewExtension("mkv");
+
+      // TODO: use a different thread for conversion and change mediafile back in gui thread
+      MkvMerge.ConvertToMkv(sourceFile, targetFile);
+      this.MediaFile = MediaFile.FromFile(targetFile);
     }
 
     public void RenameFileToMask(string mask) {
