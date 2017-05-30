@@ -15,6 +15,7 @@ namespace MassMediaEdit {
 
       MediaFile.MediaInfoExecutable = new FileInfo(Settings.Default.MediaInfoCLIPath);
       MkvPropEdit.MkvPropEditExecutable = new FileInfo(Settings.Default.MKVPropEditPath);
+      MkvMerge.MkvMergeExecutable=new FileInfo(Settings.Default.MKVMergePath);
 
       Application.EnableVisualStyles();
       Application.SetCompatibleTextRenderingDefault(false);

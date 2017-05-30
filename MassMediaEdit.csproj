@@ -100,6 +100,7 @@
     </Compile>
     <Compile Include="Classes\GeneralStream.cs" />
     <Compile Include="Classes\GUI\GuiMediaItem.cs" />
+    <Compile Include="Classes\MkvMerge.cs" />
     <Compile Include="Classes\MkvPropEdit.cs" />
     <Compile Include="Classes\MediaFile.cs" />
     <Compile Include="Classes\MediaStream.cs" />
@@ -167,6 +168,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Tools\MediaInfo\MediaInfo-CLI.exe">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Tools\MKVToolNix\mkvmerge.exe">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Tools\MKVToolNix\mkvpropedit.exe">

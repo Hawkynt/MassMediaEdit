@@ -40,5 +40,14 @@ namespace MassMediaEdit.Properties {
                 return ((string)(this["MKVPropEditPath"]));
             }
         }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute(".\\Tools\\MKVToolNix\\mkvmerge.exe")]
+        public string MKVMergePath {
+            get {
+                return ((string)(this["MKVMergePath"]));
+            }
+        }
     }
 }
