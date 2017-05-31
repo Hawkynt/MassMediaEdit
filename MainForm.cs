@@ -12,6 +12,9 @@ using System.Windows.Forms;
 using Classes;
 using Classes.GUI;
 
+// TODO: get title from nfo
+// TODO: get originaltitle from nfo
+
 namespace MassMediaEdit {
   public partial class MainForm : Form {
     private const string _MN_RENAME_FILES_TO = "Rename to {0}";

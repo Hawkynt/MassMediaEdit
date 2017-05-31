@@ -8,6 +8,8 @@ using System.Runtime.CompilerServices;
 using System.Windows.Forms;
 using Libraries;
 
+// TODO: make read-only dependant on instance properties because this could change during object livetime (eg MKV conversion)
+
 namespace Classes.GUI {
   internal partial class GuiMediaItem : INotifyPropertyChanged {
 
@@ -85,13 +87,15 @@ namespace Classes.GUI {
 
     protected readonly Dictionary<string, object> commitData = new Dictionary<string, object>();
     private MediaFile _mediaFile;
+    private float? _progress;
+    private bool _isActionPending;
 
     protected GuiMediaItem(MediaFile mediaFile) {
       this.MediaFile = mediaFile;
     }
 
     [Browsable(false)]
-    public bool IsReadOnly => this is ReadOnlyGuiMediaItem;
+    public bool IsReadOnly => !this.IsMkvContainer;
 
     [DisplayName("Changed")]
     [DataGridViewColumnWidth(56)]
@@ -131,10 +135,61 @@ namespace Classes.GUI {
     public string ConvertTo => this.IsMkvConversionEnabled ? "Convert" : "Unavailable";
 
     [Browsable(false)]
-    public bool IsMkvConversionEnabled => !".mkv".Equals(this.MediaFile.File.Extension, StringComparison.OrdinalIgnoreCase);
+    private bool _IsActionPending {
+      get { return this._isActionPending; }
+      set {
+        if (this._isActionPending == value)
+          return;
+
+        this._isActionPending = value;
+        this.OnPropertyChanged();
+        this.OnPropertyChanged(nameof(this.IsMkvConversionEnabled));
+        this.OnPropertyChanged(nameof(this.ConvertTo));
+      }
+    }
+
+    [Browsable(false)]
+    public bool IsMkvConversionEnabled => !(this._IsActionPending || this.IsMkvContainer);
+
+    [Browsable(false)]
+    public bool IsMkvContainer => ".mkv".Equals(this.MediaFile.File.Extension, StringComparison.OrdinalIgnoreCase);
+
+    public float? Progress {
+      get { return this._progress; }
+      private set {
+        if (value == this._progress)
+          return;
+
+        this._progress = value;
+        this.OnPropertyChanged();
+      }
+    }
 
     public event PropertyChangedEventHandler PropertyChanged;
-    protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null) => this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+
+    protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null) {
+      var subscribers = this.PropertyChanged;
+      if (subscribers == null)
+        return;
+
+      var args = new PropertyChangedEventArgs(propertyName);
+      foreach (var subscriber in subscribers.GetInvocationList()) {
+        var target = subscriber.Target as ISynchronizeInvoke;
+        if (target != null)
+          if (target.InvokeRequired) {
+            var asyncResult = target.BeginInvoke(subscriber, new object[] { this, args });
+            asyncResult.AsyncWaitHandle.WaitOne();
+            target.EndInvoke(asyncResult);
+          } else
+            subscriber.DynamicInvoke(this, args);
+        else
+          subscriber.DynamicInvoke(this, args);
+
+      }
+
+      this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+    }
+
     protected void OnNeedsCommitChanged() => this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(this.NeedsCommit)));
 
     private void _RefreshAllProperties() {
@@ -148,6 +203,7 @@ namespace Classes.GUI {
       this.OnPropertyChanged(nameof(this.Audio1Language));
       this.OnPropertyChanged(nameof(this.ConvertTo));
       this.OnPropertyChanged(nameof(this.IsMkvConversionEnabled));
+      this.OnPropertyChanged(nameof(this.IsMkvContainer));
       this.OnNeedsCommitChanged();
     }
 
@@ -159,10 +215,19 @@ namespace Classes.GUI {
     public void ConvertToMkv() {
       var sourceFile = this.MediaFile.File;
       var targetFile = sourceFile.WithNewExtension("mkv");
+      Action action = () => {
+        try {
+          this._IsActionPending = true;
+          MkvMerge.ConvertToMkv(sourceFile, targetFile, f => this.Progress = f);
 
-      // TODO: use a different thread for conversion and change mediafile back in gui thread
-      MkvMerge.ConvertToMkv(sourceFile, targetFile);
-      this.MediaFile = MediaFile.FromFile(targetFile);
+          this.MediaFile = MediaFile.FromFile(targetFile);
+          this.Progress = null;
+        } finally {
+          this._IsActionPending = true;
+        }
+      };
+
+      action.BeginInvoke(action.EndInvoke, null);
     }
 
     public void RenameFileToMask(string mask) {
