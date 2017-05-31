@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
+using System.Text.RegularExpressions;
 
 namespace Classes {
   static internal class MkvMerge {
@@ -12,34 +14,50 @@ namespace Classes {
 
     public static FileInfo MkvMergeExecutable { get; set; }
 
-    // TODO: report progress
-    public static void ConvertToMkv(FileInfo sourceFile, FileInfo targetFile) => _Execute($"--output \"{targetFile.FullName}\" \"{sourceFile.FullName}\"");
+    public static void ConvertToMkv(FileInfo sourceFile, FileInfo targetFile, Action<float> progressReporter = null) => _Execute($"--output \"{targetFile.FullName}\" \"{sourceFile.FullName}\"", progressReporter);
 
-    private static void _Execute(string arguments) {
+    private static readonly Regex _PROGRESS_DETECTOR = new Regex(@"(?<value>\d+(?:\.\d+)?)\s*%", RegexOptions.Compiled);
+    private static void _Execute(string arguments, Action<float> progressReporter) {
 
       var executable = MkvMergeExecutable;
       if (executable == null || !executable.Exists)
         throw new NotSupportedException($"Please set path to MKVMerge first using {nameof(MkvMergeExecutable)} property.");
 
+      var startInfo = new ProcessStartInfo(executable.FullName, arguments);
+      var asyncResult = startInfo.BeginRedirectedRun(
+        stdout => {
+          if (progressReporter == null)
+            return;
 
-      using (var process = new Process { StartInfo = new ProcessStartInfo(executable.FullName, arguments) { WindowStyle = ProcessWindowStyle.Hidden } }) {
-        process.Start();
-        process.WaitForExit();
-        var result = (ReturnCode)process.ExitCode;
-        if (result == ReturnCode.Success || result == ReturnCode.Warning)
-          return;
+          var line = stdout.CurrentLine;
+          var match = _PROGRESS_DETECTOR.Match(line);
+          if (!match.Success)
+            return;
 
-        var output = process.StandardOutput.ReadToEnd();
-        var error = process.StandardError.ReadToEnd();
+          var valueText = match.Groups["value"].Value;
+          float progress;
+          if (float.TryParse(valueText, NumberStyles.Float, CultureInfo.InvariantCulture, out progress))
+            progressReporter(progress);
+        }
+      );
 
-        throw new Exception($"Something went wrong during MKVPropEdit. Arguments: {arguments}") {
-          Data = {
+      var tuple = startInfo.EndRedirectedRun(asyncResult);
+      var result = (ReturnCode)tuple.ExitCode;
+      if (result == ReturnCode.Success || result == ReturnCode.Warning)
+        return;
+
+      var output = tuple.StandardOutput;
+      var error = tuple.StandardError;
+
+      throw new Exception($"Something went wrong during MKVMerge. Arguments: {arguments}") {
+        Data = {
             { nameof(arguments), arguments },
-            { nameof(output),output },
-            { nameof(error),error }
+            { "StandardOutput",output },
+            { "StandardError",error },
+            { "ExitCode",result },
           }
-        };
-      }
+      };
+
     }
   }
 }

@@ -68,6 +68,9 @@
     <Compile Include="..\..\Framework\System.ComponentModel.SortComparer.cs">
       <Link>Framework\System.ComponentModel.SortComparer.cs</Link>
     </Compile>
+    <Compile Include="..\..\Framework\System.Diagnostics.ProcessStartInfoExtensions.cs">
+      <Link>Framework\System.Diagnostics.ProcessStartInfoExtensions.cs</Link>
+    </Compile>
     <Compile Include="..\..\Framework\System.IO.DirectoryInfoExtensions.cs">
       <Link>Framework\System.IO.DirectoryInfoExtensions.cs</Link>
     </Compile>
