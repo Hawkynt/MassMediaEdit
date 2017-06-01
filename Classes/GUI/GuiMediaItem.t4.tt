@@ -21,6 +21,7 @@ namespace Classes.GUI {
     private string _OriginalVideo<#=i#>Name => this.MediaFile.VideoStreams.Skip(<#=i#>).FirstOrDefault()?.Name;
 
     [DisplayName("Name")]
+    [DataGridViewConditionalReadOnly(nameof(IsReadOnly))]
     [DataGridViewCellStyle(backColor:"<#=VIDEO_BACKGROUND_COLORS[i%VIDEO_BACKGROUND_COLORS.Length]#>")]
     [DataGridViewColumnWidth(DataGridViewAutoSizeColumnMode.AllCells)]
     public string Video<#=i#>Name {
@@ -74,6 +75,7 @@ namespace Classes.GUI {
     private StereoscopicMode _OriginalVideo<#=i#>StereoscopicMode => this.MediaFile.VideoStreams.Skip(<#=i#>).FirstOrDefault()?.StereoscopicMode ?? StereoscopicMode.Unknown;
     
     [DisplayName("3D-Mode")]
+    [DataGridViewConditionalReadOnly(nameof(IsReadOnly))]
     [DataGridViewCellStyle(backColor:"<#=VIDEO_BACKGROUND_COLORS[i%VIDEO_BACKGROUND_COLORS.Length]#>")]
     [DataGridViewColumnWidth(DataGridViewAutoSizeColumnMode.AllCells)]
     public StereoscopicMode Video<#=i#>StereoscopicMode {
@@ -97,6 +99,7 @@ namespace Classes.GUI {
     private LanguageType _OriginalAudio<#=i#>Language => _FromCulture(this.MediaFile.AudioStreams.Skip(<#=i#>).FirstOrDefault()?.Language);
 
     [DisplayName("Language")]
+    [DataGridViewConditionalReadOnly(nameof(IsReadOnly))]
     [DataGridViewCellStyle(backColor:"<#=AUDIO_BACKGROUND_COLORS[i%AUDIO_BACKGROUND_COLORS.Length]#>")]
     [DataGridViewColumnWidth(DataGridViewAutoSizeColumnMode.AllCells)]
     public LanguageType Audio<#=i#>Language {
