@@ -8,8 +8,6 @@ using System.Runtime.CompilerServices;
 using System.Windows.Forms;
 using Libraries;
 
-// TODO: make read-only dependant on instance properties because this could change during object livetime (eg MKV conversion)
-
 namespace Classes.GUI {
   internal partial class GuiMediaItem : INotifyPropertyChanged {
 
@@ -112,6 +110,7 @@ namespace Classes.GUI {
 
     private string _OriginalTitle => this.MediaFile.GeneralStream?.Title;
 
+    [DataGridViewConditionalReadOnly(nameof(IsReadOnly))]
     public string Title {
       get { return (string)this.commitData.GetValueOrDefault(nameof(this.Title), () => this._OriginalTitle); }
       set {
@@ -295,46 +294,7 @@ namespace Classes.GUI {
       return file.Extension == ".mkv";
     }
 
-    public static GuiMediaItem FromMediaFile(MediaFile mediaFile) {
-      if (IsWriteableMediaType(mediaFile.File))
-        return new GuiMediaItem(mediaFile);
-
-      return new ReadOnlyGuiMediaItem(mediaFile);
-    }
+    public static GuiMediaItem FromMediaFile(MediaFile mediaFile) => new GuiMediaItem(mediaFile);
   }
 
-  internal class ReadOnlyGuiMediaItem : GuiMediaItem {
-    public ReadOnlyGuiMediaItem(MediaFile mediaFile) : base(mediaFile) { }
-
-    [ReadOnly(true)]
-    public new string Title {
-      get { return base.Title; }
-      set { throw new NotSupportedException("Read-only instance"); }
-    }
-
-    [ReadOnly(true)]
-    public new string Video0Name {
-      get { return base.Video0Name; }
-      set { throw new NotSupportedException("Read-only instance"); }
-    }
-
-    [ReadOnly(true)]
-    public new StereoscopicMode Video0StereoscopicMode {
-      get { return base.Video0StereoscopicMode; }
-      set { throw new NotSupportedException("Read-only instance"); }
-    }
-
-    [ReadOnly(true)]
-    public new LanguageType Audio0Language {
-      get { return base.Audio0Language; }
-      set { throw new NotSupportedException("Read-only instance"); }
-    }
-
-    [ReadOnly(true)]
-    public new LanguageType Audio1Language {
-      get { return base.Audio1Language; }
-      set { throw new NotSupportedException("Read-only instance"); }
-    }
-
-  }
 }
