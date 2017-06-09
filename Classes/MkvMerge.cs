@@ -24,22 +24,23 @@ namespace Classes {
         throw new NotSupportedException($"Please set path to MKVMerge first using {nameof(MkvMergeExecutable)} property.");
 
       var startInfo = new ProcessStartInfo(executable.FullName, arguments);
-      var asyncResult = startInfo.BeginRedirectedRun(
-        stdout => {
-          if (progressReporter == null)
-            return;
+      var asyncResult =
+        progressReporter == null
+        ? startInfo.BeginRedirectedRun()
+        : startInfo.BeginRedirectedRun(
+          stdout => {
+            var line = stdout.CurrentLine;
+            var match = _PROGRESS_DETECTOR.Match(line);
+            if (!match.Success)
+              return;
 
-          var line = stdout.CurrentLine;
-          var match = _PROGRESS_DETECTOR.Match(line);
-          if (!match.Success)
-            return;
-
-          var valueText = match.Groups["value"].Value;
-          float progress;
-          if (float.TryParse(valueText, NumberStyles.Float, CultureInfo.InvariantCulture, out progress))
-            progressReporter(progress);
-        }
-      );
+            var valueText = match.Groups["value"].Value;
+            float progress;
+            if (float.TryParse(valueText, NumberStyles.Float, CultureInfo.InvariantCulture, out progress))
+              progressReporter(progress);
+          }
+        )
+        ;
 
       var tuple = startInfo.EndRedirectedRun(asyncResult);
       var result = (ReturnCode)tuple.ExitCode;
