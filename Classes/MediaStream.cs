@@ -36,7 +36,7 @@ namespace Classes {
           var lookupValue = _LANGUAGE_CONVERTERS.GetValueOrDefault(result, result);
           var culture = _FOUND_CULTURES.GetOrAdd(lookupValue, CultureInfo.GetCultureInfoByIetfLanguageTag(lookupValue));
           return culture;
-        } catch {
+        } catch (Exception) {
           return null;
         }
       }

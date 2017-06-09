@@ -30,22 +30,22 @@
           return StereoscopicMode.None;
         /*
         Stereo-3D video mode (
-          0: mono, 
-          1: side by side (left eye is first), 
-          2: top-bottom (right eye is first), 
-          3: top-bottom (left eye is first), 
-          4: checkboard (right is first), 
-          5: checkboard (left is first), 
-          6: row interleaved (right is first), 
-          7: row interleaved (left is first), 
-          8: column interleaved (right is first), 
-          9: column interleaved (left is first), 
-          10: anaglyph (cyan/red), 
-          11: side by side (right eye is first), 
-          12: anaglyph (green/magenta), 
-          13 both eyes laced in one Block (left eye is first), 
+          0: mono,
+          1: side by side (left eye is first),
+          2: top-bottom (right eye is first),
+          3: top-bottom (left eye is first),
+          4: checkboard (right is first),
+          5: checkboard (left is first),
+          6: row interleaved (right is first),
+          7: row interleaved (left is first),
+          8: column interleaved (right is first),
+          9: column interleaved (left is first),
+          10: anaglyph (cyan/red),
+          11: side by side (right eye is first),
+          12: anaglyph (green/magenta),
+          13 both eyes laced in one Block (left eye is first),
           14 both eyes laced in one Block (right eye is first)
-        ). 
+        ).
         */
         var type = (this.GetStringOrDefault("MultiView_Layout") ?? string.Empty).ToLowerInvariant();
         if (type.Contains("side"))

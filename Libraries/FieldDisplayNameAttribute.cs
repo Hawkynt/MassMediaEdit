@@ -2,8 +2,9 @@
 using System.ComponentModel;
 
 namespace Libraries {
+
   [AttributeUsage(AttributeTargets.Field)]
-  class FieldDisplayNameAttribute : DisplayNameAttribute {
+  internal sealed class FieldDisplayNameAttribute : DisplayNameAttribute {
     public FieldDisplayNameAttribute(string value) : base(value) { }
   }
 }
