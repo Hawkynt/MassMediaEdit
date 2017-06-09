@@ -114,7 +114,7 @@ namespace Classes.GUI {
     public string Title {
       get { return (string)this.commitData.GetValueOrDefault(nameof(this.Title), () => this._OriginalTitle); }
       set {
-        value = value.DefaultIfNullOrWhiteSpace().Trim();
+        value = value.DefaultIfNullOrWhiteSpace()?.Trim();
 
         if (value == this.Title)
           return;
