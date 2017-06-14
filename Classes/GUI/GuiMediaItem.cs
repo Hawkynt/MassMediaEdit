@@ -153,6 +153,7 @@ namespace Classes.GUI {
     [Browsable(false)]
     public bool IsMkvContainer => ".mkv".Equals(this.MediaFile.File.Extension, StringComparison.OrdinalIgnoreCase);
 
+    [DataGridViewProgressBarColumn]
     public float? Progress {
       get { return this._progress; }
       private set {
