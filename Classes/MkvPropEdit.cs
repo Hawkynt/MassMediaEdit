@@ -2,6 +2,7 @@ using System;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
+using System.Text.RegularExpressions;
 
 namespace Classes {
   static internal class MkvPropEdit {
@@ -48,7 +49,7 @@ namespace Classes {
         throw new NotSupportedException($"Please set path to MKVPropEdit first using {nameof(MkvPropEditExecutable)} property.");
 
 
-      using (var process = new Process { StartInfo = new ProcessStartInfo(executable.FullName, arguments) { WindowStyle = ProcessWindowStyle.Hidden } }) {
+      using (var process = new Process { StartInfo = new ProcessStartInfo(executable.FullName, arguments) { WindowStyle = ProcessWindowStyle.Hidden, RedirectStandardOutput = true, RedirectStandardError = true, UseShellExecute = false } }) {
         process.Start();
         process.WaitForExit();
         var result = (ReturnCode)process.ExitCode;
@@ -58,7 +59,18 @@ namespace Classes {
         var output = process.StandardOutput.ReadToEnd();
         var error = process.StandardError.ReadToEnd();
 
-        throw new Exception($"Something went wrong during MKVPropEdit. Arguments: {arguments}") {
+        var regex = new Regex(@"Error\s*:\s*(?<error>.*?)\s*$", RegexOptions.Multiline | RegexOptions.IgnoreCase);
+        var errorMessage = $"Something went wrong during MKVPropEdit. Arguments: {arguments}";
+        var match = regex.Match(output);
+        if (match.Success)
+          errorMessage = match.Groups["error"].Value;
+        else {
+          match = regex.Match(error);
+          if (match.Success)
+            errorMessage = match.Groups["error"].Value;
+        }
+
+        throw new Exception(errorMessage) {
           Data = {
             { nameof(arguments), arguments },
             { nameof(output),output },
