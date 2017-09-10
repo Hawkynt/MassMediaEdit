@@ -130,7 +130,7 @@ namespace Classes.GUI {
     }
 
     [DisplayName("Convert to MKV")]
-    [DataGridViewButtonColumn(isEnabledWhen: nameof(IsMkvConversionEnabled), targetMethod: nameof(ConvertToMkv))]
+    [DataGridViewButtonColumn(isEnabledWhen: nameof(IsMkvConversionEnabled), onClickMethodName: nameof(ConvertToMkv))]
     public string ConvertTo => this.IsMkvConversionEnabled ? "Convert" : "Unavailable";
 
     [Browsable(false)]
