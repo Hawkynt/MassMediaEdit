@@ -23,7 +23,7 @@ namespace Classes.GUI {
     [DisplayName("Name")]
     [DataGridViewConditionalReadOnly(nameof(IsReadOnly))]
     [DataGridViewCellStyle(backColor:"<#=VIDEO_BACKGROUND_COLORS[i%VIDEO_BACKGROUND_COLORS.Length]#>")]
-    [DataGridViewColumnWidth(DataGridViewAutoSizeColumnMode.AllCells)]
+    [DataGridViewColumnWidth((char)20)]
     public string Video<#=i#>Name {
       get {
         return (string)this.commitData.GetValueOrDefault(nameof(this.Video<#=i#>Name), () => this._OriginalVideo<#=i#>Name);

@@ -27,7 +27,10 @@ namespace MassMediaEdit {
       "{video:name}.{extension}",
     };
 
+    internal static ISynchronizeInvoke Invocator { get; private set; }
+
     public MainForm() {
+      Invocator = this;
       this.InitializeComponent();
       this.SetFormTitle();
       this._BuildFileRenameMenu();
@@ -255,7 +258,7 @@ namespace MassMediaEdit {
     /// </summary>
     /// <param name="_">The source of the event.</param>
     /// <param name="__">The <see cref="System.EventArgs" /> instance containing the event data.</param>
-    private void tsmiVideNameFromFileName_Click(object _, EventArgs __) {
+    private void tsmiVideoNameFromFileName_Click(object _, EventArgs __) {
       foreach (var item in this.dgvResults.GetSelectedItems<GuiMediaItem>().Where(i => !i.IsReadOnly))
         item.Video0Name = item.MediaFile.File.GetFilenameWithoutExtension();
     }
@@ -395,6 +398,14 @@ namespace MassMediaEdit {
         return null;
 
       return regex.Replace(text, string.Empty);
+    }
+
+    private void tsmiAutoFillFromFileName_Click(object sender, EventArgs e) {
+      this.tsmiTitleFromFilename_Click(sender, e);
+      this.tsmiFixTitleAndName_Click(sender, e);
+      this.tsmiFixTitleAndName_Click(sender, e);
+      this.tsmiRecoverSpaces_Click(sender, e);
+      this.tsmiRemoveBracketContent_Click(sender, e);
     }
 
     #endregion
