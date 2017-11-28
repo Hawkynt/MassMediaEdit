@@ -49,7 +49,7 @@ namespace Classes {
         throw new NotSupportedException($"Please set path to MKVPropEdit first using {nameof(MkvPropEditExecutable)} property.");
 
 
-      using (var process = new Process { StartInfo = new ProcessStartInfo(executable.FullName, arguments) { WindowStyle = ProcessWindowStyle.Hidden, RedirectStandardOutput = true, RedirectStandardError = true, UseShellExecute = false } }) {
+      using (var process = new Process { StartInfo = new ProcessStartInfo(executable.FullName, arguments) { CreateNoWindow = true, WindowStyle = ProcessWindowStyle.Hidden, RedirectStandardOutput = true, RedirectStandardError = true, UseShellExecute = false } }) {
         process.Start();
         process.WaitForExit();
         var result = (ReturnCode)process.ExitCode;

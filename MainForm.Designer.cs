@@ -31,6 +31,7 @@
       System.Windows.Forms.ToolStripMenuItem tsmiRemoveItem;
       System.Windows.Forms.ToolStrip tsMainStrip;
       System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
+      System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
       this.tsslCommittingChanges = new System.Windows.Forms.ToolStripStatusLabel();
       this.tsslLoadingFiles = new System.Windows.Forms.ToolStripStatusLabel();
       this.tsslDragDropInfo = new System.Windows.Forms.ToolStripStatusLabel();
@@ -40,20 +41,22 @@
       this.tsddbRenameFolders = new System.Windows.Forms.ToolStripDropDownButton();
       this.tsddbTagsFromName = new System.Windows.Forms.ToolStripDropDownButton();
       this.tsmiTitleFromFileName = new System.Windows.Forms.ToolStripMenuItem();
-      this.tsmiVideNameFromFileName = new System.Windows.Forms.ToolStripMenuItem();
+      this.tsmiVideoNameFromFileName = new System.Windows.Forms.ToolStripMenuItem();
       this.tsmiFixTitleAndName = new System.Windows.Forms.ToolStripMenuItem();
       this.tsmiClearTitle = new System.Windows.Forms.ToolStripMenuItem();
       this.tsmiClearVideoName = new System.Windows.Forms.ToolStripMenuItem();
       this.tsmiSwapTitleAndName = new System.Windows.Forms.ToolStripMenuItem();
-      this.dgvResults = new System.Windows.Forms.DataGridView();
       this.tsmiRecoverSpaces = new System.Windows.Forms.ToolStripMenuItem();
       this.tsmiRemoveBracketContent = new System.Windows.Forms.ToolStripMenuItem();
+      this.dgvResults = new System.Windows.Forms.DataGridView();
+      this.tsmiAutoFillFromFileName = new System.Windows.Forms.ToolStripMenuItem();
       statusStrip1 = new System.Windows.Forms.StatusStrip();
       cmsItems = new System.Windows.Forms.ContextMenuStrip(this.components);
       tsmiClearItems = new System.Windows.Forms.ToolStripMenuItem();
       toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
       tsmiRemoveItem = new System.Windows.Forms.ToolStripMenuItem();
       tsMainStrip = new System.Windows.Forms.ToolStrip();
+      toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
       statusStrip1.SuspendLayout();
       cmsItems.SuspendLayout();
       tsMainStrip.SuspendLayout();
@@ -184,13 +187,15 @@
       this.tsddbTagsFromName.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
       this.tsddbTagsFromName.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.tsmiTitleFromFileName,
-            this.tsmiVideNameFromFileName,
+            this.tsmiVideoNameFromFileName,
             this.tsmiFixTitleAndName,
             this.tsmiClearTitle,
             this.tsmiClearVideoName,
             this.tsmiSwapTitleAndName,
             this.tsmiRecoverSpaces,
-            this.tsmiRemoveBracketContent});
+            this.tsmiRemoveBracketContent,
+            toolStripSeparator2,
+            this.tsmiAutoFillFromFileName});
       this.tsddbTagsFromName.Enabled = false;
       this.tsddbTagsFromName.Image = global::MassMediaEdit.Properties.Resources._24x24_Tags_From_Data;
       this.tsddbTagsFromName.ImageTransparentColor = System.Drawing.Color.Magenta;
@@ -206,12 +211,12 @@
       this.tsmiTitleFromFileName.Text = "Title From Filename";
       this.tsmiTitleFromFileName.Click += new System.EventHandler(this.tsmiTitleFromFilename_Click);
       // 
-      // tsmiVideNameFromFileName
+      // tsmiVideoNameFromFileName
       // 
-      this.tsmiVideNameFromFileName.Name = "tsmiVideNameFromFileName";
-      this.tsmiVideNameFromFileName.Size = new System.Drawing.Size(205, 22);
-      this.tsmiVideNameFromFileName.Text = "Name From Filename";
-      this.tsmiVideNameFromFileName.Click += new System.EventHandler(this.tsmiVideNameFromFileName_Click);
+      this.tsmiVideoNameFromFileName.Name = "tsmiVideoNameFromFileName";
+      this.tsmiVideoNameFromFileName.Size = new System.Drawing.Size(205, 22);
+      this.tsmiVideoNameFromFileName.Text = "Name From Filename";
+      this.tsmiVideoNameFromFileName.Click += new System.EventHandler(this.tsmiVideoNameFromFileName_Click);
       // 
       // tsmiFixTitleAndName
       // 
@@ -241,6 +246,20 @@
       this.tsmiSwapTitleAndName.Text = "Swap Title && Name";
       this.tsmiSwapTitleAndName.Click += new System.EventHandler(this.tsmiSwapTitleAndName_Click);
       // 
+      // tsmiRecoverSpaces
+      // 
+      this.tsmiRecoverSpaces.Name = "tsmiRecoverSpaces";
+      this.tsmiRecoverSpaces.Size = new System.Drawing.Size(205, 22);
+      this.tsmiRecoverSpaces.Text = "Recover Spaces";
+      this.tsmiRecoverSpaces.Click += new System.EventHandler(this.tsmiRecoverSpaces_Click);
+      // 
+      // tsmiRemoveBracketContent
+      // 
+      this.tsmiRemoveBracketContent.Name = "tsmiRemoveBracketContent";
+      this.tsmiRemoveBracketContent.Size = new System.Drawing.Size(205, 22);
+      this.tsmiRemoveBracketContent.Text = "Remove Bracket Content";
+      this.tsmiRemoveBracketContent.Click += new System.EventHandler(this.tsmiRemoveBracketContent_Click);
+      // 
       // dgvResults
       // 
       this.dgvResults.AllowDrop = true;
@@ -262,19 +281,17 @@
       this.dgvResults.DragDrop += new System.Windows.Forms.DragEventHandler(this.dgvResults_DragDrop);
       this.dgvResults.DragEnter += new System.Windows.Forms.DragEventHandler(this.dgvResults_DragEnter);
       // 
-      // tsmiRecoverSpaces
+      // toolStripSeparator2
       // 
-      this.tsmiRecoverSpaces.Name = "tsmiRecoverSpaces";
-      this.tsmiRecoverSpaces.Size = new System.Drawing.Size(205, 22);
-      this.tsmiRecoverSpaces.Text = "Recover Spaces";
-      this.tsmiRecoverSpaces.Click += new System.EventHandler(this.tsmiRecoverSpaces_Click);
+      toolStripSeparator2.Name = "toolStripSeparator2";
+      toolStripSeparator2.Size = new System.Drawing.Size(202, 6);
       // 
-      // tsmiRemoveBracketContent
+      // tsmiAutoFillFromFileName
       // 
-      this.tsmiRemoveBracketContent.Name = "tsmiRemoveBracketContent";
-      this.tsmiRemoveBracketContent.Size = new System.Drawing.Size(205, 22);
-      this.tsmiRemoveBracketContent.Text = "Remove Bracket Content";
-      this.tsmiRemoveBracketContent.Click += new System.EventHandler(this.tsmiRemoveBracketContent_Click);
+      this.tsmiAutoFillFromFileName.Name = "tsmiAutoFillFromFileName";
+      this.tsmiAutoFillFromFileName.Size = new System.Drawing.Size(205, 22);
+      this.tsmiAutoFillFromFileName.Text = "Auto-Fill from Filename";
+      this.tsmiAutoFillFromFileName.Click += new System.EventHandler(this.tsmiAutoFillFromFileName_Click);
       // 
       // MainForm
       // 
@@ -310,12 +327,13 @@
     private System.Windows.Forms.ToolStripDropDownButton tsddbRenameFolders;
     private System.Windows.Forms.ToolStripDropDownButton tsddbTagsFromName;
     private System.Windows.Forms.ToolStripMenuItem tsmiTitleFromFileName;
-    private System.Windows.Forms.ToolStripMenuItem tsmiVideNameFromFileName;
+    private System.Windows.Forms.ToolStripMenuItem tsmiVideoNameFromFileName;
     private System.Windows.Forms.ToolStripMenuItem tsmiFixTitleAndName;
     private System.Windows.Forms.ToolStripMenuItem tsmiClearTitle;
     private System.Windows.Forms.ToolStripMenuItem tsmiClearVideoName;
     private System.Windows.Forms.ToolStripMenuItem tsmiSwapTitleAndName;
     private System.Windows.Forms.ToolStripMenuItem tsmiRecoverSpaces;
     private System.Windows.Forms.ToolStripMenuItem tsmiRemoveBracketContent;
+    private System.Windows.Forms.ToolStripMenuItem tsmiAutoFillFromFileName;
   }
 }

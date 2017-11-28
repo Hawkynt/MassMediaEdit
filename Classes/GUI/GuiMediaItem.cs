@@ -7,6 +7,7 @@ using System.IO;
 using System.Runtime.CompilerServices;
 using System.Windows.Forms;
 using Libraries;
+using MassMediaEdit;
 
 namespace Classes.GUI {
   internal partial class GuiMediaItem : INotifyPropertyChanged {
@@ -100,6 +101,8 @@ namespace Classes.GUI {
     public bool NeedsCommit => this.commitData.Count > 0;
 
     [DisplayName("File Name")]
+    [DataGridViewColumnWidth((char)10)]
+    [DataGridViewClickable(onDoubleClickMethodName: nameof(Run))]
     public string FileName => this.MediaFile.File.FullName;
 
     [DataGridViewColumnWidth(DataGridViewAutoSizeColumnMode.ColumnHeader)]
@@ -110,6 +113,7 @@ namespace Classes.GUI {
 
     private string _OriginalTitle => this.MediaFile.GeneralStream?.Title;
 
+    [DataGridViewColumnWidth((char)20)]
     [DataGridViewConditionalReadOnly(nameof(IsReadOnly))]
     public string Title {
       get { return (string)this.commitData.GetValueOrDefault(nameof(this.Title), () => this._OriginalTitle); }
@@ -131,6 +135,7 @@ namespace Classes.GUI {
 
     [DisplayName("Convert to MKV")]
     [DataGridViewButtonColumn(isEnabledWhen: nameof(IsMkvConversionEnabled), onClickMethodName: nameof(ConvertToMkv))]
+    [DataGridViewColumnWidth(DataGridViewAutoSizeColumnMode.DisplayedCells)]
     public string ConvertTo => this.IsMkvConversionEnabled ? "Convert" : "Unavailable";
 
     [Browsable(false)]
@@ -154,6 +159,7 @@ namespace Classes.GUI {
     public bool IsMkvContainer => ".mkv".Equals(this.MediaFile.File.Extension, StringComparison.OrdinalIgnoreCase);
 
     [DataGridViewProgressBarColumn]
+    [DataGridViewColumnWidth(DataGridViewAutoSizeColumnMode.DisplayedCells)]
     public float? Progress {
       get { return this._progress; }
       private set {
@@ -173,6 +179,18 @@ namespace Classes.GUI {
         return;
 
       var args = new PropertyChangedEventArgs(propertyName);
+
+      var invoc = MainForm.Invocator;
+      if (invoc != null) {
+        if (invoc.InvokeRequired) {
+          var result = invoc.BeginInvoke(new Action<string>(this.OnPropertyChanged), new object[] { propertyName });
+          result.AsyncWaitHandle.WaitOne();
+          invoc.EndInvoke(result);
+        } else
+          subscribers.Invoke(this, args);
+        return;
+      }
+
       foreach (var subscriber in subscribers.GetInvocationList()) {
         var target = subscriber.Target as ISynchronizeInvoke;
         if (target != null)
@@ -186,8 +204,6 @@ namespace Classes.GUI {
           subscriber.DynamicInvoke(this, args);
 
       }
-
-      this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
 
     protected void OnNeedsCommitChanged() => this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(this.NeedsCommit)));
@@ -229,6 +245,8 @@ namespace Classes.GUI {
 
       action.BeginInvoke(action.EndInvoke, null);
     }
+
+    public void Run() => Process.Start(this.MediaFile.File.FullName);
 
     public void RenameFileToMask(string mask) {
       var sourceFile = this.MediaFile.File;
