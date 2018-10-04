@@ -293,10 +293,10 @@ namespace Classes.GUI {
         if (data.ContainsKey(nameof(this.Audio1Language)) && (LanguageType)data[nameof(this.Audio1Language)] != LanguageType.Other)
           MkvPropEdit.SetAudioLanguage(file, _ToCulture((LanguageType)data[nameof(this.Audio1Language)]), 1);
 
-        if (data.ContainsKey(nameof(this.Audio0IsDefault)))
+        if (data.ContainsKey(nameof(this.Audio0IsDefault)) && data[nameof(this.Audio0IsDefault)] != null)
           MkvPropEdit.SetAudioDefault(file, 0, (bool)data[nameof(this.Audio0IsDefault)]);
 
-        if (data.ContainsKey(nameof(this.Audio1IsDefault)))
+        if (data.ContainsKey(nameof(this.Audio1IsDefault)) && data[nameof(this.Audio1IsDefault)] != null)
           MkvPropEdit.SetAudioDefault(file, 1, (bool)data[nameof(this.Audio1IsDefault)]);
 
         data.Clear();
