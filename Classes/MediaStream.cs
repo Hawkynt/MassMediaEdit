@@ -11,6 +11,7 @@ namespace Classes {
       this._values = values;
     }
 
+    public bool IsDefault => this.GetBoolOrDefault("default");
     public long SizeInBytes => this.GetLongOrDefault("stream size");
     public TimeSpan Duration => TimeSpan.FromMilliseconds(this.GetLongOrDefault("duration"));
     public string Codec => this.GetStringOrDefault("codec", 1);

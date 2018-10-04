@@ -42,6 +42,11 @@ namespace Classes {
         : $"\"{file.FullName}\" --edit track:a{audioStreamIndex + 1} --set \"language={value.ThreeLetterISOLanguageName}\""
       );
 
+    public static void SetAudioDefault(FileInfo file, byte audioStreamIndex, bool set)
+          => _Execute(
+             $"\"{file.FullName}\" --edit track:a{audioStreamIndex + 1} --set \"flag-default={(set ? "1" : "0")}\""
+          );
+
     private static void _Execute(string arguments) {
 
       var executable = MkvPropEditExecutable;
