@@ -220,6 +220,8 @@ namespace Classes.GUI {
       this.OnPropertyChanged(nameof(this.ConvertTo));
       this.OnPropertyChanged(nameof(this.IsMkvConversionEnabled));
       this.OnPropertyChanged(nameof(this.IsMkvContainer));
+      this.OnPropertyChanged(nameof(this.Audio0IsDefault));
+      this.OnPropertyChanged(nameof(this.Audio1IsDefault));
       this.OnNeedsCommitChanged();
     }
 
@@ -285,13 +287,17 @@ namespace Classes.GUI {
         if (data.ContainsKey(nameof(this.Video0StereoscopicMode)))
           MkvPropEdit.SetVideoStereoscopicMode(file, (int)data[(nameof(this.Video0StereoscopicMode))]);
 
-        if (data.ContainsKey(nameof(this.Audio0Language)) &&
-            (LanguageType)data[nameof(this.Audio0Language)] != LanguageType.Other)
+        if (data.ContainsKey(nameof(this.Audio0Language)) && (LanguageType)data[nameof(this.Audio0Language)] != LanguageType.Other)
           MkvPropEdit.SetAudioLanguage(file, _ToCulture((LanguageType)data[nameof(this.Audio0Language)]));
 
-        if (data.ContainsKey(nameof(this.Audio1Language)) &&
-            (LanguageType)data[nameof(this.Audio1Language)] != LanguageType.Other)
+        if (data.ContainsKey(nameof(this.Audio1Language)) && (LanguageType)data[nameof(this.Audio1Language)] != LanguageType.Other)
           MkvPropEdit.SetAudioLanguage(file, _ToCulture((LanguageType)data[nameof(this.Audio1Language)]), 1);
+
+        if (data.ContainsKey(nameof(this.Audio0IsDefault)))
+          MkvPropEdit.SetAudioDefault(file, 0, (bool)data[nameof(this.Audio0IsDefault)]);
+
+        if (data.ContainsKey(nameof(this.Audio1IsDefault)))
+          MkvPropEdit.SetAudioDefault(file, 1, (bool)data[nameof(this.Audio1IsDefault)]);
 
         data.Clear();
 

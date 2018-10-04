@@ -96,6 +96,37 @@ namespace Classes.GUI {
 <#}#>
 <#for(var i=0;i<AUDIO_STREAM_COUNT;++i){#>
     
+    private bool? _OriginalAudio<#=i#>IsDefault => this.MediaFile.AudioStreams.Skip(<#=i#>).FirstOrDefault()?.IsDefault;
+
+    [DisplayName("Default")]
+    [DataGridViewConditionalReadOnly(nameof(IsReadOnly))]
+    [DataGridViewCellStyle(backColor:"<#=AUDIO_BACKGROUND_COLORS[i%AUDIO_BACKGROUND_COLORS.Length]#>")]
+    [DataGridViewColumnWidth(DataGridViewAutoSizeColumnMode.AllCells)]
+    [DataGridViewCheckboxColumn]
+    public bool? Audio<#=i#>IsDefault {
+      get {
+        return (bool?)this.commitData.GetValueOrDefault(nameof(this.Audio<#=i#>IsDefault), () => this._OriginalAudio<#=i#>IsDefault);
+      }
+      set {
+        if(value == true) {
+<#for(var j=0;j<AUDIO_STREAM_COUNT;++j){#>
+<#  if(j!=i){#>
+          if(this.Audio<#=j#>IsDefault.HasValue && this.Audio<#=j#>IsDefault.Value)
+            this.Audio<#=j#>IsDefault = false;
+<#  }#>
+<#}#>
+        }
+
+        if (value == this._OriginalAudio<#=i#>IsDefault)
+          this.commitData.Remove(nameof(this.Audio<#=i#>IsDefault));
+        else
+          this.commitData.AddOrUpdate(nameof(this.Audio<#=i#>IsDefault), value);
+
+        this.OnPropertyChanged();
+        this.OnNeedsCommitChanged();
+      }
+    }
+
     private LanguageType _OriginalAudio<#=i#>Language => _FromCulture(this.MediaFile.AudioStreams.Skip(<#=i#>).FirstOrDefault()?.Language);
 
     [DisplayName("Language")]
