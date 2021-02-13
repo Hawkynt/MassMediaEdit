@@ -65,9 +65,6 @@
     <Compile Include="..\..\Framework\System.ComponentModel.SortableBindingList.cs">
       <Link>Framework\System.ComponentModel.SortableBindingList.cs</Link>
     </Compile>
-    <Compile Include="..\..\Framework\System.ComponentModel.SortComparer.cs">
-      <Link>Framework\System.ComponentModel.SortComparer.cs</Link>
-    </Compile>
     <Compile Include="..\..\Framework\System.Diagnostics.ProcessStartInfoExtensions.cs">
       <Link>Framework\System.Diagnostics.ProcessStartInfoExtensions.cs</Link>
     </Compile>
@@ -209,5 +206,5 @@
   <Target Name="AfterBuild">
   </Target>
   -->
-  <Import Project="..\..\VersionSpecificSymbols.Common.prop" />
+  <Import Project="..\..\Framework\VersionSpecificSymbols.Common.prop" />
 </Project>
