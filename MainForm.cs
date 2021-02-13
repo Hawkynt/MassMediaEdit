@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -198,13 +199,46 @@ namespace MassMediaEdit {
     /// <param name="_">The source of the event.</param>
     /// <param name="__">The <see cref="System.EventArgs" /> instance containing the event data.</param>
     private void tsmiCommitSelected_Click(object _, EventArgs __) {
-      var items = this.dgvResults.GetSelectedItems<GuiMediaItem>().ToArray();
-      this._items.RemoveRange(items);
+        var items = this.dgvResults.GetSelectedItems<GuiMediaItem>().ToArray();
+        this._items.RemoveRange(items);
 
-      this._ExecuteBackgroundTask("Commit", () => {
-        Parallel.ForEach(items, i => i.CommitChanges());
-        this.SafelyInvoke(() => this._items.AddRange(items));
-      }, this.tsslCommittingChanges);
+        this._ExecuteBackgroundTask("Commit", () => {
+            var partitioner = Partitioner.Create(items, true);
+
+            var bag = new ConcurrentBag<GuiMediaItem>();
+            var bufferDuration = TimeSpan.FromSeconds(2);
+            var updateTicks = (long) (bufferDuration.TotalSeconds * Stopwatch.Frequency);
+            var nextUpdate = Stopwatch.GetTimestamp() + updateTicks;
+
+            void Update() {
+                var curr = new List<GuiMediaItem>(bag.Count);
+                while (bag.TryTake(out var i))
+                    curr.Add(i);
+
+                this.SafelyInvoke(() => this._items.AddRange(curr));
+            }
+
+            Parallel.ForEach(
+                partitioner.GetDynamicPartitions(),
+                new ParallelOptions {MaxDegreeOfParallelism = Environment.ProcessorCount},
+                (i, state) => {
+                    i.CommitChanges();
+                    bag.Add(i);
+                    if (Stopwatch.GetTimestamp() < nextUpdate)
+                        return;
+
+                    var old = nextUpdate;
+                    if (Interlocked.CompareExchange(ref nextUpdate, Stopwatch.GetTimestamp() + updateTicks, old) == old)
+                        Update();
+                }
+            );
+
+            Update();
+
+            //Parallel.ForEach(items, i => i.CommitChanges());
+            //this.SafelyInvoke(() => this._items.AddRange(items));
+
+        }, this.tsslCommittingChanges);
     }
 
     /// <summary>
