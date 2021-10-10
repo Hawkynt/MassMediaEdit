@@ -16,20 +16,14 @@ namespace Classes.GUI {
     #region messing with languages
 
     public enum LanguageType {
-      [FieldDisplayName("")]
-      None,
-      [FieldDisplayName("Other")]
-      Other,
-      [FieldDisplayName("German")]
-      German,
-      [FieldDisplayName("English")]
-      English,
-      [FieldDisplayName("Spanish")]
-      Spanish,
-      [FieldDisplayName("Japanese")]
-      Japanese,
-      [FieldDisplayName("French")]
-      French,
+      [FieldDisplayName("")] None,
+      [FieldDisplayName("Other")] Other,
+      [FieldDisplayName("German")] German,
+      [FieldDisplayName("English")] English,
+      [FieldDisplayName("Spanish")] Spanish,
+      [FieldDisplayName("Japanese")] Japanese,
+      [FieldDisplayName("French")] French,
+      [FieldDisplayName("Russian")] Russian,
     }
 
     private static LanguageType _FromCulture(CultureInfo culture) {
@@ -38,38 +32,42 @@ namespace Classes.GUI {
 
       switch (culture.ThreeLetterISOLanguageName) {
         case "deu":
-        return LanguageType.German;
+          return LanguageType.German;
         case "eng":
-        return LanguageType.English;
+          return LanguageType.English;
         case "jpn":
-        return LanguageType.Japanese;
+          return LanguageType.Japanese;
         case "spa":
-        return LanguageType.Spanish;
+          return LanguageType.Spanish;
         case "fra":
-        return LanguageType.French;
+          return LanguageType.French;
+        case "rus":
+          return LanguageType.Russian;
         default:
-        return LanguageType.Other;
+          return LanguageType.Other;
       }
     }
 
     private static CultureInfo _ToCulture(LanguageType language) {
       switch (language) {
         case LanguageType.None:
-        return null;
+          return null;
         case LanguageType.Other:
-        return null;
+          return null;
         case LanguageType.German:
-        return new CultureInfo("de");
+          return new CultureInfo("de");
         case LanguageType.English:
-        return new CultureInfo("en");
+          return new CultureInfo("en");
         case LanguageType.Spanish:
-        return new CultureInfo("es");
+          return new CultureInfo("es");
         case LanguageType.Japanese:
-        return new CultureInfo("ja");
+          return new CultureInfo("ja");
         case LanguageType.French:
-        return new CultureInfo("fr");
+          return new CultureInfo("fr");
+        case LanguageType.Russian:
+          return new CultureInfo("ru");
         default:
-        throw new ArgumentOutOfRangeException(nameof(language), language, null);
+          throw new ArgumentOutOfRangeException(nameof(language), language, null);
       }
     }
 
@@ -77,7 +75,7 @@ namespace Classes.GUI {
 
     [Browsable(false)]
     public MediaFile MediaFile {
-      get { return this._mediaFile; }
+      get => this._mediaFile;
       private set {
         this._mediaFile = value;
         this._RefreshAllProperties();
@@ -101,7 +99,7 @@ namespace Classes.GUI {
     public bool NeedsCommit => this.commitData.Count > 0;
 
     [DisplayName("File Name")]
-    [DataGridViewColumnWidth((char)10)]
+    [DataGridViewColumnWidth((char) 10)]
     [DataGridViewClickable(onDoubleClickMethodName: nameof(Run))]
     public string FileName => this.MediaFile.File.FullName;
 
@@ -113,10 +111,10 @@ namespace Classes.GUI {
 
     private string _OriginalTitle => this.MediaFile.GeneralStream?.Title;
 
-    [DataGridViewColumnWidth((char)20)]
+    [DataGridViewColumnWidth((char) 20)]
     [DataGridViewConditionalReadOnly(nameof(IsReadOnly))]
     public string Title {
-      get { return (string)this.commitData.GetValueOrDefault(nameof(this.Title), () => this._OriginalTitle); }
+      get { return (string) this.commitData.GetValueOrDefault(nameof(this.Title), () => this._OriginalTitle); }
       set {
         value = value.DefaultIfNullOrWhiteSpace()?.Trim();
 
@@ -140,7 +138,7 @@ namespace Classes.GUI {
 
     [Browsable(false)]
     private bool _IsActionPending {
-      get { return this._isActionPending; }
+      get => this._isActionPending;
       set {
         if (this._isActionPending == value)
           return;
@@ -161,7 +159,7 @@ namespace Classes.GUI {
     [DataGridViewProgressBarColumn]
     [DataGridViewColumnWidth(DataGridViewAutoSizeColumnMode.DisplayedCells)]
     public float? Progress {
-      get { return this._progress; }
+      get => this._progress;
       private set {
         if (value == this._progress)
           return;
@@ -183,19 +181,19 @@ namespace Classes.GUI {
       var invoc = MainForm.Invocator;
       if (invoc != null) {
         if (invoc.InvokeRequired) {
-          var result = invoc.BeginInvoke(new Action<string>(this.OnPropertyChanged), new object[] { propertyName });
+          var result = invoc.BeginInvoke(new Action<string>(this.OnPropertyChanged), new object[] {propertyName});
           result.AsyncWaitHandle.WaitOne();
           invoc.EndInvoke(result);
         } else
           subscribers.Invoke(this, args);
+
         return;
       }
 
       foreach (var subscriber in subscribers.GetInvocationList()) {
-        var target = subscriber.Target as ISynchronizeInvoke;
-        if (target != null)
+        if (subscriber.Target is ISynchronizeInvoke target)
           if (target.InvokeRequired) {
-            var asyncResult = target.BeginInvoke(subscriber, new object[] { this, args });
+            var asyncResult = target.BeginInvoke(subscriber, new object[] {this, args});
             asyncResult.AsyncWaitHandle.WaitOne();
             target.EndInvoke(asyncResult);
           } else
@@ -206,7 +204,9 @@ namespace Classes.GUI {
       }
     }
 
-    protected void OnNeedsCommitChanged() => this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(this.NeedsCommit)));
+    protected void OnNeedsCommitChanged() 
+      => this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(this.NeedsCommit)))
+    ;
 
     private void _RefreshAllProperties() {
       this.OnPropertyChanged(nameof(this.Title));
@@ -255,10 +255,10 @@ namespace Classes.GUI {
       var directory = sourceFile.Directory;
 
       mask = mask.MultipleReplace(new Dictionary<string, string> {
-        { "{filename}", sourceFile.Name },
-        { "{extension}", sourceFile.Extension.Substring(1)},
-        { "{title}", this.Title},
-        { "{video:name}", this.Video0Name},
+        {"{filename}", sourceFile.Name},
+        {"{extension}", sourceFile.Extension.Substring(1)},
+        {"{title}", this.Title},
+        {"{video:name}", this.Video0Name},
       });
 
       var targetFile = directory.File(mask);
@@ -279,25 +279,27 @@ namespace Classes.GUI {
         var data = this.commitData;
 
         if (data.ContainsKey(nameof(this.Title)))
-          MkvPropEdit.SetTitle(file, (string)data[(nameof(this.Title))]);
+          MkvPropEdit.SetTitle(file, (string) data[(nameof(this.Title))]);
 
         if (data.ContainsKey(nameof(this.Video0Name)))
-          MkvPropEdit.SetVideoName(file, (string)data[(nameof(this.Video0Name))]);
+          MkvPropEdit.SetVideoName(file, (string) data[(nameof(this.Video0Name))]);
 
         if (data.ContainsKey(nameof(this.Video0StereoscopicMode)))
-          MkvPropEdit.SetVideoStereoscopicMode(file, (int)data[(nameof(this.Video0StereoscopicMode))]);
+          MkvPropEdit.SetVideoStereoscopicMode(file, (int) data[(nameof(this.Video0StereoscopicMode))]);
 
-        if (data.ContainsKey(nameof(this.Audio0Language)) && (LanguageType)data[nameof(this.Audio0Language)] != LanguageType.Other)
-          MkvPropEdit.SetAudioLanguage(file, _ToCulture((LanguageType)data[nameof(this.Audio0Language)]));
+        if (data.ContainsKey(nameof(this.Audio0Language)) &&
+            (LanguageType) data[nameof(this.Audio0Language)] != LanguageType.Other)
+          MkvPropEdit.SetAudioLanguage(file, _ToCulture((LanguageType) data[nameof(this.Audio0Language)]));
 
-        if (data.ContainsKey(nameof(this.Audio1Language)) && (LanguageType)data[nameof(this.Audio1Language)] != LanguageType.Other)
-          MkvPropEdit.SetAudioLanguage(file, _ToCulture((LanguageType)data[nameof(this.Audio1Language)]), 1);
+        if (data.ContainsKey(nameof(this.Audio1Language)) &&
+            (LanguageType) data[nameof(this.Audio1Language)] != LanguageType.Other)
+          MkvPropEdit.SetAudioLanguage(file, _ToCulture((LanguageType) data[nameof(this.Audio1Language)]), 1);
 
         if (data.ContainsKey(nameof(this.Audio0IsDefault)) && data[nameof(this.Audio0IsDefault)] != null)
-          MkvPropEdit.SetAudioDefault(file, 0, (bool)data[nameof(this.Audio0IsDefault)]);
+          MkvPropEdit.SetAudioDefault(file, 0, (bool) data[nameof(this.Audio0IsDefault)]);
 
         if (data.ContainsKey(nameof(this.Audio1IsDefault)) && data[nameof(this.Audio1IsDefault)] != null)
-          MkvPropEdit.SetAudioDefault(file, 1, (bool)data[nameof(this.Audio1IsDefault)]);
+          MkvPropEdit.SetAudioDefault(file, 1, (bool) data[nameof(this.Audio1IsDefault)]);
 
         data.Clear();
 
@@ -315,11 +317,10 @@ namespace Classes.GUI {
       this.MediaFile = MediaFile.FromFile(file);
     }
 
-    public static bool IsWriteableMediaType(FileInfo file) {
-      return file.Extension == ".mkv";
-    }
+    public static bool IsWriteableMediaType(FileInfo file) => file.Extension == ".mkv";
 
     public static GuiMediaItem FromMediaFile(MediaFile mediaFile) => new GuiMediaItem(mediaFile);
+
   }
 
 }
