@@ -48,8 +48,13 @@
       this.tsmiSwapTitleAndName = new System.Windows.Forms.ToolStripMenuItem();
       this.tsmiRecoverSpaces = new System.Windows.Forms.ToolStripMenuItem();
       this.tsmiRemoveBracketContent = new System.Windows.Forms.ToolStripMenuItem();
-      this.dgvResults = new System.Windows.Forms.DataGridView();
       this.tsmiAutoFillFromFileName = new System.Windows.Forms.ToolStripMenuItem();
+      this.dgvResults = new System.Windows.Forms.DataGridView();
+      this.tsmiNfo = new System.Windows.Forms.ToolStripMenuItem();
+      this.tsmiTitleFromNfoTitle = new System.Windows.Forms.ToolStripMenuItem();
+      this.tsmiTitleFromNfoOriginalTitle = new System.Windows.Forms.ToolStripMenuItem();
+      this.tsmiNameFromNfoTitle = new System.Windows.Forms.ToolStripMenuItem();
+      this.tsmiNameFromNfoOriginalTitle = new System.Windows.Forms.ToolStripMenuItem();
       statusStrip1 = new System.Windows.Forms.StatusStrip();
       cmsItems = new System.Windows.Forms.ContextMenuStrip(this.components);
       tsmiClearItems = new System.Windows.Forms.ToolStripMenuItem();
@@ -194,6 +199,7 @@
             this.tsmiSwapTitleAndName,
             this.tsmiRecoverSpaces,
             this.tsmiRemoveBracketContent,
+            this.tsmiNfo,
             toolStripSeparator2,
             this.tsmiAutoFillFromFileName});
       this.tsddbTagsFromName.Enabled = false;
@@ -202,6 +208,7 @@
       this.tsddbTagsFromName.Name = "tsddbTagsFromName";
       this.tsddbTagsFromName.Size = new System.Drawing.Size(37, 28);
       this.tsddbTagsFromName.Text = "Tags From Name";
+      this.tsddbTagsFromName.DropDownOpening += new System.EventHandler(this.tsddbTagsFromName_DropDownOpening);
       this.tsddbTagsFromName.Click += new System.EventHandler(this.tsddbTagsFromName_Click);
       // 
       // tsmiTitleFromFileName
@@ -260,6 +267,18 @@
       this.tsmiRemoveBracketContent.Text = "Remove Bracket Content";
       this.tsmiRemoveBracketContent.Click += new System.EventHandler(this.tsmiRemoveBracketContent_Click);
       // 
+      // toolStripSeparator2
+      // 
+      toolStripSeparator2.Name = "toolStripSeparator2";
+      toolStripSeparator2.Size = new System.Drawing.Size(202, 6);
+      // 
+      // tsmiAutoFillFromFileName
+      // 
+      this.tsmiAutoFillFromFileName.Name = "tsmiAutoFillFromFileName";
+      this.tsmiAutoFillFromFileName.Size = new System.Drawing.Size(205, 22);
+      this.tsmiAutoFillFromFileName.Text = "Auto-Fill from Filename";
+      this.tsmiAutoFillFromFileName.Click += new System.EventHandler(this.tsmiAutoFillFromFileName_Click);
+      // 
       // dgvResults
       // 
       this.dgvResults.AllowDrop = true;
@@ -281,17 +300,45 @@
       this.dgvResults.DragDrop += new System.Windows.Forms.DragEventHandler(this.dgvResults_DragDrop);
       this.dgvResults.DragEnter += new System.Windows.Forms.DragEventHandler(this.dgvResults_DragEnter);
       // 
-      // toolStripSeparator2
+      // tsmiNfo
       // 
-      toolStripSeparator2.Name = "toolStripSeparator2";
-      toolStripSeparator2.Size = new System.Drawing.Size(202, 6);
+      this.tsmiNfo.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.tsmiTitleFromNfoTitle,
+            this.tsmiTitleFromNfoOriginalTitle,
+            this.tsmiNameFromNfoTitle,
+            this.tsmiNameFromNfoOriginalTitle});
+      this.tsmiNfo.Enabled = false;
+      this.tsmiNfo.Name = "tsmiNfo";
+      this.tsmiNfo.Size = new System.Drawing.Size(205, 22);
+      this.tsmiNfo.Text = "From NFO Metadata";
       // 
-      // tsmiAutoFillFromFileName
+      // tsmiTitleFromNfoTitle
       // 
-      this.tsmiAutoFillFromFileName.Name = "tsmiAutoFillFromFileName";
-      this.tsmiAutoFillFromFileName.Size = new System.Drawing.Size(205, 22);
-      this.tsmiAutoFillFromFileName.Text = "Auto-Fill from Filename";
-      this.tsmiAutoFillFromFileName.Click += new System.EventHandler(this.tsmiAutoFillFromFileName_Click);
+      this.tsmiTitleFromNfoTitle.Name = "tsmiTitleFromNfoTitle";
+      this.tsmiTitleFromNfoTitle.Size = new System.Drawing.Size(217, 22);
+      this.tsmiTitleFromNfoTitle.Text = "Title From \"Title\"";
+      this.tsmiTitleFromNfoTitle.Click += new System.EventHandler(this.tsmiTitleFromNfoTitle_Click);
+      // 
+      // tsmiTitleFromNfoOriginalTitle
+      // 
+      this.tsmiTitleFromNfoOriginalTitle.Name = "tsmiTitleFromNfoOriginalTitle";
+      this.tsmiTitleFromNfoOriginalTitle.Size = new System.Drawing.Size(217, 22);
+      this.tsmiTitleFromNfoOriginalTitle.Text = "Title From \"Original Title\"";
+      this.tsmiTitleFromNfoOriginalTitle.Click += new System.EventHandler(this.tsmiTitleFromNfoOriginalTitle_Click);
+      // 
+      // tsmiNameFromNfoTitle
+      // 
+      this.tsmiNameFromNfoTitle.Name = "tsmiNameFromNfoTitle";
+      this.tsmiNameFromNfoTitle.Size = new System.Drawing.Size(217, 22);
+      this.tsmiNameFromNfoTitle.Text = "Name From \"Title\"";
+      this.tsmiNameFromNfoTitle.Click += new System.EventHandler(this.tsmiNameFromNfoTitle_Click);
+      // 
+      // tsmiNameFromNfoOriginalTitle
+      // 
+      this.tsmiNameFromNfoOriginalTitle.Name = "tsmiNameFromNfoOriginalTitle";
+      this.tsmiNameFromNfoOriginalTitle.Size = new System.Drawing.Size(217, 22);
+      this.tsmiNameFromNfoOriginalTitle.Text = "Name From \"Original Title\"";
+      this.tsmiNameFromNfoOriginalTitle.Click += new System.EventHandler(this.tsmiNameFromNfoOriginalTitle_Click);
       // 
       // MainForm
       // 
@@ -335,5 +382,10 @@
     private System.Windows.Forms.ToolStripMenuItem tsmiRecoverSpaces;
     private System.Windows.Forms.ToolStripMenuItem tsmiRemoveBracketContent;
     private System.Windows.Forms.ToolStripMenuItem tsmiAutoFillFromFileName;
+    private System.Windows.Forms.ToolStripMenuItem tsmiNfo;
+    private System.Windows.Forms.ToolStripMenuItem tsmiTitleFromNfoTitle;
+    private System.Windows.Forms.ToolStripMenuItem tsmiTitleFromNfoOriginalTitle;
+    private System.Windows.Forms.ToolStripMenuItem tsmiNameFromNfoTitle;
+    private System.Windows.Forms.ToolStripMenuItem tsmiNameFromNfoOriginalTitle;
   }
 }

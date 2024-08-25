@@ -1,139 +1,57 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{48C03795-8960-4B76-9F93-E85E132C53F6}</ProjectGuid>
     <OutputType>WinExe</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>MassMediaEdit</RootNamespace>
-    <AssemblyName>MassMediaEdit</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
+    <TargetFramework>net45</TargetFramework>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
-    <TargetFrameworkProfile />
+    <AssemblyTitle>MassMediaEdit</AssemblyTitle>
+    <Company>»SynthelicZ«</Company>
+    <Product>MassMediaEdit</Product>
+    <Copyright>Copyright © Hawkynt 2016-2024</Copyright>
+    <OutputPath>bin\$(Configuration)\</OutputPath>
+    <LangVersion>default</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <PropertyGroup />
-  <PropertyGroup>
-    <StartupObject />
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationIcon>App.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
-    <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
     <Reference Include="System.Net.Http" />
-    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\..\Framework\System.Collections.EnumerableExtensions.cs">
-      <Link>Framework\System.Collections.EnumerableExtensions.cs</Link>
-    </Compile>
-    <Compile Include="..\..\Framework\System.Collections.Generic.CollectionExtensions.cs">
-      <Link>Framework\System.Collections.Generic.CollectionExtensions.cs</Link>
-    </Compile>
-    <Compile Include="..\..\Framework\System.Collections.Generic.DictionaryExtensions.cs">
-      <Link>Framework\System.Collections.Generic.DictionaryExtensions.cs</Link>
-    </Compile>
-    <Compile Include="..\..\Framework\System.ComponentModel.SortableBindingList.cs">
-      <Link>Framework\System.ComponentModel.SortableBindingList.cs</Link>
-    </Compile>
-    <Compile Include="..\..\Framework\System.Diagnostics.ProcessStartInfoExtensions.cs">
-      <Link>Framework\System.Diagnostics.ProcessStartInfoExtensions.cs</Link>
-    </Compile>
-    <Compile Include="..\..\Framework\System.IO.DirectoryInfoExtensions.cs">
-      <Link>Framework\System.IO.DirectoryInfoExtensions.cs</Link>
-    </Compile>
-    <Compile Include="..\..\Framework\System.IO.FileInfoExtensions.cs">
-      <Link>Framework\System.IO.FileInfoExtensions.cs</Link>
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>System.IO.FileInfoExtensions.tt</DependentUpon>
-    </Compile>
-    <Compile Include="..\..\Framework\System.StringExtensions.cs">
-      <Link>Framework\System.StringExtensions.cs</Link>
-    </Compile>
-    <Compile Include="..\..\Framework\System.StringExtensions.Parsers.cs">
-      <Link>Framework\System.StringExtensions.Parsers.cs</Link>
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>System.StringExtensions.Parsers.tt</DependentUpon>
-    </Compile>
-    <Compile Include="..\..\Framework\System.Windows.Forms.ControlExtensions.cs">
-      <Link>Framework\System.Windows.Forms.ControlExtensions.cs</Link>
-    </Compile>
-    <Compile Include="..\..\Framework\System.Windows.Forms.DataGridViewExtensions.cs">
-      <Link>Framework\System.Windows.Forms.DataGridViewExtensions.cs</Link>
-    </Compile>
-    <Compile Include="..\..\Libraries\ApplicationTitler.cs">
-      <Link>Libraries\ApplicationTitler.cs</Link>
-    </Compile>
-    <Compile Include="..\..\Libraries\FilesizeFormatter.cs">
-      <Link>Libraries\FilesizeFormatter.cs</Link>
-    </Compile>
-    <Compile Include="Classes\GeneralStream.cs" />
-    <Compile Include="Classes\GUI\GuiMediaItem.cs" />
-    <Compile Include="Classes\MkvMerge.cs" />
-    <Compile Include="Classes\MkvPropEdit.cs" />
-    <Compile Include="Classes\MediaFile.cs" />
-    <Compile Include="Classes\MediaStream.cs" />
-    <Compile Include="Classes\SectionDictionary.cs" />
-    <Compile Include="Classes\AudioStream.cs" />
-    <Compile Include="Classes\VideoStream.cs" />
-    <Compile Include="Classes\GUI\GuiMediaItem.t4.cs">
+    <Compile Include="..\..\Hawkynt.svn\C#\Libraries\ApplicationTitler.cs" Link="Libraries\ApplicationTitler.cs" />
+    <Compile Include="..\..\Hawkynt.svn\C#\Libraries\FilesizeFormatter.cs" Link="Libraries\FilesizeFormatter.cs" />
+    <Compile Update="Classes\GUI\GuiMediaItem.t4.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>GuiMediaItem.t4.tt</DependentUpon>
     </Compile>
-    <Compile Include="Libraries\FieldDisplayNameAttribute.cs" />
-    <Compile Include="MainForm.cs">
+    <Compile Update="MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="MainForm.Designer.cs">
+    <Compile Update="MainForm.Designer.cs">
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Program.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Properties\Resources.Designer.cs">
+    <Compile Update="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="Properties\Settings.Designer.cs">
+    <Compile Update="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -143,16 +61,6 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="..\..\Framework\System.IO.FileInfoExtensions.tt">
-      <Link>Framework\System.IO.FileInfoExtensions.tt</Link>
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>System.IO.FileInfoExtensions.cs</LastGenOutput>
-    </Content>
-    <Content Include="..\..\Framework\System.StringExtensions.Parsers.tt">
-      <Link>Framework\System.StringExtensions.Parsers.tt</Link>
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>System.StringExtensions.Parsers.cs</LastGenOutput>
-    </Content>
     <Content Include="App.ico" />
     <Content Include="Classes\GUI\GuiMediaItem.t4.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
@@ -186,25 +94,11 @@
     <None Include="Resources\16x16 Undo.png" />
   </ItemGroup>
   <ItemGroup>
-    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+    <PackageReference Include="FrameworkExtensions.System.Windows.Forms" Version="1.0.0.69" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="MainForm.resx">
+    <EmbeddedResource Update="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Properties\Resources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
   </ItemGroup>
-  <ItemGroup />
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
-  <Import Project="..\..\Framework\VersionSpecificSymbols.Common.prop" />
 </Project>

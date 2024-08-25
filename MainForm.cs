@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Classes;
 using Classes.GUI;
+using MassMediaEdit.Classes.Nfo;
 
 // TODO: get title from nfo
 // TODO: get originaltitle from nfo
@@ -180,9 +181,9 @@ namespace MassMediaEdit {
     /// </summary>
     /// <param name="_">The source of the event.</param>
     /// <param name="__">The <see cref="System.EventArgs" /> instance containing the event data.</param>
-    private void tsmiRemoveItem_Click(object _, EventArgs __)
-          => this._items.RemoveRange(this.dgvResults.GetSelectedItems<GuiMediaItem>())
-          ;
+    private void tsmiRemoveItem_Click(object _, EventArgs __) {
+      this._items.RemoveRange(this.dgvResults.GetSelectedItems<GuiMediaItem>().ToArray());
+    }
 
     /// <summary>
     /// Removes all items from dgv.
@@ -318,6 +319,44 @@ namespace MassMediaEdit {
           item.Video0Name = name;
       }
     }
+    
+    private void tsddbTagsFromName_DropDownOpening(object sender, EventArgs e) 
+      => this.tsmiNfo.Enabled = this.dgvResults.GetSelectedItems<GuiMediaItem>().Any(i => i.HasNfo)
+      ;
+
+    private void _WorkWithNfo(Action<Movie, GuiMediaItem> movieAction, Action<EpisodeDetails, GuiMediaItem> episodeAction) {
+      foreach (var item in this.dgvResults.GetSelectedItems<GuiMediaItem>().Where(i => i.HasNfo)) {
+
+        if (movieAction != null) {
+          var movie = NfoLoader.LoadMovieOrNull(item.MediaFile.File);
+          if (movie != null)
+            movieAction(movie, item);
+        }
+
+        if (episodeAction != null) {
+          var episode = NfoLoader.LoadEpisodeOrNull(item.MediaFile.File);
+          if (episode != null)
+            episodeAction(episode, item);
+        }
+
+      }
+    }
+
+    private void tsmiTitleFromNfoTitle_Click(object _, EventArgs __)
+      => this._WorkWithNfo((m, i) => i.Title = m.Title, (e, i) => i.Title = e.Title)
+      ;
+
+    private void tsmiTitleFromNfoOriginalTitle_Click(object _, EventArgs __)
+      => this._WorkWithNfo((m, i) => i.Title = m.OriginalTitle, (e, i) => i.Title = e.OriginalTitle)
+    ;
+
+    private void tsmiNameFromNfoTitle_Click(object _, EventArgs __)
+      => this._WorkWithNfo((m, i) => i.Video0Name = m.Title, (e, i) => i.Video0Name = e.Title)
+    ;
+
+    private void tsmiNameFromNfoOriginalTitle_Click(object _, EventArgs __)
+      => this._WorkWithNfo((m, i) => i.Video0Name = m.OriginalTitle, (e, i) => i.Video0Name = e.OriginalTitle)
+    ;
 
     private void tsddbTagsFromName_Click(object _, EventArgs __) {
       // TODO: this should open a window where one can build his template
@@ -357,11 +396,8 @@ namespace MassMediaEdit {
     /// <param name="_">The source of the event.</param>
     /// <param name="__">The <see cref="System.EventArgs" /> instance containing the event data.</param>
     private void tsmiSwapTitleAndName_Click(object _, EventArgs __) {
-      foreach (var item in this.dgvResults.GetSelectedItems<GuiMediaItem>().Where(i => !i.IsReadOnly)) {
-        var temp = item.Video0Name;
-        item.Video0Name = item.Title;
-        item.Title = temp;
-      }
+      foreach (var item in this.dgvResults.GetSelectedItems<GuiMediaItem>().Where(i => !i.IsReadOnly))
+        (item.Video0Name, item.Title) = (item.Title, item.Video0Name);
     }
 
     /// <summary>
