@@ -1,32 +1,27 @@
 ﻿using System;
 using System.IO;
-using System.Linq;
 using System.Windows.Forms;
 using Classes;
-using Classes.GUI;
 using MassMediaEdit.Properties;
 
-namespace MassMediaEdit {
+namespace MassMediaEdit;
 
-  class Program {
+class Program {
 
-    [STAThread]
-    static void Main(string[] args) {
+  [STAThread]
+  static void Main(string[] args) {
 
-      MediaFile.MediaInfoExecutable = new FileInfo(Settings.Default.MediaInfoCLIPath);
-      MkvPropEdit.MkvPropEditExecutable = new FileInfo(Settings.Default.MKVPropEditPath);
-      MkvMerge.MkvMergeExecutable=new FileInfo(Settings.Default.MKVMergePath);
+    MediaFile.MediaInfoExecutable = new FileInfo(Settings.Default.MediaInfoCLIPath);
+    MkvPropEdit.MkvPropEditExecutable = new FileInfo(Settings.Default.MKVPropEditPath);
+    MkvMerge.MkvMergeExecutable=new FileInfo(Settings.Default.MKVMergePath);
 
-      Application.EnableVisualStyles();
-      Application.SetCompatibleTextRenderingDefault(false);
-      using (var window = new MainForm()) {
+    Application.EnableVisualStyles();
+    Application.SetCompatibleTextRenderingDefault(false);
+    using var window = new MainForm();
+    var givenFile = args?.FirstOrDefault().DefaultIfNullOrWhiteSpace();
+    if (givenFile != null)
+      window.AddFile(new FileInfo(givenFile));
 
-        var givenFile = args?.FirstOrDefault().DefaultIfNullOrWhiteSpace();
-        if (givenFile != null)
-          window.AddFile(new FileInfo(givenFile));
-
-        Application.Run(window);
-      }
-    }
+    Application.Run(window);
   }
 }

@@ -135,6 +135,8 @@ internal sealed partial class GuiMediaItem : INotifyPropertyChanged {
   [Browsable(false)]
   public bool IsMkvContainer => ".mkv".Equals(this.MediaFile.File.Extension, StringComparison.OrdinalIgnoreCase);
 
+  [DisplayName("NFO")]
+  [DataGridViewColumnWidth((char)3)]
   public bool HasNfo => this.MediaFile.File.WithNewExtension(".nfo").Exists;
 
   [DataGridViewProgressBarColumn]
@@ -248,7 +250,11 @@ internal sealed partial class GuiMediaItem : INotifyPropertyChanged {
 
     var file = this.MediaFile.File;
     if (!IsWriteableMediaType(file))
+#if DEBUG
       throw new NotSupportedException("Can not write this media type.");
+#else
+      return;
+#endif
 
     try {
 

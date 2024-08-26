@@ -1,10 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 
-namespace Libraries {
+namespace Libraries;
 
-  [AttributeUsage(AttributeTargets.Field)]
-  internal sealed class FieldDisplayNameAttribute : DisplayNameAttribute {
-    public FieldDisplayNameAttribute(string value) : base(value) { }
-  }
-}
+[AttributeUsage(AttributeTargets.Field)]
+internal sealed class FieldDisplayNameAttribute(string value) : DisplayNameAttribute(value);
