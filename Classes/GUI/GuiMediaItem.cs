@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -215,6 +216,8 @@ internal sealed partial class GuiMediaItem : INotifyPropertyChanged {
       try {
         this._IsActionPending = true;
         MkvMerge.ConvertToMkv(sourceFile, targetFile, f => this.Progress = f);
+        if (targetFile.Exists && MediaFile.FromFile(targetFile) is { } mi && mi.VideoStreams.Any() && mi.AudioStreams.Count() == this.MediaFile.AudioStreams.Count())
+          sourceFile.TryDelete();
 
         this.MediaFile = MediaFile.FromFile(targetFile);
         this.Progress = null;

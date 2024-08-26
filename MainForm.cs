@@ -105,6 +105,7 @@ public partial class MainForm : Form {
   /// <param name="files">The files.</param>
   private void _AddFiles(IEnumerable<FileInfo> files) {
     var items = files.AsParallel()
+        .WithDegreeOfParallelism(Environment.ProcessorCount)
         .Select(MediaFile.FromFile) /* read/parse file */
         .Where(m => m.AudioStreams.Any() || m.VideoStreams.Any()) /* only add media files */
         .Select(GuiMediaItem.FromMediaFile) /* convert to GUI item instance */
@@ -200,7 +201,7 @@ public partial class MainForm : Form {
   /// <param name="_">The source of the event.</param>
   /// <param name="__">The <see cref="System.EventArgs" /> instance containing the event data.</param>
   private void tsmiCommitSelected_Click(object _, EventArgs __) {
-    var items = this.dgvResults.GetSelectedItems<GuiMediaItem>().ToArray();
+    var items = this.dgvResults.GetSelectedItems<GuiMediaItem>().Where(i=>i.NeedsCommit).ToArray();
     this._items.RemoveRange(items);
 
     this._ExecuteBackgroundTask("Commit", () => {
@@ -256,6 +257,8 @@ public partial class MainForm : Form {
   /// <param name="_">The source of the event.</param>
   /// <param name="e">The <see cref="System.ComponentModel.CancelEventArgs" /> instance containing the event data.</param>
   private void cmsItems_Opening(object _, CancelEventArgs e) {
+    this._duringMenuPreset = true;
+    
     var selectedItems = this.dgvResults.GetSelectedItems<GuiMediaItem>().ToArray();
     e.Cancel = !selectedItems.Any();
 
@@ -269,6 +272,7 @@ public partial class MainForm : Form {
     if (this.tsmiAudio1.Enabled = selectedItems.Any(i => i.HasAudio1))
       this.tscbAudio1Language.SelectedItem = selectedItems.Select(i => i.Audio1Language).Distinct().OneOrDefault(GuiMediaItem.LanguageType.None);
 
+    this._duringMenuPreset = false;
   }
 
   /// <summary>
@@ -425,8 +429,13 @@ public partial class MainForm : Form {
       item.Title = _RemoveBracketContentFrom(item.Title);
     }
   }
-  
+
+  private bool _duringMenuPreset;
+
   private void tscbAudio1Language_SelectedIndexChanged(object s, EventArgs _) {
+    if (_duringMenuPreset)
+      return;
+
     if (s is not ToolStripComboBox tscb)
       return;
 
@@ -438,6 +447,9 @@ public partial class MainForm : Form {
   }
 
   private void tscbAudio2Language_SelectedIndexChanged(object s, EventArgs _) {
+    if (_duringMenuPreset)
+      return;
+    
     if (s is not ToolStripComboBox tscb)
       return;
 
