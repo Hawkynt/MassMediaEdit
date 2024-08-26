@@ -272,6 +272,8 @@ public partial class MainForm : Form {
     if (this.tsmiAudio1.Enabled = selectedItems.Any(i => i.HasAudio1))
       this.tscbAudio1Language.SelectedItem = selectedItems.Select(i => i.Audio1Language).Distinct().OneOrDefault(GuiMediaItem.LanguageType.None);
 
+    this.tsmiConvertToMkv.Enabled = selectedItems.Any(i => i.IsMkvConversionEnabled);
+
     this._duringMenuPreset = false;
   }
 
@@ -458,6 +460,20 @@ public partial class MainForm : Form {
 
     foreach (var item in this.dgvResults.GetSelectedItems<GuiMediaItem>().Where(i => !i.IsReadOnly))
       item.Audio1Language = value;
+  }
+
+  private void tsmiConvertToMkv_Click(object _, EventArgs __) {
+    this._ExecuteBackgroundTask("Convert",()=>{
+    this.dgvResults.GetSelectedItems<GuiMediaItem>()
+      .Where(i => i.IsMkvConversionEnabled)
+      .AsParallel().WithDegreeOfParallelism(2)
+      .Select(i => {
+        i.ConvertToMkv();
+        return true;
+      })
+      .ToArray()
+      ;
+    },this.tsslConvertingFiles);
   }
 
   #endregion

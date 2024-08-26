@@ -38,13 +38,14 @@
       System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
       this.tsslDragDropInfo = new System.Windows.Forms.ToolStripStatusLabel();
       this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
-      this.tsmiAudio1 = new System.Windows.Forms.ToolStripMenuItem();
-      this.tscbAudio1Language = new System.Windows.Forms.ToolStripComboBox();
       this.dgvResults = new System.Windows.Forms.DataGridView();
+      this.tsmiConvertToMkv = new System.Windows.Forms.ToolStripMenuItem();
       this.tsmiCommitSelected = new System.Windows.Forms.ToolStripMenuItem();
       this.tsmiRevertChanges = new System.Windows.Forms.ToolStripMenuItem();
       this.tsmiAudio0 = new System.Windows.Forms.ToolStripMenuItem();
       this.tscbAudio0Language = new System.Windows.Forms.ToolStripComboBox();
+      this.tsmiAudio1 = new System.Windows.Forms.ToolStripMenuItem();
+      this.tscbAudio1Language = new System.Windows.Forms.ToolStripComboBox();
       this.tsddbRenameFiles = new System.Windows.Forms.ToolStripDropDownButton();
       this.tsddbRenameFolders = new System.Windows.Forms.ToolStripDropDownButton();
       this.tsddbTagsFromName = new System.Windows.Forms.ToolStripDropDownButton();
@@ -60,6 +61,7 @@
       this.tsmiAutoFillFromFileName = new System.Windows.Forms.ToolStripMenuItem();
       this.tsslCommittingChanges = new System.Windows.Forms.ToolStripStatusLabel();
       this.tsslLoadingFiles = new System.Windows.Forms.ToolStripStatusLabel();
+      this.tsslConvertingFiles = new System.Windows.Forms.ToolStripStatusLabel();
       statusStrip1 = new System.Windows.Forms.StatusStrip();
       cmsItems = new System.Windows.Forms.ContextMenuStrip(this.components);
       toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
@@ -82,7 +84,8 @@
       statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.tsslCommittingChanges,
             this.tsslLoadingFiles,
-            this.tsslDragDropInfo});
+            this.tsslDragDropInfo,
+            this.tsslConvertingFiles});
       statusStrip1.Location = new System.Drawing.Point(0, 405);
       statusStrip1.Name = "statusStrip1";
       statusStrip1.Size = new System.Drawing.Size(818, 22);
@@ -105,35 +108,21 @@
             this.tsmiRevertChanges,
             this.toolStripSeparator3,
             this.tsmiAudio0,
-            this.tsmiAudio1});
+            this.tsmiAudio1,
+            this.tsmiConvertToMkv});
       cmsItems.Name = "cmsItems";
-      cmsItems.Size = new System.Drawing.Size(156, 148);
+      cmsItems.Size = new System.Drawing.Size(181, 192);
       cmsItems.Opening += new System.ComponentModel.CancelEventHandler(this.cmsItems_Opening);
       // 
       // toolStripSeparator1
       // 
       toolStripSeparator1.Name = "toolStripSeparator1";
-      toolStripSeparator1.Size = new System.Drawing.Size(152, 6);
+      toolStripSeparator1.Size = new System.Drawing.Size(177, 6);
       // 
       // toolStripSeparator3
       // 
       this.toolStripSeparator3.Name = "toolStripSeparator3";
-      this.toolStripSeparator3.Size = new System.Drawing.Size(152, 6);
-      // 
-      // tsmiAudio1
-      // 
-      this.tsmiAudio1.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.tscbAudio1Language});
-      this.tsmiAudio1.Image = global::MassMediaEdit.Properties.Resources._16x16_Note__red_;
-      this.tsmiAudio1.Name = "tsmiAudio1";
-      this.tsmiAudio1.Size = new System.Drawing.Size(155, 22);
-      this.tsmiAudio1.Text = "Audio Stream 2";
-      // 
-      // tscbAudio1Language
-      // 
-      this.tscbAudio1Language.Name = "tscbAudio1Language";
-      this.tscbAudio1Language.Size = new System.Drawing.Size(121, 23);
-      this.tscbAudio1Language.SelectedIndexChanged += new System.EventHandler(this.tscbAudio2Language_SelectedIndexChanged);
+      this.toolStripSeparator3.Size = new System.Drawing.Size(177, 6);
       // 
       // tsMainStrip
       // 
@@ -170,11 +159,19 @@
       this.dgvResults.DragDrop += new System.Windows.Forms.DragEventHandler(this.dgvResults_DragDrop);
       this.dgvResults.DragEnter += new System.Windows.Forms.DragEventHandler(this.dgvResults_DragEnter);
       // 
+      // tsmiConvertToMkv
+      // 
+      this.tsmiConvertToMkv.Image = global::MassMediaEdit.Properties.Resources._22x22_Convert_MKV;
+      this.tsmiConvertToMkv.Name = "tsmiConvertToMkv";
+      this.tsmiConvertToMkv.Size = new System.Drawing.Size(180, 22);
+      this.tsmiConvertToMkv.Text = "Convert to MKV";
+      this.tsmiConvertToMkv.Click += new System.EventHandler(this.tsmiConvertToMkv_Click);
+      // 
       // tsmiClearItems
       // 
       tsmiClearItems.Image = ((System.Drawing.Image)(resources.GetObject("tsmiClearItems.Image")));
       tsmiClearItems.Name = "tsmiClearItems";
-      tsmiClearItems.Size = new System.Drawing.Size(155, 22);
+      tsmiClearItems.Size = new System.Drawing.Size(180, 22);
       tsmiClearItems.Text = "Clear";
       tsmiClearItems.Click += new System.EventHandler(this.tsmiClearItems_Click);
       // 
@@ -182,7 +179,7 @@
       // 
       tsmiRemoveItem.Image = global::MassMediaEdit.Properties.Resources._24x24_Delete__2_;
       tsmiRemoveItem.Name = "tsmiRemoveItem";
-      tsmiRemoveItem.Size = new System.Drawing.Size(155, 22);
+      tsmiRemoveItem.Size = new System.Drawing.Size(180, 22);
       tsmiRemoveItem.Text = "Remove";
       tsmiRemoveItem.Click += new System.EventHandler(this.tsmiRemoveItem_Click);
       // 
@@ -190,7 +187,7 @@
       // 
       this.tsmiCommitSelected.Image = global::MassMediaEdit.Properties.Resources._16x16_Blue_Disk;
       this.tsmiCommitSelected.Name = "tsmiCommitSelected";
-      this.tsmiCommitSelected.Size = new System.Drawing.Size(155, 22);
+      this.tsmiCommitSelected.Size = new System.Drawing.Size(180, 22);
       this.tsmiCommitSelected.Text = "Commit";
       this.tsmiCommitSelected.Click += new System.EventHandler(this.tsmiCommitSelected_Click);
       // 
@@ -198,7 +195,7 @@
       // 
       this.tsmiRevertChanges.Image = global::MassMediaEdit.Properties.Resources._16x16_Undo;
       this.tsmiRevertChanges.Name = "tsmiRevertChanges";
-      this.tsmiRevertChanges.Size = new System.Drawing.Size(155, 22);
+      this.tsmiRevertChanges.Size = new System.Drawing.Size(180, 22);
       this.tsmiRevertChanges.Text = "Revert";
       this.tsmiRevertChanges.Click += new System.EventHandler(this.tsmiRevertChanges_Click);
       // 
@@ -208,7 +205,7 @@
             this.tscbAudio0Language});
       this.tsmiAudio0.Image = global::MassMediaEdit.Properties.Resources._16x16_Note__green_;
       this.tsmiAudio0.Name = "tsmiAudio0";
-      this.tsmiAudio0.Size = new System.Drawing.Size(155, 22);
+      this.tsmiAudio0.Size = new System.Drawing.Size(180, 22);
       this.tsmiAudio0.Text = "Audio Stream 1";
       // 
       // tscbAudio0Language
@@ -216,6 +213,21 @@
       this.tscbAudio0Language.Name = "tscbAudio0Language";
       this.tscbAudio0Language.Size = new System.Drawing.Size(121, 23);
       this.tscbAudio0Language.SelectedIndexChanged += new System.EventHandler(this.tscbAudio1Language_SelectedIndexChanged);
+      // 
+      // tsmiAudio1
+      // 
+      this.tsmiAudio1.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.tscbAudio1Language});
+      this.tsmiAudio1.Image = global::MassMediaEdit.Properties.Resources._16x16_Note__red_;
+      this.tsmiAudio1.Name = "tsmiAudio1";
+      this.tsmiAudio1.Size = new System.Drawing.Size(180, 22);
+      this.tsmiAudio1.Text = "Audio Stream 2";
+      // 
+      // tscbAudio1Language
+      // 
+      this.tscbAudio1Language.Name = "tscbAudio1Language";
+      this.tscbAudio1Language.Size = new System.Drawing.Size(121, 23);
+      this.tscbAudio1Language.SelectedIndexChanged += new System.EventHandler(this.tscbAudio2Language_SelectedIndexChanged);
       // 
       // tsddbRenameFiles
       // 
@@ -387,6 +399,14 @@
       this.tsslLoadingFiles.Text = "Loading files...";
       this.tsslLoadingFiles.Visible = false;
       // 
+      // tsslConvertingFiles
+      // 
+      this.tsslConvertingFiles.Image = global::MassMediaEdit.Properties.Resources._16x11_Loading_Animation;
+      this.tsslConvertingFiles.Name = "tsslConvertingFiles";
+      this.tsslConvertingFiles.Size = new System.Drawing.Size(115, 17);
+      this.tsslConvertingFiles.Text = "Converting files...";
+      this.tsslConvertingFiles.Visible = false;
+      // 
       // MainForm
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -435,5 +455,7 @@
     private System.Windows.Forms.ToolStripMenuItem tsmiAudio1;
     private System.Windows.Forms.ToolStripComboBox tscbAudio0Language;
     private System.Windows.Forms.ToolStripComboBox tscbAudio1Language;
+    private System.Windows.Forms.ToolStripMenuItem tsmiConvertToMkv;
+    private System.Windows.Forms.ToolStripStatusLabel tsslConvertingFiles;
   }
 }
