@@ -26,17 +26,25 @@
       this.components = new System.ComponentModel.Container();
       System.Windows.Forms.StatusStrip statusStrip1;
       System.Windows.Forms.ContextMenuStrip cmsItems;
-      System.Windows.Forms.ToolStripMenuItem tsmiClearItems;
       System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
-      System.Windows.Forms.ToolStripMenuItem tsmiRemoveItem;
       System.Windows.Forms.ToolStrip tsMainStrip;
+      System.Windows.Forms.ToolStripMenuItem tsmiClearItems;
       System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
+      System.Windows.Forms.ToolStripMenuItem tsmiRemoveItem;
+      System.Windows.Forms.ToolStripMenuItem tsmiTitleFromNfoTitle;
+      System.Windows.Forms.ToolStripMenuItem tsmiTitleFromNfoOriginalTitle;
+      System.Windows.Forms.ToolStripMenuItem tsmiNameFromNfoTitle;
+      System.Windows.Forms.ToolStripMenuItem tsmiNameFromNfoOriginalTitle;
       System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
-      this.tsslCommittingChanges = new System.Windows.Forms.ToolStripStatusLabel();
-      this.tsslLoadingFiles = new System.Windows.Forms.ToolStripStatusLabel();
       this.tsslDragDropInfo = new System.Windows.Forms.ToolStripStatusLabel();
+      this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
+      this.tsmiAudio1 = new System.Windows.Forms.ToolStripMenuItem();
+      this.tscbAudio1Language = new System.Windows.Forms.ToolStripComboBox();
+      this.dgvResults = new System.Windows.Forms.DataGridView();
       this.tsmiCommitSelected = new System.Windows.Forms.ToolStripMenuItem();
       this.tsmiRevertChanges = new System.Windows.Forms.ToolStripMenuItem();
+      this.tsmiAudio0 = new System.Windows.Forms.ToolStripMenuItem();
+      this.tscbAudio0Language = new System.Windows.Forms.ToolStripComboBox();
       this.tsddbRenameFiles = new System.Windows.Forms.ToolStripDropDownButton();
       this.tsddbRenameFolders = new System.Windows.Forms.ToolStripDropDownButton();
       this.tsddbTagsFromName = new System.Windows.Forms.ToolStripDropDownButton();
@@ -48,19 +56,20 @@
       this.tsmiSwapTitleAndName = new System.Windows.Forms.ToolStripMenuItem();
       this.tsmiRecoverSpaces = new System.Windows.Forms.ToolStripMenuItem();
       this.tsmiRemoveBracketContent = new System.Windows.Forms.ToolStripMenuItem();
-      this.tsmiAutoFillFromFileName = new System.Windows.Forms.ToolStripMenuItem();
-      this.dgvResults = new System.Windows.Forms.DataGridView();
       this.tsmiNfo = new System.Windows.Forms.ToolStripMenuItem();
-      this.tsmiTitleFromNfoTitle = new System.Windows.Forms.ToolStripMenuItem();
-      this.tsmiTitleFromNfoOriginalTitle = new System.Windows.Forms.ToolStripMenuItem();
-      this.tsmiNameFromNfoTitle = new System.Windows.Forms.ToolStripMenuItem();
-      this.tsmiNameFromNfoOriginalTitle = new System.Windows.Forms.ToolStripMenuItem();
+      this.tsmiAutoFillFromFileName = new System.Windows.Forms.ToolStripMenuItem();
+      this.tsslCommittingChanges = new System.Windows.Forms.ToolStripStatusLabel();
+      this.tsslLoadingFiles = new System.Windows.Forms.ToolStripStatusLabel();
       statusStrip1 = new System.Windows.Forms.StatusStrip();
       cmsItems = new System.Windows.Forms.ContextMenuStrip(this.components);
-      tsmiClearItems = new System.Windows.Forms.ToolStripMenuItem();
       toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
-      tsmiRemoveItem = new System.Windows.Forms.ToolStripMenuItem();
       tsMainStrip = new System.Windows.Forms.ToolStrip();
+      tsmiClearItems = new System.Windows.Forms.ToolStripMenuItem();
+      tsmiRemoveItem = new System.Windows.Forms.ToolStripMenuItem();
+      tsmiTitleFromNfoTitle = new System.Windows.Forms.ToolStripMenuItem();
+      tsmiTitleFromNfoOriginalTitle = new System.Windows.Forms.ToolStripMenuItem();
+      tsmiNameFromNfoTitle = new System.Windows.Forms.ToolStripMenuItem();
+      tsmiNameFromNfoOriginalTitle = new System.Windows.Forms.ToolStripMenuItem();
       toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
       statusStrip1.SuspendLayout();
       cmsItems.SuspendLayout();
@@ -80,22 +89,6 @@
       statusStrip1.TabIndex = 1;
       statusStrip1.Text = "statusStrip1";
       // 
-      // tsslCommittingChanges
-      // 
-      this.tsslCommittingChanges.Image = global::MassMediaEdit.Properties.Resources._16x11_Loading_Animation;
-      this.tsslCommittingChanges.Name = "tsslCommittingChanges";
-      this.tsslCommittingChanges.Size = new System.Drawing.Size(118, 17);
-      this.tsslCommittingChanges.Text = "Writing changes...";
-      this.tsslCommittingChanges.Visible = false;
-      // 
-      // tsslLoadingFiles
-      // 
-      this.tsslLoadingFiles.Image = global::MassMediaEdit.Properties.Resources._16x11_Loading_Animation;
-      this.tsslLoadingFiles.Name = "tsslLoadingFiles";
-      this.tsslLoadingFiles.Size = new System.Drawing.Size(99, 17);
-      this.tsslLoadingFiles.Text = "Loading files...";
-      this.tsslLoadingFiles.Visible = false;
-      // 
       // tsslDragDropInfo
       // 
       this.tsslDragDropInfo.Name = "tsslDragDropInfo";
@@ -109,47 +102,38 @@
             toolStripSeparator1,
             tsmiRemoveItem,
             this.tsmiCommitSelected,
-            this.tsmiRevertChanges});
+            this.tsmiRevertChanges,
+            this.toolStripSeparator3,
+            this.tsmiAudio0,
+            this.tsmiAudio1});
       cmsItems.Name = "cmsItems";
-      cmsItems.Size = new System.Drawing.Size(119, 98);
+      cmsItems.Size = new System.Drawing.Size(156, 148);
       cmsItems.Opening += new System.ComponentModel.CancelEventHandler(this.cmsItems_Opening);
-      // 
-      // tsmiClearItems
-      // 
-      tsmiClearItems.Image = global::MassMediaEdit.Properties.Resources.Clear;
-      tsmiClearItems.Name = "tsmiClearItems";
-      tsmiClearItems.Size = new System.Drawing.Size(118, 22);
-      tsmiClearItems.Text = "Clear";
-      tsmiClearItems.Click += new System.EventHandler(this.tsmiClearItems_Click);
       // 
       // toolStripSeparator1
       // 
       toolStripSeparator1.Name = "toolStripSeparator1";
-      toolStripSeparator1.Size = new System.Drawing.Size(115, 6);
+      toolStripSeparator1.Size = new System.Drawing.Size(152, 6);
       // 
-      // tsmiRemoveItem
+      // toolStripSeparator3
       // 
-      tsmiRemoveItem.Image = global::MassMediaEdit.Properties.Resources._24x24_Delete__2_;
-      tsmiRemoveItem.Name = "tsmiRemoveItem";
-      tsmiRemoveItem.Size = new System.Drawing.Size(118, 22);
-      tsmiRemoveItem.Text = "Remove";
-      tsmiRemoveItem.Click += new System.EventHandler(this.tsmiRemoveItem_Click);
+      this.toolStripSeparator3.Name = "toolStripSeparator3";
+      this.toolStripSeparator3.Size = new System.Drawing.Size(152, 6);
       // 
-      // tsmiCommitSelected
+      // tsmiAudio1
       // 
-      this.tsmiCommitSelected.Image = global::MassMediaEdit.Properties.Resources._16x16_Blue_Disk;
-      this.tsmiCommitSelected.Name = "tsmiCommitSelected";
-      this.tsmiCommitSelected.Size = new System.Drawing.Size(118, 22);
-      this.tsmiCommitSelected.Text = "Commit";
-      this.tsmiCommitSelected.Click += new System.EventHandler(this.tsmiCommitSelected_Click);
+      this.tsmiAudio1.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.tscbAudio1Language});
+      this.tsmiAudio1.Image = global::MassMediaEdit.Properties.Resources._16x16_Note__red_;
+      this.tsmiAudio1.Name = "tsmiAudio1";
+      this.tsmiAudio1.Size = new System.Drawing.Size(155, 22);
+      this.tsmiAudio1.Text = "Audio Stream 2";
       // 
-      // tsmiRevertChanges
+      // tscbAudio1Language
       // 
-      this.tsmiRevertChanges.Image = global::MassMediaEdit.Properties.Resources._16x16_Undo;
-      this.tsmiRevertChanges.Name = "tsmiRevertChanges";
-      this.tsmiRevertChanges.Size = new System.Drawing.Size(118, 22);
-      this.tsmiRevertChanges.Text = "Revert";
-      this.tsmiRevertChanges.Click += new System.EventHandler(this.tsmiRevertChanges_Click);
+      this.tscbAudio1Language.Name = "tscbAudio1Language";
+      this.tscbAudio1Language.Size = new System.Drawing.Size(121, 23);
+      this.tscbAudio1Language.SelectedIndexChanged += new System.EventHandler(this.tscbAudio2Language_SelectedIndexChanged);
       // 
       // tsMainStrip
       // 
@@ -164,6 +148,74 @@
       tsMainStrip.Size = new System.Drawing.Size(818, 31);
       tsMainStrip.TabIndex = 2;
       tsMainStrip.Text = "toolStrip1";
+      // 
+      // dgvResults
+      // 
+      this.dgvResults.AllowDrop = true;
+      this.dgvResults.AllowUserToAddRows = false;
+      this.dgvResults.AllowUserToDeleteRows = false;
+      this.dgvResults.AllowUserToResizeRows = false;
+      this.dgvResults.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
+      this.dgvResults.BackgroundColor = System.Drawing.SystemColors.Window;
+      this.dgvResults.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+      this.dgvResults.ContextMenuStrip = cmsItems;
+      this.dgvResults.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.dgvResults.Location = new System.Drawing.Point(0, 31);
+      this.dgvResults.Name = "dgvResults";
+      this.dgvResults.RowHeadersVisible = false;
+      this.dgvResults.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
+      this.dgvResults.Size = new System.Drawing.Size(818, 374);
+      this.dgvResults.TabIndex = 0;
+      this.dgvResults.SelectionChanged += new System.EventHandler(this.dgvResults_SelectionChanged);
+      this.dgvResults.DragDrop += new System.Windows.Forms.DragEventHandler(this.dgvResults_DragDrop);
+      this.dgvResults.DragEnter += new System.Windows.Forms.DragEventHandler(this.dgvResults_DragEnter);
+      // 
+      // tsmiClearItems
+      // 
+      tsmiClearItems.Image = ((System.Drawing.Image)(resources.GetObject("tsmiClearItems.Image")));
+      tsmiClearItems.Name = "tsmiClearItems";
+      tsmiClearItems.Size = new System.Drawing.Size(155, 22);
+      tsmiClearItems.Text = "Clear";
+      tsmiClearItems.Click += new System.EventHandler(this.tsmiClearItems_Click);
+      // 
+      // tsmiRemoveItem
+      // 
+      tsmiRemoveItem.Image = global::MassMediaEdit.Properties.Resources._24x24_Delete__2_;
+      tsmiRemoveItem.Name = "tsmiRemoveItem";
+      tsmiRemoveItem.Size = new System.Drawing.Size(155, 22);
+      tsmiRemoveItem.Text = "Remove";
+      tsmiRemoveItem.Click += new System.EventHandler(this.tsmiRemoveItem_Click);
+      // 
+      // tsmiCommitSelected
+      // 
+      this.tsmiCommitSelected.Image = global::MassMediaEdit.Properties.Resources._16x16_Blue_Disk;
+      this.tsmiCommitSelected.Name = "tsmiCommitSelected";
+      this.tsmiCommitSelected.Size = new System.Drawing.Size(155, 22);
+      this.tsmiCommitSelected.Text = "Commit";
+      this.tsmiCommitSelected.Click += new System.EventHandler(this.tsmiCommitSelected_Click);
+      // 
+      // tsmiRevertChanges
+      // 
+      this.tsmiRevertChanges.Image = global::MassMediaEdit.Properties.Resources._16x16_Undo;
+      this.tsmiRevertChanges.Name = "tsmiRevertChanges";
+      this.tsmiRevertChanges.Size = new System.Drawing.Size(155, 22);
+      this.tsmiRevertChanges.Text = "Revert";
+      this.tsmiRevertChanges.Click += new System.EventHandler(this.tsmiRevertChanges_Click);
+      // 
+      // tsmiAudio0
+      // 
+      this.tsmiAudio0.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.tscbAudio0Language});
+      this.tsmiAudio0.Image = global::MassMediaEdit.Properties.Resources._16x16_Note__green_;
+      this.tsmiAudio0.Name = "tsmiAudio0";
+      this.tsmiAudio0.Size = new System.Drawing.Size(155, 22);
+      this.tsmiAudio0.Text = "Audio Stream 1";
+      // 
+      // tscbAudio0Language
+      // 
+      this.tscbAudio0Language.Name = "tscbAudio0Language";
+      this.tscbAudio0Language.Size = new System.Drawing.Size(121, 23);
+      this.tscbAudio0Language.SelectedIndexChanged += new System.EventHandler(this.tscbAudio1Language_SelectedIndexChanged);
       // 
       // tsddbRenameFiles
       // 
@@ -267,6 +319,46 @@
       this.tsmiRemoveBracketContent.Text = "Remove Bracket Content";
       this.tsmiRemoveBracketContent.Click += new System.EventHandler(this.tsmiRemoveBracketContent_Click);
       // 
+      // tsmiNfo
+      // 
+      this.tsmiNfo.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            tsmiTitleFromNfoTitle,
+            tsmiTitleFromNfoOriginalTitle,
+            tsmiNameFromNfoTitle,
+            tsmiNameFromNfoOriginalTitle});
+      this.tsmiNfo.Enabled = false;
+      this.tsmiNfo.Name = "tsmiNfo";
+      this.tsmiNfo.Size = new System.Drawing.Size(205, 22);
+      this.tsmiNfo.Text = "From NFO Metadata";
+      // 
+      // tsmiTitleFromNfoTitle
+      // 
+      tsmiTitleFromNfoTitle.Name = "tsmiTitleFromNfoTitle";
+      tsmiTitleFromNfoTitle.Size = new System.Drawing.Size(217, 22);
+      tsmiTitleFromNfoTitle.Text = "Title From \"Title\"";
+      tsmiTitleFromNfoTitle.Click += new System.EventHandler(this.tsmiTitleFromNfoTitle_Click);
+      // 
+      // tsmiTitleFromNfoOriginalTitle
+      // 
+      tsmiTitleFromNfoOriginalTitle.Name = "tsmiTitleFromNfoOriginalTitle";
+      tsmiTitleFromNfoOriginalTitle.Size = new System.Drawing.Size(217, 22);
+      tsmiTitleFromNfoOriginalTitle.Text = "Title From \"Original Title\"";
+      tsmiTitleFromNfoOriginalTitle.Click += new System.EventHandler(this.tsmiTitleFromNfoOriginalTitle_Click);
+      // 
+      // tsmiNameFromNfoTitle
+      // 
+      tsmiNameFromNfoTitle.Name = "tsmiNameFromNfoTitle";
+      tsmiNameFromNfoTitle.Size = new System.Drawing.Size(217, 22);
+      tsmiNameFromNfoTitle.Text = "Name From \"Title\"";
+      tsmiNameFromNfoTitle.Click += new System.EventHandler(this.tsmiNameFromNfoTitle_Click);
+      // 
+      // tsmiNameFromNfoOriginalTitle
+      // 
+      tsmiNameFromNfoOriginalTitle.Name = "tsmiNameFromNfoOriginalTitle";
+      tsmiNameFromNfoOriginalTitle.Size = new System.Drawing.Size(217, 22);
+      tsmiNameFromNfoOriginalTitle.Text = "Name From \"Original Title\"";
+      tsmiNameFromNfoOriginalTitle.Click += new System.EventHandler(this.tsmiNameFromNfoOriginalTitle_Click);
+      // 
       // toolStripSeparator2
       // 
       toolStripSeparator2.Name = "toolStripSeparator2";
@@ -279,66 +371,21 @@
       this.tsmiAutoFillFromFileName.Text = "Auto-Fill from Filename";
       this.tsmiAutoFillFromFileName.Click += new System.EventHandler(this.tsmiAutoFillFromFileName_Click);
       // 
-      // dgvResults
+      // tsslCommittingChanges
       // 
-      this.dgvResults.AllowDrop = true;
-      this.dgvResults.AllowUserToAddRows = false;
-      this.dgvResults.AllowUserToDeleteRows = false;
-      this.dgvResults.AllowUserToResizeRows = false;
-      this.dgvResults.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
-      this.dgvResults.BackgroundColor = System.Drawing.SystemColors.Window;
-      this.dgvResults.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-      this.dgvResults.ContextMenuStrip = cmsItems;
-      this.dgvResults.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.dgvResults.Location = new System.Drawing.Point(0, 31);
-      this.dgvResults.Name = "dgvResults";
-      this.dgvResults.RowHeadersVisible = false;
-      this.dgvResults.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-      this.dgvResults.Size = new System.Drawing.Size(818, 374);
-      this.dgvResults.TabIndex = 0;
-      this.dgvResults.SelectionChanged += new System.EventHandler(this.dgvResults_SelectionChanged);
-      this.dgvResults.DragDrop += new System.Windows.Forms.DragEventHandler(this.dgvResults_DragDrop);
-      this.dgvResults.DragEnter += new System.Windows.Forms.DragEventHandler(this.dgvResults_DragEnter);
+      this.tsslCommittingChanges.Image = global::MassMediaEdit.Properties.Resources._16x11_Loading_Animation;
+      this.tsslCommittingChanges.Name = "tsslCommittingChanges";
+      this.tsslCommittingChanges.Size = new System.Drawing.Size(118, 17);
+      this.tsslCommittingChanges.Text = "Writing changes...";
+      this.tsslCommittingChanges.Visible = false;
       // 
-      // tsmiNfo
+      // tsslLoadingFiles
       // 
-      this.tsmiNfo.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.tsmiTitleFromNfoTitle,
-            this.tsmiTitleFromNfoOriginalTitle,
-            this.tsmiNameFromNfoTitle,
-            this.tsmiNameFromNfoOriginalTitle});
-      this.tsmiNfo.Enabled = false;
-      this.tsmiNfo.Name = "tsmiNfo";
-      this.tsmiNfo.Size = new System.Drawing.Size(205, 22);
-      this.tsmiNfo.Text = "From NFO Metadata";
-      // 
-      // tsmiTitleFromNfoTitle
-      // 
-      this.tsmiTitleFromNfoTitle.Name = "tsmiTitleFromNfoTitle";
-      this.tsmiTitleFromNfoTitle.Size = new System.Drawing.Size(217, 22);
-      this.tsmiTitleFromNfoTitle.Text = "Title From \"Title\"";
-      this.tsmiTitleFromNfoTitle.Click += new System.EventHandler(this.tsmiTitleFromNfoTitle_Click);
-      // 
-      // tsmiTitleFromNfoOriginalTitle
-      // 
-      this.tsmiTitleFromNfoOriginalTitle.Name = "tsmiTitleFromNfoOriginalTitle";
-      this.tsmiTitleFromNfoOriginalTitle.Size = new System.Drawing.Size(217, 22);
-      this.tsmiTitleFromNfoOriginalTitle.Text = "Title From \"Original Title\"";
-      this.tsmiTitleFromNfoOriginalTitle.Click += new System.EventHandler(this.tsmiTitleFromNfoOriginalTitle_Click);
-      // 
-      // tsmiNameFromNfoTitle
-      // 
-      this.tsmiNameFromNfoTitle.Name = "tsmiNameFromNfoTitle";
-      this.tsmiNameFromNfoTitle.Size = new System.Drawing.Size(217, 22);
-      this.tsmiNameFromNfoTitle.Text = "Name From \"Title\"";
-      this.tsmiNameFromNfoTitle.Click += new System.EventHandler(this.tsmiNameFromNfoTitle_Click);
-      // 
-      // tsmiNameFromNfoOriginalTitle
-      // 
-      this.tsmiNameFromNfoOriginalTitle.Name = "tsmiNameFromNfoOriginalTitle";
-      this.tsmiNameFromNfoOriginalTitle.Size = new System.Drawing.Size(217, 22);
-      this.tsmiNameFromNfoOriginalTitle.Text = "Name From \"Original Title\"";
-      this.tsmiNameFromNfoOriginalTitle.Click += new System.EventHandler(this.tsmiNameFromNfoOriginalTitle_Click);
+      this.tsslLoadingFiles.Image = global::MassMediaEdit.Properties.Resources._16x11_Loading_Animation;
+      this.tsslLoadingFiles.Name = "tsslLoadingFiles";
+      this.tsslLoadingFiles.Size = new System.Drawing.Size(99, 17);
+      this.tsslLoadingFiles.Text = "Loading files...";
+      this.tsslLoadingFiles.Visible = false;
       // 
       // MainForm
       // 
@@ -383,9 +430,10 @@
     private System.Windows.Forms.ToolStripMenuItem tsmiRemoveBracketContent;
     private System.Windows.Forms.ToolStripMenuItem tsmiAutoFillFromFileName;
     private System.Windows.Forms.ToolStripMenuItem tsmiNfo;
-    private System.Windows.Forms.ToolStripMenuItem tsmiTitleFromNfoTitle;
-    private System.Windows.Forms.ToolStripMenuItem tsmiTitleFromNfoOriginalTitle;
-    private System.Windows.Forms.ToolStripMenuItem tsmiNameFromNfoTitle;
-    private System.Windows.Forms.ToolStripMenuItem tsmiNameFromNfoOriginalTitle;
+    private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
+    private System.Windows.Forms.ToolStripMenuItem tsmiAudio0;
+    private System.Windows.Forms.ToolStripMenuItem tsmiAudio1;
+    private System.Windows.Forms.ToolStripComboBox tscbAudio0Language;
+    private System.Windows.Forms.ToolStripComboBox tscbAudio1Language;
   }
 }

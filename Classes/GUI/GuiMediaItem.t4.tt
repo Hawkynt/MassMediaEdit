@@ -98,6 +98,9 @@ namespace Classes.GUI {
     
     private bool? _OriginalAudio<#=i#>IsDefault => this.MediaFile.AudioStreams.Skip(<#=i#>).FirstOrDefault()?.IsDefault;
 
+    [Browsable(false)]
+    public bool HasAudio<#=i#> => this.MediaFile.AudioStreams.Count() > <#=i#>;
+
     [DisplayName("Default")]
     [DataGridViewConditionalReadOnly(nameof(IsReadOnly))]
     [DataGridViewCellStyle(backColor:"<#=AUDIO_BACKGROUND_COLORS[i%AUDIO_BACKGROUND_COLORS.Length]#>")]

@@ -88,7 +88,6 @@
     <None Include="Resources\24x24 Rename Files.png" />
     <None Include="Resources\24x24 Rename Folders.png" />
     <None Include="Resources\16x11 Loading Animation.gif" />
-    <None Include="Resources\Clear.png" />
     <None Include="Resources\24x24 Delete %282%29.png" />
     <None Include="Resources\16x16 Blue Disk.png" />
     <None Include="Resources\16x16 Undo.png" />
@@ -100,5 +99,12 @@
     <EmbeddedResource Update="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Update="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
   </ItemGroup>
 </Project>

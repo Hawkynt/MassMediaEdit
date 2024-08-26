@@ -132,15 +132,24 @@
   <metadata name="tsmiClearItems.GenerateMember" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>False</value>
   </metadata>
-  <metadata name="toolStripSeparator1.GenerateMember" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>False</value>
-  </metadata>
-  <metadata name="tsmiRemoveItem.GenerateMember" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>False</value>
-  </metadata>
-  <metadata name="tsmiClearItems.GenerateMember" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>False</value>
-  </metadata>
+  <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+  <data name="tsmiClearItems.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
+        YQUAAAAHdElNRQfXBh4UJQuYZ1H4AAACcElEQVQ4T5WRW0iTYRzGPwyc6/u+ramblM2usu70potA0Ci6
+        6XBRCmlz2U0HLwqFsS7SFjSsTJfzAJY2SaHaiBlomnlY35w5DaXp5pyWh4WrMcjF3NCaT1/whoSa9YOX
+        F/7/53n+74H6H6oVgqs1BcLPutyY1dqC7RpS/jf0eYIrDRcTQwONCsy0FaMiTxgmra2pUVIJeqUgNNpy
+        HvfyE2DRZUF7VjZG2lujz4+9brqWGnE2HIWtPB2lZ3YtFWenHCbtzXFbJf0uLr6o+rLI11Uqx5sbUmgV
+        ySH1KbmWSDbHoDHEOfuk8DoyV8b5fcSUiEfFScvq7BRrTg61jcg257G2rP5hSR06DTpMD5dhbvQQBsyS
+        1Z4WcZlGQ8UQ2Xpm+qg4j1VmcnF7lt62Fkabbt2F+nQJ7lwqhOVpBrqbWXQ0sioi/5MpjpFO2pIcXkdG
+        OBqswo/FSoR9RXBalLh5TgHFgQuoVaU1G41ULLGs8eG1ROzpTxr3uY8tR/ylWPlajsgXFfwTxxHwZMHn
+        SMWziuRlY71ETCxreAd2C/nJ9gXXkXDIp0JgSomIX43F2VzM2tPgG9uH+WEWbfX0xgGT/bKeT46MpaC3
+        EB7bfn6yGsF5BW9Ox0dbCjxWlg+gYdbzAbc3CJjgxPC7T+J9twgL4yfwbV6JkU453L07Mc2xsLfSmBui
+        Yapkvhs1G9x/gtuR6eDN716KEJjOweAL6UpvCwNXF82fQIj2BwymrAxM95kAsaxn6FW8fKgtoY4zsvxf
+        s+huoqNjHQI4e2j+8RgMmuno8yr6CZH/nS6DaG9HA9turmGCv8y/l1HHHiQSAkX9BHGATw+BIBEIAAAA
+        AElFTkSuQmCC
+</value>
+  </data>
   <metadata name="toolStripSeparator1.GenerateMember" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>False</value>
   </metadata>
@@ -153,7 +162,6 @@
   <metadata name="tsMainStrip.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>236, 17</value>
   </metadata>
-  <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
   <data name="tsddbRenameFiles.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
@@ -180,6 +188,18 @@
         8P+dsLC/AfEF0q1MsBz4AAAAAElFTkSuQmCC
 </value>
   </data>
+  <metadata name="tsmiTitleFromNfoTitle.GenerateMember" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>False</value>
+  </metadata>
+  <metadata name="tsmiTitleFromNfoOriginalTitle.GenerateMember" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>False</value>
+  </metadata>
+  <metadata name="tsmiNameFromNfoTitle.GenerateMember" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>False</value>
+  </metadata>
+  <metadata name="tsmiNameFromNfoOriginalTitle.GenerateMember" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>False</value>
+  </metadata>
   <metadata name="toolStripSeparator2.GenerateMember" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>False</value>
   </metadata>
