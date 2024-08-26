@@ -123,6 +123,16 @@ namespace MassMediaEdit.Properties {
         /// <summary>
         ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap _22x22_Convert_MKV {
+            get {
+                object obj = ResourceManager.GetObject("_22x22_Convert_MKV", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap _24x24_Delete__2_ {
             get {
                 object obj = ResourceManager.GetObject("_24x24_Delete__2_", resourceCulture);
