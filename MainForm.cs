@@ -107,7 +107,7 @@ public partial class MainForm : Form {
     var items = files.AsParallel()
         .WithDegreeOfParallelism(Environment.ProcessorCount)
         .Select(MediaFile.FromFile) /* read/parse file */
-        .Where(m => m.AudioStreams.Any() || m.VideoStreams.Any()) /* only add media files */
+        .Where(m => (m.AudioStreams.Any() || m.VideoStreams.Any()) && m.GeneralStream.Duration>_MINIMUM_DURATION) /* only add media files */
         .Select(GuiMediaItem.FromMediaFile) /* convert to GUI item instance */
       ;
 
@@ -433,6 +433,7 @@ public partial class MainForm : Form {
   }
 
   private bool _duringMenuPreset;
+  private static readonly TimeSpan _MINIMUM_DURATION = TimeSpan.FromSeconds(1);
 
   private void tscbAudio1Language_SelectedIndexChanged(object s, EventArgs _) {
     if (_duringMenuPreset)
