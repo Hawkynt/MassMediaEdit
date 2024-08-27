@@ -114,7 +114,7 @@ internal sealed partial class GuiMediaItem : INotifyPropertyChanged {
   }
 
   [DisplayName("Convert to MKV")]
-  [DataGridViewButtonColumn(isEnabledWhenPropertyName: nameof(IsMkvConversionEnabled), onClickMethodName: nameof(ConvertToMkv))]
+  [DataGridViewButtonColumn(isEnabledWhenPropertyName: nameof(IsMkvConversionEnabled), onClickMethodName: nameof(ConvertToMkvBackground))]
   [DataGridViewColumnWidth(DataGridViewAutoSizeColumnMode.DisplayedCells)]
   public string ConvertTo => this.IsMkvConversionEnabled ? "Convert" : "Unavailable";
 
@@ -209,24 +209,45 @@ internal sealed partial class GuiMediaItem : INotifyPropertyChanged {
     this._RefreshAllProperties();
   }
 
-  public void ConvertToMkv() {
+  public void ConvertToMkvBackground() {
+    var action = this.ConvertToMkvSync;
+    action.BeginInvoke(action.EndInvoke, null);
+  }
+
+  public void ConvertToMkvSync() {
     var sourceFile = this.MediaFile.File;
     var targetFile = sourceFile.WithNewExtension("mkv");
-    var action = () => {
-      try {
-        this._IsActionPending = true;
-        MkvMerge.ConvertToMkv(sourceFile, targetFile, f => this.Progress = f);
-        if (targetFile.Exists && MediaFile.FromFile(targetFile) is { } mi && mi.VideoStreams.Any() && mi.AudioStreams.Count() == this.MediaFile.AudioStreams.Count())
+    try {
+      this._IsActionPending = true;
+      MkvMerge.ConvertToMkv(sourceFile, targetFile, f => this.Progress = f);
+      switch (targetFile.Exists) {
+        case true
+          when MediaFile.FromFile(targetFile) is { } mi
+               && mi.VideoStreams.Any()
+               && mi.AudioStreams.Count() == this.MediaFile.AudioStreams.Count()
+               && mi.GeneralStream.Duration.TotalSeconds.Round() == this.MediaFile.GeneralStream.Duration.TotalSeconds.Round()
+          :
+
+          this.MediaFile = mi;
+          sourceFile.Attributes &= ~(FileAttributes.ReadOnly | FileAttributes.Hidden | FileAttributes.System);
           sourceFile.TryDelete();
-
-        this.MediaFile = MediaFile.FromFile(targetFile);
-        this.Progress = null;
-      } finally {
-        this._IsActionPending = true;
+          
+          break;
+        case true:
+          targetFile.TryDelete();
+          break;
       }
-    };
 
-    action.BeginInvoke(action.EndInvoke, null);
+      this.Progress = null;
+    } catch (Exception e) {
+#if DEBUG
+      throw;
+#else
+      Console.WriteLine($"Error converting {sourceFile.FullName} to MKV: {e.Message}");
+#endif
+    } finally {
+      this._IsActionPending = true;
+    }
   }
 
   public void Run() => Process.Start(this.MediaFile.File.FullName);
