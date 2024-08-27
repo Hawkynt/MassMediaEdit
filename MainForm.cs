@@ -444,7 +444,7 @@ public partial class MainForm : Form {
     if (tscb.SelectedItem is not GuiMediaItem.LanguageType value)
       return;
 
-    foreach (var item in this.dgvResults.GetSelectedItems<GuiMediaItem>().Where(i => !i.IsReadOnly))
+    foreach (var item in this.dgvResults.GetSelectedItems<GuiMediaItem>().Where(i => !i.IsReadOnly && i.HasAudio0))
       item.Audio0Language = value;
   }
 
@@ -458,7 +458,7 @@ public partial class MainForm : Form {
     if (tscb.SelectedItem is not GuiMediaItem.LanguageType value)
       return;
 
-    foreach (var item in this.dgvResults.GetSelectedItems<GuiMediaItem>().Where(i => !i.IsReadOnly))
+    foreach (var item in this.dgvResults.GetSelectedItems<GuiMediaItem>().Where(i => !i.IsReadOnly && i.HasAudio1))
       item.Audio1Language = value;
   }
 
@@ -468,7 +468,7 @@ public partial class MainForm : Form {
       .Where(i => i.IsMkvConversionEnabled)
       .AsParallel().WithDegreeOfParallelism(2)
       .Select(i => {
-        i.ConvertToMkv();
+        i.ConvertToMkvSync();
         return true;
       })
       .ToArray()

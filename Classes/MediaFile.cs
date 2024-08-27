@@ -30,7 +30,7 @@ public class MediaFile {
 
   private string[] _GatherCommandlineInfo() {
     var mediaInfoExecutable = MediaInfoExecutable;
-    if (mediaInfoExecutable == null || !mediaInfoExecutable.Exists)
+    if (mediaInfoExecutable is not { Exists: true })
       throw new NotSupportedException($"Please set path to Media Info CLI first using {nameof(MediaInfoExecutable)} property.");
 
     var procStart = new ProcessStartInfo(mediaInfoExecutable.FullName, $"-full \"{this.File.FullName}\"") {
@@ -48,18 +48,15 @@ public class MediaFile {
   private static IEnumerable<MediaStream> _GetStreams(IEnumerable<Tuple<string, SectionDictionary>> sections) {
     foreach (var tuple in sections) {
       switch ((tuple.Item1 + " ").Split([' '], 2)[0]) {
-        case "General":
-        {
+        case "General": {
           yield return new GeneralStream(tuple.Item2);
           break;
         }
-        case "Audio":
-        {
+        case "Audio": {
           yield return new AudioStream(tuple.Item2);
           break;
         }
-        case "Video":
-        {
+        case "Video": {
           yield return new VideoStream(tuple.Item2);
           break;
         }
