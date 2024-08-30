@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Classes;
 using Classes.GUI;
-using MassMediaEdit.Classes.Nfo;
+using Hawkynt.NfoFileFormat;
 
 namespace MassMediaEdit;
 
@@ -340,13 +340,13 @@ public partial class MainForm : Form {
     foreach (var item in this.dgvResults.GetSelectedItems<GuiMediaItem>().Where(i => i.HasNfo && !i.IsReadOnly)) {
 
       if (movieAction != null) {
-        var movie = NfoLoader.LoadMovieOrNull(item.MediaFile.File);
+        var movie = NfoFile.LoadMovieOrNull(item.MediaFile.File);
         if (movie != null)
           movieAction(movie, item);
       }
 
       if (episodeAction != null) {
-        var episode = NfoLoader.LoadEpisodeOrNull(item.MediaFile.File);
+        var episode = NfoFile.LoadEpisodeOrNull(item.MediaFile.File);
         if (episode != null)
           episodeAction(episode, item);
       }

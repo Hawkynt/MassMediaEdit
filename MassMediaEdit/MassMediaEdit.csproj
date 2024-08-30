@@ -2,7 +2,7 @@
   <PropertyGroup>
     <ProjectGuid>{48C03795-8960-4B76-9F93-E85E132C53F6}</ProjectGuid>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>net45</TargetFramework>
+    <TargetFramework>net8.0-windows</TargetFramework>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <AssemblyTitle>MassMediaEdit</AssemblyTitle>
     <Company>»SynthelicZ«</Company>
@@ -10,6 +10,7 @@
     <Copyright>Copyright © Hawkynt 2016-2024</Copyright>
     <OutputPath>bin\$(Configuration)\</OutputPath>
     <LangVersion>default</LangVersion>
+    <ImplicitUsings>disable</ImplicitUsings>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugType>full</DebugType>
@@ -19,24 +20,18 @@
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationIcon>App.ico</ApplicationIcon>
+    <UseWindowsForms>True</UseWindowsForms>
+    <StartupObject>MassMediaEdit.Program</StartupObject>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="System.Windows.Forms" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Net.Http" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="..\..\Hawkynt.svn\C#\Libraries\ApplicationTitler.cs" Link="Libraries\ApplicationTitler.cs" />
-    <Compile Include="..\..\Hawkynt.svn\C#\Libraries\FilesizeFormatter.cs" Link="Libraries\FilesizeFormatter.cs" />
+    <Compile Include="..\..\..\Hawkynt.svn\C#\Libraries\ApplicationTitler.cs" Link="Libraries\ApplicationTitler.cs" />
+    <Compile Include="..\..\..\Hawkynt.svn\C#\Libraries\FilesizeFormatter.cs" Link="Libraries\FilesizeFormatter.cs" />
     <Compile Update="Classes\GUI\GuiMediaItem.t4.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>GuiMediaItem.t4.tt</DependentUpon>
     </Compile>
-    <Compile Update="MainForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
+    <Compile Update="MainForm.cs" />
     <Compile Update="MainForm.Designer.cs">
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
@@ -93,7 +88,7 @@
     <None Include="Resources\16x16 Undo.png" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="FrameworkExtensions.System.Windows.Forms" Version="1.0.0.69" />
+    <PackageReference Include="FrameworkExtensions.System.Windows.Forms" Version="*" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Update="MainForm.resx">
@@ -105,6 +100,15 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
+    <PackageReference Include="FrameworkExtensions.Corlib" Version="*" />
+    <None Include="..\ReadMe.md" Pack="True" PackagePath=".">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </None>
+    <None Include="..\LICENSE" Pack="True" PackagePath=".">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\NfoFileFormat\NfoFileFormat.csproj" />
   </ItemGroup>
 </Project>
