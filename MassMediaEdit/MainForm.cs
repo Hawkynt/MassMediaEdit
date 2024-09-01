@@ -125,7 +125,7 @@ public partial class MainForm : Form {
   /// <param name="task">The task.</param>
   /// <param name="progressIndicator">The progress indicator.</param>
   private void _ExecuteBackgroundTask(string tag, Action task, ToolStripItem progressIndicator)
-    => this.Async(() => {
+    => Task.Run(() => {
 
       var taskCounter = this._runningBackgroundTasks.GetOrAdd(tag, () => [0]);
       try {

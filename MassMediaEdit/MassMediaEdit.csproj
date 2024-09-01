@@ -88,7 +88,7 @@
     <None Include="Resources\16x16 Undo.png" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="FrameworkExtensions.System.Windows.Forms" Version="*" />
+    <PackageReference Include="FrameworkExtensions.System.Windows.Forms" Version="1.0.2.*" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Update="MainForm.resx">
