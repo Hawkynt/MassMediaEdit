@@ -13,7 +13,6 @@
     <RepositoryUrl>https://github.com/Hawkynt/MassMediaEdit/tree/master/NfoFileFormat</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageLicenseExpression>LGPL-3.0-or-later</PackageLicenseExpression>
-    <PackageLicenseFile>..\LICENSE</PackageLicenseFile>
     <PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
 
     <ImplicitUsings>disable</ImplicitUsings>
@@ -32,7 +31,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="FrameworkExtensions.Corlib" Version="*" />
+    <PackageReference Include="FrameworkExtensions.Corlib" Version="1.0.2.*" />
     <None Include="ReadMe.md" Pack="True" PackagePath=".">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </None>
