@@ -24,6 +24,7 @@ internal static class MkvMerge {
   }
 
   private static readonly Regex _PROGRESS_DETECTOR = new(@"(?<value>\d+(?:\.\d+)?)\s*%", RegexOptions.Compiled);
+  private static readonly Regex _ERROR_DETECTOR = new(@"^\s*Error:(.*?)$", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Multiline);
   private static void _Execute(string arguments, Action<float> progressReporter) {
 
     var executable = MkvMergeExecutable;
@@ -56,7 +57,16 @@ internal static class MkvMerge {
     var output = tuple.StandardOutput;
     var error = tuple.StandardError;
 
-    throw new Exception($"Something went wrong during MKVMerge. Arguments: {arguments}") {
+    var message = _ERROR_DETECTOR.Match(error);
+    if (!message.Success)
+      message = _ERROR_DETECTOR.Match(output);
+
+    var exceptionMessage = message.Success
+      ? $"MKVMerge-Error: {message.Groups[1].Value}"
+      : $"Something went wrong during MKVMerge. Arguments: {arguments}"
+    ;
+
+    throw new Exception(exceptionMessage) {
       Data = {
         { nameof(arguments), arguments },
         { "StandardOutput",output },
