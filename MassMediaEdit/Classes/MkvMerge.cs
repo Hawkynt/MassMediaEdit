@@ -16,7 +16,12 @@ internal static class MkvMerge {
 
   public static FileInfo MkvMergeExecutable { get; set; }
 
-  public static void ConvertToMkv(FileInfo sourceFile, FileInfo targetFile, Action<float> progressReporter = null) => _Execute($"--output \"{targetFile.FullName}\" \"{sourceFile.FullName}\"", progressReporter);
+  public static void ConvertToMkv(FileInfo sourceFile, FileInfo targetFile, Action<float> progressReporter = null) {
+    using var tempFile = PathExtensions.GetTempFileToken($"$$$Temp$$$.{targetFile.Name}", targetFile.Directory?.FullName ?? ".");
+    _Execute($"--output \"{tempFile.File.FullName}\" \"{sourceFile.FullName}\"", progressReporter);
+    if (tempFile.File.Exists)
+      tempFile.File.MoveTo(targetFile, true);
+  }
 
   private static readonly Regex _PROGRESS_DETECTOR = new(@"(?<value>\d+(?:\.\d+)?)\s*%", RegexOptions.Compiled);
   private static void _Execute(string arguments, Action<float> progressReporter) {
