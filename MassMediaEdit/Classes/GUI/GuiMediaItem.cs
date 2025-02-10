@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using Libraries;
 using MassMediaEdit;
@@ -209,10 +210,7 @@ internal sealed partial class GuiMediaItem : INotifyPropertyChanged {
     this._RefreshAllProperties();
   }
 
-  public void ConvertToMkvBackground() {
-    var action = this.ConvertToMkvSync;
-    action.BeginInvoke(action.EndInvoke, null);
-  }
+  public void ConvertToMkvBackground() => Task.Run(this.ConvertToMkvSync);
 
   public void ConvertToMkvSync() {
     var sourceFile = this.MediaFile.File;
