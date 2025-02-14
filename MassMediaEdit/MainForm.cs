@@ -111,8 +111,8 @@ public partial class MainForm : Form {
         .Select(GuiMediaItem.FromMediaFile) /* convert to GUI item instance */
       ;
 
-    foreach (var item in items.WithMergeOptions(ParallelMergeOptions.NotBuffered))
-      this._AddResult(item);
+    foreach (var item in items.WithMergeOptions(ParallelMergeOptions.NotBuffered).Chunk(64))
+      this._AddResults(item);
   }
 
   private readonly ConcurrentDictionary<string, int[]> _runningBackgroundTasks = new();
