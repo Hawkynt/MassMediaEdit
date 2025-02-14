@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -222,10 +223,16 @@ internal sealed partial class GuiMediaItem : INotifyPropertyChanged {
         case true
           when MediaFile.FromFile(targetFile) is { } mi
                && mi.VideoStreams.Any()
-               && mi.AudioStreams.Count() == this.MediaFile.AudioStreams.Count()
-               && mi.GeneralStream.Duration.TotalSeconds.Round() == this.MediaFile.GeneralStream.Duration.TotalSeconds.Round()
+               && mi.AudioStreams.ToArray() is var targetAudios
+               && this.MediaFile.AudioStreams.ToArray() is var sourceAudios
+               && sourceAudios.Length==targetAudios.Length
+               && Math.Abs(mi.GeneralStream.Duration.TotalSeconds.Round() - this.MediaFile.GeneralStream.Duration.TotalSeconds.Round()) < 5
           :
 
+          for (var i = 0; i < sourceAudios.Length; ++i)
+            if (sourceAudios[i].Language != null)
+              MkvPropEdit.SetAudioLanguage(targetFile, sourceAudios[i].Language, (byte)i);
+          
           this.MediaFile = mi;
           sourceFile.Attributes &= ~(FileAttributes.ReadOnly | FileAttributes.Hidden | FileAttributes.System);
           sourceFile.TryDelete();
