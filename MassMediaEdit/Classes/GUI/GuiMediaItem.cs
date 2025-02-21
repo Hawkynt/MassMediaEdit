@@ -251,7 +251,7 @@ internal sealed partial class GuiMediaItem : INotifyPropertyChanged {
       Console.WriteLine($"Error converting {sourceFile.FullName} to MKV: {e.Message}");
 #endif
     } finally {
-      this._IsActionPending = true;
+      this._IsActionPending = false;
     }
   }
 
