@@ -19,14 +19,14 @@ internal static class MkvPropEdit {
     => _Execute(
       title == null
         ? $"\"{file.FullName}\" --edit info --delete \"title\""
-        : $"\"{file.FullName}\" --edit info --set \"title={title}\""
+        : $"\"{file.FullName}\" --edit info --set \"title={title.Replace("\"", "\"\"")}\""
     );
 
   public static void SetVideoName(FileInfo file, string name, byte videoStreamIndex = 0)
     => _Execute(
       name == null
         ? $"\"{file.FullName}\" --edit track:v{videoStreamIndex + 1} --delete \"name\""
-        : $"\"{file.FullName}\" --edit track:v{videoStreamIndex + 1} --set \"name={name}\""
+        : $"\"{file.FullName}\" --edit track:v{videoStreamIndex + 1} --set \"name={name.Replace("\"","\"\"")}\""
     );
 
   public static void SetVideoStereoscopicMode(FileInfo file, int value, byte videoStreamIndex = 0)
