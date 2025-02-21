@@ -14,7 +14,7 @@ public class MediaStream {
 
   public bool IsDefault => this.GetBoolOrDefault("default");
   public long SizeInBytes => this.GetLongOrDefault("stream size");
-  public TimeSpan Duration => TimeSpan.FromMilliseconds(this.GetLongOrDefault("duration"));
+  public TimeSpan Duration => TimeSpan.FromMilliseconds(this.GetDoubleOrDefault("duration"));
   public string Codec => this.GetStringOrDefault("codec", 1);
   public int BitRateInBitsPerSecond => this.GetSomeIntOrDefault("bit rate");
   public string Name => this.GetStringOrDefault("title");
