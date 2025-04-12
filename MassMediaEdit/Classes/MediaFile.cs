@@ -73,28 +73,30 @@ public class MediaFile {
       }
       yield return Tuple.Create(section.Item1, values);
     }
-  }
 
-  private static IEnumerable<Tuple<string, string[]>> _ParseSections(IEnumerable<string> lines) {
-    string currentSection = null;
-    var currentLines = new List<string>();
-    foreach (var line in lines) {
-      var parts = line.Split([':'], 2);
-      if (parts.Length < 2) {
-        if (currentSection != null)
-          yield return Tuple.Create(currentSection, currentLines.ToArray());
+    yield break;
 
-        currentSection = parts[0];
-        currentLines.Clear();
-      } else {
-        currentLines.Add(line);
+    static IEnumerable<Tuple<string, string[]>> _ParseSections(IEnumerable<string> lines) {
+      string currentSection = null;
+      var currentLines = new List<string>();
+      foreach (var line in lines) {
+        var parts = line.Split([':'], 2);
+        if (parts.Length < 2) {
+          if (currentSection != null)
+            yield return Tuple.Create(currentSection, currentLines.ToArray());
+
+          currentSection = parts[0];
+          currentLines.Clear();
+        } else {
+          currentLines.Add(line);
+        }
       }
+
+      if (currentSection != null)
+        yield return Tuple.Create(currentSection, currentLines.ToArray());
     }
-
-    if (currentSection != null)
-      yield return Tuple.Create(currentSection, currentLines.ToArray());
   }
-
+  
   public static MediaFile FromFile(FileInfo file) => new(file);
 
   #endregion

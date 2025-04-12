@@ -226,7 +226,7 @@ internal sealed partial class GuiMediaItem : INotifyPropertyChanged {
                && mi.AudioStreams.ToArray() is var targetAudios
                && this.MediaFile.AudioStreams.ToArray() is var sourceAudios
                && sourceAudios.Length==targetAudios.Length
-               && Math.Abs(mi.GeneralStream.Duration.TotalSeconds.Round() - this.MediaFile.GeneralStream.Duration.TotalSeconds.Round()) < 5
+               && (mi.GeneralStream.Duration.TotalSeconds.Round() - this.MediaFile.GeneralStream.Duration.TotalSeconds.Round()).Abs() < 5
           :
 
           for (var i = 0; i < sourceAudios.Length; ++i)
@@ -285,44 +285,49 @@ internal sealed partial class GuiMediaItem : INotifyPropertyChanged {
       return;
 #endif
 
-    try {
+    const int maxRetries = 3;
+    for (var attempt = 1; attempt <= maxRetries; ++attempt) {
+      try {
 
-      var data = this.commitData;
+        var data = this.commitData;
 
-      if (data.TryGetValue(nameof(this.Title), out var title))
-        MkvPropEdit.SetTitle(file, (string) title);
+        if (data.TryGetValue(nameof(this.Title), out var title))
+          MkvPropEdit.SetTitle(file, (string) title);
 
-      if (data.TryGetValue(nameof(this.Video0Name), out var name))
-        MkvPropEdit.SetVideoName(file, (string) name);
+        if (data.TryGetValue(nameof(this.Video0Name), out var name))
+          MkvPropEdit.SetVideoName(file, (string) name);
 
-      if (data.TryGetValue(nameof(this.Video0StereoscopicMode), out var stereoMode))
-        MkvPropEdit.SetVideoStereoscopicMode(file, (int) stereoMode);
+        if (data.TryGetValue(nameof(this.Video0StereoscopicMode), out var stereoMode))
+          MkvPropEdit.SetVideoStereoscopicMode(file, (int) stereoMode);
 
-      if (data.ContainsKey(nameof(this.Audio0Language)) &&
-          (LanguageType) data[nameof(this.Audio0Language)] != LanguageType.Other)
-        MkvPropEdit.SetAudioLanguage(file, _ToCulture((LanguageType) data[nameof(this.Audio0Language)]));
+        if (data.TryGetValue(nameof(this.Audio0Language), out object audio0Language) &&
+            (LanguageType)audio0Language != LanguageType.Other)
+          MkvPropEdit.SetAudioLanguage(file, _ToCulture((LanguageType)audio0Language));
 
-      if (data.ContainsKey(nameof(this.Audio1Language)) &&
-          (LanguageType) data[nameof(this.Audio1Language)] != LanguageType.Other)
-        MkvPropEdit.SetAudioLanguage(file, _ToCulture((LanguageType) data[nameof(this.Audio1Language)]), 1);
+        if (data.TryGetValue(nameof(this.Audio1Language), out object audio1Language) &&
+            (LanguageType)audio1Language != LanguageType.Other)
+          MkvPropEdit.SetAudioLanguage(file, _ToCulture((LanguageType)audio1Language), 1);
 
-      if (data.ContainsKey(nameof(this.Audio0IsDefault)) && data[nameof(this.Audio0IsDefault)] != null)
-        MkvPropEdit.SetAudioDefault(file, 0, (bool) data[nameof(this.Audio0IsDefault)]);
+        if (data.TryGetValue(nameof(this.Audio0IsDefault), out object audio0IsDefault) && audio0IsDefault != null)
+          MkvPropEdit.SetAudioDefault(file, 0, (bool)audio0IsDefault);
 
-      if (data.ContainsKey(nameof(this.Audio1IsDefault)) && data[nameof(this.Audio1IsDefault)] != null)
-        MkvPropEdit.SetAudioDefault(file, 1, (bool) data[nameof(this.Audio1IsDefault)]);
+        if (data.TryGetValue(nameof(this.Audio1IsDefault), out object audio1IsDefault) && audio1IsDefault != null)
+          MkvPropEdit.SetAudioDefault(file, 1, (bool)audio1IsDefault);
 
-      data.Clear();
+        data.Clear();
+        break;
+      } catch (Exception e) {
+        if (attempt < maxRetries)
+          continue;
 
-    } catch (Exception e) {
+  #if DEBUG
+        if (!Debugger.IsAttached)
+          Debugger.Launch();
 
-#if DEBUG
-      if (!Debugger.IsAttached)
-        Debugger.Launch();
-
-      Debugger.Break();
-#endif
-
+        Debugger.Break();
+  #endif
+        // Handle or log the exception after max retries if necessary
+      }
     }
 
     this.MediaFile = MediaFile.FromFile(file);
