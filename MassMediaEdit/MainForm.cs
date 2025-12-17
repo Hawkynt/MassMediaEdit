@@ -201,45 +201,12 @@ public partial class MainForm : Form {
   /// <param name="_">The source of the event.</param>
   /// <param name="__">The <see cref="System.EventArgs" /> instance containing the event data.</param>
   private void tsmiCommitSelected_Click(object _, EventArgs __) {
-    var items = this.dgvResults.GetSelectedItems<GuiMediaItem>().Where(i=>i.NeedsCommit).ToArray();
-    this._items.RemoveRange(items);
+    var items = this.dgvResults.GetSelectedItems<GuiMediaItem>().Where(i => i.NeedsCommit).ToArray();
+    if (items.Length == 0)
+      return;
 
     this._ExecuteBackgroundTask("Commit", () => {
-      var partitioner = Partitioner.Create(items, true);
-
-      var bag = new ConcurrentBag<GuiMediaItem>();
-      var bufferDuration = TimeSpan.FromSeconds(2);
-      var updateTicks = (long)(bufferDuration.TotalSeconds * Stopwatch.Frequency);
-      var nextUpdate = Stopwatch.GetTimestamp() + updateTicks;
-
-      void Update() {
-        var curr = new List<GuiMediaItem>(bag.Count);
-        while (bag.TryTake(out var i))
-          curr.Add(i);
-
-        this.SafelyInvoke(() => this._items.AddRange(curr));
-      }
-
-      Parallel.ForEach(
-        partitioner.GetDynamicPartitions(),
-        new ParallelOptions { MaxDegreeOfParallelism = Environment.ProcessorCount },
-        (i, state) => {
-          i.CommitChanges();
-          bag.Add(i);
-          if (Stopwatch.GetTimestamp() < nextUpdate)
-            return;
-
-          var old = nextUpdate;
-          if (Interlocked.CompareExchange(ref nextUpdate, Stopwatch.GetTimestamp() + updateTicks, old) == old)
-            Update();
-        }
-      );
-
-      Update();
-
-      //Parallel.ForEach(items, i => i.CommitChanges());
-      //this.SafelyInvoke(() => this._items.AddRange(items));
-
+      Parallel.ForEach(items, new ParallelOptions { MaxDegreeOfParallelism = Environment.ProcessorCount }, i => i.CommitChanges());
     }, this.tsslCommittingChanges);
   }
 
@@ -249,7 +216,10 @@ public partial class MainForm : Form {
   /// <param name="_">The source of the event.</param>
   /// <param name="__">The <see cref="System.EventArgs" /> instance containing the event data.</param>
   private void tsmiRevertChanges_Click(object _, EventArgs __)
-    => this.dgvResults.GetSelectedItems<GuiMediaItem>().ForEach(i => i.RevertChanges());
+    => Parallel.ForEach(
+      this.dgvResults.GetSelectedItems<GuiMediaItem>().ToArray(),
+      i => i.RevertChanges()
+    );
 
   /// <summary>
   /// Enables/Disables context menu entries, depending on current application state.
@@ -297,8 +267,10 @@ public partial class MainForm : Form {
   /// <param name="_">The source of the event.</param>
   /// <param name="__">The <see cref="System.EventArgs" /> instance containing the event data.</param>
   private void tsmiTitleFromFilename_Click(object _, EventArgs __) {
-    foreach (var item in this.dgvResults.GetSelectedItems<GuiMediaItem>().Where(i => !i.IsReadOnly))
-      item.Title = item.MediaFile.File.GetFilenameWithoutExtension();
+    Parallel.ForEach(
+      this.dgvResults.GetSelectedItems<GuiMediaItem>().Where(i => !i.IsReadOnly).ToArray(),
+      item => item.Title = item.MediaFile.File.GetFilenameWithoutExtension()
+    );
   }
 
   /// <summary>
@@ -307,9 +279,19 @@ public partial class MainForm : Form {
   /// <param name="_">The source of the event.</param>
   /// <param name="__">The <see cref="System.EventArgs" /> instance containing the event data.</param>
   private void tsmiVideoNameFromFileName_Click(object _, EventArgs __) {
-    foreach (var item in this.dgvResults.GetSelectedItems<GuiMediaItem>().Where(i => !i.IsReadOnly))
-      item.Video0Name = item.MediaFile.File.GetFilenameWithoutExtension();
+    Parallel.ForEach(
+      this.dgvResults.GetSelectedItems<GuiMediaItem>().Where(i => !i.IsReadOnly).ToArray(),
+      item => item.Video0Name = item.MediaFile.File.GetFilenameWithoutExtension()
+    );
   }
+
+  // Pattern to match season and episode numbers in various formats
+  // Supports: s05e04, S01E02, season5episode4, st2ep1, ep1st2, "staffel 5 episode 13", etc.
+  // Allows arbitrary text between keywords and numbers
+  private static readonly Regex _seasonEpisodeRegex = new(
+    @"(?:s(?:\w*?)[\s.\\_-]*?(?<season>\d+).*?e(?:\w*?)[\s.\\_-]*?(?<episode>\d+))|(?:e(?:\w*?)[\s.\\_-]*?(?<episode>\d+).*?s(?:\w*?)[\s.\\_-]*?(?<season>\d+))",
+    RegexOptions.IgnoreCase | RegexOptions.Compiled
+  );
 
   /// <summary>
   /// Handles the Click event of the tsmiFixTitleAndName control.
@@ -317,41 +299,53 @@ public partial class MainForm : Form {
   /// <param name="_">The source of the event.</param>
   /// <param name="__">The <see cref="System.EventArgs" /> instance containing the event data.</param>
   private void tsmiFixTitleAndName_Click(object _, EventArgs __) {
-    var regex = new Regex(@"s(?<season>\d+)e(?<episode>\d+)(?:(?:\s*[-\._]\s*)|(?:\s+))(?<title>.*?)\s*$", RegexOptions.IgnoreCase);
-    foreach (var item in this.dgvResults.GetSelectedItems<GuiMediaItem>().Where(i => !i.IsReadOnly)) {
-      var match = regex.Match(item.Title ?? string.Empty);
-      if (!match.Success)
-        match = regex.Match(item.Video0Name ?? string.Empty);
+    Parallel.ForEach(
+      this.dgvResults.GetSelectedItems<GuiMediaItem>().Where(i => !i.IsReadOnly).ToArray(),
+      item => {
+        var match = _seasonEpisodeRegex.Match(item.Title ?? string.Empty);
+        var source = item.Title;
+        if (!match.Success) {
+          match = _seasonEpisodeRegex.Match(item.Video0Name ?? string.Empty);
+          source = item.Video0Name;
+        }
 
-      if (!match.Success)
-        continue;
+        if (!match.Success)
+          return;
 
-      item.Title = $"s{match.Groups["season"].Value}e{match.Groups["episode"].Value}";
-      var name = match.Groups["title"].Value;
-      if (name.IsNotNullOrWhiteSpace())
-        item.Video0Name = name;
-    }
+        var season = ushort.Parse(match.Groups["season"].Value);
+        var episode = ushort.Parse(match.Groups["episode"].Value);
+
+        // Get title from text after the match
+        var titleStart = match.Index + match.Length;
+        var name = source?[titleStart..].Trim().TrimStart('-', '.', '_', ' ').Trim();
+
+        item.Title = $"s{season:D2}e{episode:D2}";
+        if (name.IsNotNullOrWhiteSpace())
+          item.Video0Name = name;
+      }
+    );
   }
 
   private void tsddbTagsFromName_DropDownOpening(object sender, EventArgs e)
     => this.tsmiNfo.Enabled = this.dgvResults.GetSelectedItems<GuiMediaItem>().Any(i => i.HasNfo);
 
   private void _WorkWithNfo(Action<Movie, GuiMediaItem> movieAction, Action<EpisodeDetails, GuiMediaItem> episodeAction) {
-    foreach (var item in this.dgvResults.GetSelectedItems<GuiMediaItem>().Where(i => i.HasNfo && !i.IsReadOnly)) {
+    Parallel.ForEach(
+      this.dgvResults.GetSelectedItems<GuiMediaItem>().Where(i => i.HasNfo && !i.IsReadOnly).ToArray(),
+      item => {
+        if (movieAction != null) {
+          var movie = NfoFile.LoadMovieOrNull(item.MediaFile.File);
+          if (movie != null)
+            movieAction(movie, item);
+        }
 
-      if (movieAction != null) {
-        var movie = NfoFile.LoadMovieOrNull(item.MediaFile.File);
-        if (movie != null)
-          movieAction(movie, item);
+        if (episodeAction != null) {
+          var episode = NfoFile.LoadEpisodeOrNull(item.MediaFile.File);
+          if (episode != null)
+            episodeAction(episode, item);
+        }
       }
-
-      if (episodeAction != null) {
-        var episode = NfoFile.LoadEpisodeOrNull(item.MediaFile.File);
-        if (episode != null)
-          episodeAction(episode, item);
-      }
-
-    }
+    );
   }
 
   private void tsmiTitleFromNfoTitle_Click(object _, EventArgs __)
@@ -384,8 +378,10 @@ public partial class MainForm : Form {
   /// <param name="_">The source of the event.</param>
   /// <param name="__">The <see cref="System.EventArgs" /> instance containing the event data.</param>
   private void tsmiClearTitle_Click(object _, EventArgs __) {
-    foreach (var item in this.dgvResults.GetSelectedItems<GuiMediaItem>().Where(i => !i.IsReadOnly))
-      item.Title = null;
+    Parallel.ForEach(
+      this.dgvResults.GetSelectedItems<GuiMediaItem>().Where(i => !i.IsReadOnly).ToArray(),
+      item => item.Title = null
+    );
   }
 
   /// <summary>
@@ -394,8 +390,10 @@ public partial class MainForm : Form {
   /// <param name="_">The source of the event.</param>
   /// <param name="__">The <see cref="System.EventArgs" /> instance containing the event data.</param>
   private void tsmiClearVideoName_Click(object _, EventArgs __) {
-    foreach (var item in this.dgvResults.GetSelectedItems<GuiMediaItem>().Where(i => !i.IsReadOnly))
-      item.Video0Name = null;
+    Parallel.ForEach(
+      this.dgvResults.GetSelectedItems<GuiMediaItem>().Where(i => !i.IsReadOnly).ToArray(),
+      item => item.Video0Name = null
+    );
   }
 
   /// <summary>
@@ -404,8 +402,10 @@ public partial class MainForm : Form {
   /// <param name="_">The source of the event.</param>
   /// <param name="__">The <see cref="System.EventArgs" /> instance containing the event data.</param>
   private void tsmiSwapTitleAndName_Click(object _, EventArgs __) {
-    foreach (var item in this.dgvResults.GetSelectedItems<GuiMediaItem>().Where(i => !i.IsReadOnly))
-      (item.Video0Name, item.Title) = (item.Title, item.Video0Name);
+    Parallel.ForEach(
+      this.dgvResults.GetSelectedItems<GuiMediaItem>().Where(i => !i.IsReadOnly).ToArray(),
+      item => (item.Video0Name, item.Title) = (item.Title, item.Video0Name)
+    );
   }
 
   /// <summary>
@@ -414,10 +414,13 @@ public partial class MainForm : Form {
   /// <param name="_">The source of the event.</param>
   /// <param name="__">The <see cref="System.EventArgs" /> instance containing the event data.</param>
   private void tsmiRecoverSpaces_Click(object _, EventArgs __) {
-    foreach (var item in this.dgvResults.GetSelectedItems<GuiMediaItem>().Where(i => !i.IsReadOnly)) {
-      item.Video0Name = _RecoverSpacesFrom(item.Video0Name);
-      item.Title = _RecoverSpacesFrom(item.Title);
-    }
+    Parallel.ForEach(
+      this.dgvResults.GetSelectedItems<GuiMediaItem>().Where(i => !i.IsReadOnly).ToArray(),
+      item => {
+        item.Video0Name = _RecoverSpacesFrom(item.Video0Name);
+        item.Title = _RecoverSpacesFrom(item.Title);
+      }
+    );
   }
 
   /// <summary>
@@ -426,10 +429,13 @@ public partial class MainForm : Form {
   /// <param name="_">The source of the event.</param>
   /// <param name="__">The <see cref="System.EventArgs" /> instance containing the event data.</param>
   private void tsmiRemoveBracketContent_Click(object _, EventArgs __) {
-    foreach (var item in this.dgvResults.GetSelectedItems<GuiMediaItem>().Where(i => !i.IsReadOnly)) {
-      item.Video0Name = _RemoveBracketContentFrom(item.Video0Name);
-      item.Title = _RemoveBracketContentFrom(item.Title);
-    }
+    Parallel.ForEach(
+      this.dgvResults.GetSelectedItems<GuiMediaItem>().Where(i => !i.IsReadOnly).ToArray(),
+      item => {
+        item.Video0Name = _RemoveBracketContentFrom(item.Video0Name);
+        item.Title = _RemoveBracketContentFrom(item.Title);
+      }
+    );
   }
 
   private bool _duringMenuPreset;
@@ -445,8 +451,10 @@ public partial class MainForm : Form {
     if (tscb.SelectedItem is not GuiMediaItem.LanguageType value)
       return;
 
-    foreach (var item in this.dgvResults.GetSelectedItems<GuiMediaItem>().Where(i => !i.IsReadOnly && i.HasAudio0))
-      item.Audio0Language = value;
+    Parallel.ForEach(
+      this.dgvResults.GetSelectedItems<GuiMediaItem>().Where(i => !i.IsReadOnly && i.HasAudio0).ToArray(),
+      item => item.Audio0Language = value
+    );
   }
 
   private void tscbAudio2Language_SelectedIndexChanged(object s, EventArgs _) {
@@ -459,8 +467,10 @@ public partial class MainForm : Form {
     if (tscb.SelectedItem is not GuiMediaItem.LanguageType value)
       return;
 
-    foreach (var item in this.dgvResults.GetSelectedItems<GuiMediaItem>().Where(i => !i.IsReadOnly && i.HasAudio1))
-      item.Audio1Language = value;
+    Parallel.ForEach(
+      this.dgvResults.GetSelectedItems<GuiMediaItem>().Where(i => !i.IsReadOnly && i.HasAudio1).ToArray(),
+      item => item.Audio1Language = value
+    );
   }
 
   private void tsmiConvertToMkv_Click(object _, EventArgs __) {
@@ -525,7 +535,6 @@ public partial class MainForm : Form {
 
   private void tsmiAutoFillFromFileName_Click(object sender, EventArgs e) {
     this.tsmiTitleFromFilename_Click(sender, e);
-    this.tsmiFixTitleAndName_Click(sender, e);
     this.tsmiFixTitleAndName_Click(sender, e);
     this.tsmiRecoverSpaces_Click(sender, e);
     this.tsmiRemoveBracketContent_Click(sender, e);
