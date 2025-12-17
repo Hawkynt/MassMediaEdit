@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -80,7 +81,9 @@ internal sealed partial class GuiMediaItem : INotifyPropertyChanged {
 
   [DisplayName("Changed")]
   [DataGridViewColumnWidth(56)]
+  [DataGridViewCellStyle(backColorPropertyName:nameof(_CommitColor))]
   public bool NeedsCommit => this.commitData.Count > 0;
+  private Color _CommitColor=> this.NeedsCommit ? Color.Salmon : Color.White;
 
   [DisplayName("File Name")]
   [DataGridViewColumnWidth((char) 10)]
