@@ -91,6 +91,16 @@ internal sealed partial class GuiMediaItem : INotifyPropertyChanged {
   public string Size => FilesizeFormatter.FormatUnit(this.MediaFile.File.Length) + "B";
 
   [DataGridViewColumnWidth(DataGridViewAutoSizeColumnMode.ColumnHeader)]
+  public string Duration {
+    get {
+      var duration = this.MediaFile.GeneralStream?.Duration ?? TimeSpan.Zero;
+      return duration.TotalHours >= 1 
+        ? $"{(int)duration.TotalHours}:{duration.Minutes:D2}:{duration.Seconds:D2}" 
+        : $"{duration.Minutes}:{duration.Seconds:D2}";
+    }
+  }
+
+  [DataGridViewColumnWidth(DataGridViewAutoSizeColumnMode.ColumnHeader)]
   public string Container => this.MediaFile.GeneralStream?.Codec;
 
   private string _OriginalTitle => this.MediaFile.GeneralStream?.Title;
@@ -161,9 +171,8 @@ internal sealed partial class GuiMediaItem : INotifyPropertyChanged {
     var invoc = MainForm.Invocator;
     if (invoc != null) {
       if (invoc.InvokeRequired) {
-        var result = invoc.BeginInvoke(new Action<string>(this.OnPropertyChanged), [propertyName]);
-        result.AsyncWaitHandle.WaitOne();
-        invoc.EndInvoke(result);
+        // Use BeginInvoke without waiting to avoid deadlocks in parallel scenarios
+        invoc.BeginInvoke(new Action(() => subscribers.Invoke(this, args)), null);
       } else
         subscribers.Invoke(this, args);
 
@@ -173,20 +182,15 @@ internal sealed partial class GuiMediaItem : INotifyPropertyChanged {
     foreach (var subscriber in subscribers.GetInvocationList()) {
       if (subscriber.Target is ISynchronizeInvoke target)
         if (target.InvokeRequired) {
-          var asyncResult = target.BeginInvoke(subscriber, [this, args]);
-          asyncResult.AsyncWaitHandle.WaitOne();
-          target.EndInvoke(asyncResult);
+          target.BeginInvoke(subscriber, [this, args]);
         } else
           subscriber.DynamicInvoke(this, args);
       else
         subscriber.DynamicInvoke(this, args);
-
     }
   }
 
-  private void OnNeedsCommitChanged() 
-    => this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(this.NeedsCommit)))
-  ;
+  private void OnNeedsCommitChanged() => this.OnPropertyChanged(nameof(this.NeedsCommit));
 
   private void _RefreshAllProperties() {
     this.OnPropertyChanged(nameof(this.Title));
@@ -194,6 +198,7 @@ internal sealed partial class GuiMediaItem : INotifyPropertyChanged {
     this.OnPropertyChanged(nameof(this.FileName));
     this.OnPropertyChanged(nameof(this.Container));
     this.OnPropertyChanged(nameof(this.Size));
+    this.OnPropertyChanged(nameof(this.Duration));
     this.OnPropertyChanged(nameof(this.Video0Name));
     this.OnPropertyChanged(nameof(this.Audio0Language));
     this.OnPropertyChanged(nameof(this.Audio1Language));
