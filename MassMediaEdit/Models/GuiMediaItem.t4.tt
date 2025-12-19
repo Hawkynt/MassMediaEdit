@@ -1,4 +1,8 @@
-﻿<# 
+﻿<#@ template debug="false" hostspecific="false" language="C#" #>
+<#@ output extension=".cs" #>
+<#@ assembly name="System.Core" #>
+<#@ import namespace="System.Linq" #>
+<#
   const int VIDEO_STREAM_COUNT=1;
   var VIDEO_BACKGROUND_COLORS=new[]{"#CCF","#FFC"};
   const int AUDIO_STREAM_COUNT=2;
