@@ -4,10 +4,11 @@
     <OutputType>WinExe</OutputType>
     <TargetFramework>net8.0-windows</TargetFramework>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <Version>1.0.0</Version>
     <AssemblyTitle>MassMediaEdit</AssemblyTitle>
     <Company>»SynthelicZ«</Company>
     <Product>MassMediaEdit</Product>
-    <Copyright>Copyright © Hawkynt 2016-2024</Copyright>
+    <Copyright>Copyright © Hawkynt 2016-2025</Copyright>
     <OutputPath>bin\$(Configuration)\</OutputPath>
     <LangVersion>default</LangVersion>
     <ImplicitUsings>disable</ImplicitUsings>
@@ -103,10 +104,12 @@
   <ItemGroup>
     <PackageReference Include="FrameworkExtensions.Corlib" Version="*" />
     <None Include="..\ReadMe.md" Pack="True" PackagePath=".">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Link>ReadMe.md</Link>
     </None>
     <None Include="..\LICENSE" Pack="True" PackagePath=".">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Link>LICENSE</Link>
     </None>
   </ItemGroup>
   <ItemGroup>

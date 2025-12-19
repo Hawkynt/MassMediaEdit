@@ -5,6 +5,7 @@ on:
     branches: [ master ]
   pull_request:
     branches: [ master ]
+  workflow_dispatch:
 
 jobs:
   build:
@@ -13,22 +14,67 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v4
-      
+      with:
+        fetch-depth: 0
+
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
       with:
         dotnet-version: 8.0.x
 
+    - name: Update versions
+      run: perl ".github/workflows/UpdateVersions.pl" "."
+
     - name: Restore dependencies
       run: dotnet restore
 
     - name: Build
-      run: dotnet build --configuration Release --no-restore
+      run: dotnet build MassMediaEdit/MassMediaEdit.csproj --configuration Release --no-restore
+
+    - name: Get version
+      id: version
+      shell: pwsh
+      run: |
+        $csproj = [xml](Get-Content "MassMediaEdit/MassMediaEdit.csproj")
+        $version = $csproj.Project.PropertyGroup.Version | Where-Object { $_ }
+        echo "VERSION=$version" >> $env:GITHUB_OUTPUT
+        echo "Version: $version"
+
+    - name: Create ZIP archive
+      shell: pwsh
+      run: |
+        $outputDir = "MassMediaEdit/bin/Release/net8.0-windows"
+        $zipName = "MassMediaEdit-v${{ steps.version.outputs.VERSION }}.zip"
+        Compress-Archive -Path "$outputDir/*" -DestinationPath $zipName -Force
+        echo "Created $zipName"
 
     - name: Upload build artifacts
       uses: actions/upload-artifact@v4
       with:
-        name: build-output
-        path: |
-          **/bin/Release/
-          !**/obj/
+        name: MassMediaEdit-v${{ steps.version.outputs.VERSION }}
+        path: MassMediaEdit-v${{ steps.version.outputs.VERSION }}.zip
+
+    - name: Create Release (on push to master)
+      if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+      uses: softprops/action-gh-release@v2
+      with:
+        tag_name: v${{ steps.version.outputs.VERSION }}
+        name: MassMediaEdit v${{ steps.version.outputs.VERSION }}
+        body: |
+          ## MassMediaEdit v${{ steps.version.outputs.VERSION }}
+
+          Automated release build.
+
+          ### Installation
+          1. Download the ZIP file below
+          2. Extract to a folder of your choice
+          3. Run `MassMediaEdit.exe`
+
+          ### Requirements
+          - Windows OS
+          - .NET 8.0 Runtime
+        files: MassMediaEdit-v${{ steps.version.outputs.VERSION }}.zip
+        draft: false
+        prerelease: false
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
