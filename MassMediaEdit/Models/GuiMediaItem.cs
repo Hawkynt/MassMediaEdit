@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -10,12 +9,18 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Classes;
 using Libraries;
 using MassMediaEdit;
+using MassMediaEdit.Constants;
 
-namespace Classes.GUI;
+namespace Models;
 
-internal sealed partial class GuiMediaItem : INotifyPropertyChanged {
+/// <summary>
+/// Represents a media item in the GUI with change tracking and property change notifications.
+/// Serves as the ViewModel/Model in the MVP pattern for binding to DataGridView.
+/// </summary>
+public sealed partial class GuiMediaItem : INotifyPropertyChanged {
   
   #region messing with languages
 
@@ -30,49 +35,48 @@ internal sealed partial class GuiMediaItem : INotifyPropertyChanged {
     [FieldDisplayName("Russian")] Russian,
   }
 
-  private static LanguageType _FromCulture(CultureInfo culture) {
-    if (culture == null)
+  private static LanguageType _FromCulture(CultureInfo? culture) {
+    if (culture is null)
       return LanguageType.None;
 
     return culture.ThreeLetterISOLanguageName switch {
-      "deu" => LanguageType.German,
-      "eng" => LanguageType.English,
-      "jpn" => LanguageType.Japanese,
-      "spa" => LanguageType.Spanish,
-      "fra" => LanguageType.French,
-      "rus" => LanguageType.Russian,
+      LanguageCodes.German => LanguageType.German,
+      LanguageCodes.English => LanguageType.English,
+      LanguageCodes.Japanese => LanguageType.Japanese,
+      LanguageCodes.Spanish => LanguageType.Spanish,
+      LanguageCodes.French => LanguageType.French,
+      LanguageCodes.Russian => LanguageType.Russian,
       _ => LanguageType.Other
     };
   }
 
-  private static CultureInfo _ToCulture(LanguageType language) 
+  private static CultureInfo? _ToCulture(LanguageType language) 
     => language switch {
       LanguageType.None => null,
       LanguageType.Other => null,
-      LanguageType.German => new CultureInfo("de"),
-      LanguageType.English => new CultureInfo("en"),
-      LanguageType.Spanish => new CultureInfo("es"),
-      LanguageType.Japanese => new CultureInfo("ja"),
-      LanguageType.French => new CultureInfo("fr"),
-      LanguageType.Russian => new CultureInfo("ru"),
+      LanguageType.German => new(LanguageCodesShort.German),
+      LanguageType.English => new(LanguageCodesShort.English),
+      LanguageType.Spanish => new(LanguageCodesShort.Spanish),
+      LanguageType.Japanese => new(LanguageCodesShort.Japanese),
+      LanguageType.French => new(LanguageCodesShort.French),
+      LanguageType.Russian => new(LanguageCodesShort.Russian),
       _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
     };
 
   #endregion
 
   [Browsable(false)]
-  public MediaFile MediaFile {
-    get => this._mediaFile;
-    private set {
-      this._mediaFile = value;
+  public MediaFile MediaFile
+  {
+    get;
+    private set
+    {
+      field = value;
       this._RefreshAllProperties();
     }
   }
 
-  private readonly Dictionary<string, object> commitData = new();
-  private MediaFile _mediaFile;
-  private float? _progress;
-  private bool _isActionPending;
+  private readonly Dictionary<string, object?> _commitData = [];
 
   private GuiMediaItem(MediaFile mediaFile) => this.MediaFile = mediaFile;
 
@@ -82,7 +86,7 @@ internal sealed partial class GuiMediaItem : INotifyPropertyChanged {
   [DisplayName("Changed")]
   [DataGridViewColumnWidth(56)]
   [DataGridViewCellStyle(backColorPropertyName:nameof(_CommitColor))]
-  public bool NeedsCommit => this.commitData.Count > 0;
+  public bool NeedsCommit => this._commitData.Count > 0;
   private Color _CommitColor=> this.NeedsCommit ? Color.Salmon : Color.White;
 
   [DisplayName("File Name")]
@@ -104,14 +108,14 @@ internal sealed partial class GuiMediaItem : INotifyPropertyChanged {
   }
 
   [DataGridViewColumnWidth(DataGridViewAutoSizeColumnMode.ColumnHeader)]
-  public string Container => this.MediaFile.GeneralStream?.Codec;
+  public string? Container => this.MediaFile.GeneralStream?.Codec;
 
-  private string _OriginalTitle => this.MediaFile.GeneralStream?.Title;
+  private string? _OriginalTitle => this.MediaFile.GeneralStream?.Title;
 
   [DataGridViewColumnWidth((char) 20)]
   [DataGridViewConditionalReadOnly(nameof(IsReadOnly))]
-  public string Title {
-    get { return (string) this.commitData.GetValueOrDefault(nameof(this.Title), () => this._OriginalTitle); }
+  public string? Title {
+    get => (string?)this._commitData.GetValueOrDefault(nameof(this.Title), () => this._OriginalTitle);
     set {
       value = value.DefaultIfNullOrWhiteSpace()?.Trim();
 
@@ -119,27 +123,32 @@ internal sealed partial class GuiMediaItem : INotifyPropertyChanged {
         return;
 
       if (value == this._OriginalTitle)
-        this.commitData.Remove(nameof(this.Title));
+        this._commitData.Remove(nameof(this.Title));
       else
-        this.commitData.AddOrUpdate(nameof(this.Title), value);
+        this._commitData.AddOrUpdate(nameof(this.Title), value);
 
       this.OnPropertyChanged();
       this.OnNeedsCommitChanged();
     }
   }
 
+  private const string ConvertButtonText = "Convert";
+  private const string UnavailableButtonText = "Unavailable";
+
   [DisplayName("Convert to MKV")]
   [DataGridViewButtonColumn(isEnabledWhenPropertyName: nameof(IsMkvConversionEnabled), onClickMethodName: nameof(ConvertToMkvBackground))]
   [DataGridViewColumnWidth(DataGridViewAutoSizeColumnMode.DisplayedCells)]
-  public string ConvertTo => this.IsMkvConversionEnabled ? "Convert" : "Unavailable";
+  public string ConvertTo => this.IsMkvConversionEnabled ? ConvertButtonText : UnavailableButtonText;
 
   [Browsable(false)]
-  private bool _IsActionPending {
-    get => this._isActionPending;
-    set {
-      if (!this.SetProperty(this.OnPropertyChanged, ref this._isActionPending, value))
+  private bool _IsActionPending
+  {
+    get;
+    set
+    {
+      if (!this.SetProperty(this.OnPropertyChanged, ref field, value))
         return;
-      
+
       this.OnPropertyChanged(nameof(this.IsMkvConversionEnabled));
       this.OnPropertyChanged(nameof(this.ConvertTo));
     }
@@ -149,32 +158,32 @@ internal sealed partial class GuiMediaItem : INotifyPropertyChanged {
   public bool IsMkvConversionEnabled => !(this._IsActionPending || this.IsMkvContainer);
 
   [Browsable(false)]
-  public bool IsMkvContainer => ".mkv".Equals(this.MediaFile.File.Extension, StringComparison.OrdinalIgnoreCase);
+  public bool IsMkvContainer => FileExtensions.Mkv.Equals(this.MediaFile.File.Extension, StringComparison.OrdinalIgnoreCase);
 
   [DisplayName("NFO")]
   [DataGridViewColumnWidth((char)3)]
-  public bool HasNfo => this.MediaFile.File.WithNewExtension(".nfo").Exists;
+  public bool HasNfo => this.MediaFile.File.WithNewExtension(FileExtensions.Nfo).Exists;
 
   [DataGridViewProgressBarColumn]
   [DataGridViewColumnWidth(DataGridViewAutoSizeColumnMode.DisplayedCells)]
-  public float? Progress {
-    get => this._progress;
-    private set => this.SetProperty(this.OnPropertyChanged,ref this._progress, value);
+  public float? Progress
+  {
+    get;
+    private set => this.SetProperty(this.OnPropertyChanged, ref field, value);
   }
 
-  public event PropertyChangedEventHandler PropertyChanged;
+  public event PropertyChangedEventHandler? PropertyChanged;
 
-  private void OnPropertyChanged([CallerMemberName] string propertyName = null) {
+  private void OnPropertyChanged([CallerMemberName] string? propertyName = null) {
     var subscribers = this.PropertyChanged;
-    if (subscribers == null)
+    if (subscribers is null)
       return;
 
     var args = new PropertyChangedEventArgs(propertyName);
 
     var invoc = MainForm.Invocator;
-    if (invoc != null) {
+    if (invoc is not null) {
       if (invoc.InvokeRequired) {
-        // Use BeginInvoke without waiting to avoid deadlocks in parallel scenarios
         invoc.BeginInvoke(new Action(() => subscribers.Invoke(this, args)), null);
       } else
         subscribers.Invoke(this, args);
@@ -215,7 +224,7 @@ internal sealed partial class GuiMediaItem : INotifyPropertyChanged {
   }
 
   public void RevertChanges() {
-    this.commitData.Clear();
+    this._commitData.Clear();
     this._RefreshAllProperties();
   }
 
@@ -238,7 +247,7 @@ internal sealed partial class GuiMediaItem : INotifyPropertyChanged {
           :
 
           for (var i = 0; i < sourceAudios.Length; ++i)
-            if (sourceAudios[i].Language != null)
+            if (sourceAudios[i].Language is not null)
               MkvPropEdit.SetAudioLanguage(targetFile, sourceAudios[i].Language, (byte)i);
           
           this.MediaFile = mi;
@@ -270,15 +279,38 @@ internal sealed partial class GuiMediaItem : INotifyPropertyChanged {
     var directory = sourceFile.Directory;
 
     mask = mask.MultipleReplace(new Dictionary<string, string> {
-      {"{filename}", sourceFile.Name},
-      {"{extension}", sourceFile.Extension[1..]},
-      {"{title}", this.Title},
-      {"{video:name}", this.Video0Name},
+      {RenamePlaceholders.Filename, sourceFile.Name},
+      {RenamePlaceholders.Extension, sourceFile.Extension[1..]},
+      {RenamePlaceholders.Title, this.Title ?? string.Empty},
+      {RenamePlaceholders.VideoName, this.Video0Name ?? string.Empty},
     });
 
-    var targetFile = directory.File(mask);
-    sourceFile.MoveTo(targetFile.FullName);
-    this.MediaFile = MediaFile.FromFile(targetFile);
+    var targetFile = directory?.File(mask);
+    if (targetFile is null)
+      return;
+
+    if (string.Equals(sourceFile.FullName, targetFile.FullName, StringComparison.OrdinalIgnoreCase))
+      return;
+
+    if (targetFile.Exists) {
+      var baseName = Path.GetFileNameWithoutExtension(targetFile.Name);
+      var extension = targetFile.Extension;
+      var counter = 1;
+
+      do {
+        var newName = $"{baseName} ({counter}){extension}";
+        targetFile = directory!.File(newName);
+        ++counter;
+      } while (targetFile.Exists && counter < 1000);
+
+      if (targetFile.Exists)
+        throw new IOException($"Cannot rename '{sourceFile.Name}': unable to find a unique target filename.");
+    }
+
+    var targetPath = targetFile.FullName;
+    sourceFile.MoveTo(targetPath);
+    
+    this.MediaFile = MediaFile.FromFile(new FileInfo(targetPath));
   }
 
   public void CommitChanges() {
@@ -297,51 +329,50 @@ internal sealed partial class GuiMediaItem : INotifyPropertyChanged {
     for (var attempt = 1; attempt <= maxRetries; ++attempt) {
       try {
 
-        var data = this.commitData;
+        var data = this._commitData;
 
         if (data.TryGetValue(nameof(this.Title), out var title))
-          MkvPropEdit.SetTitle(file, (string) title);
+          MkvPropEdit.SetTitle(file, (string?)title);
 
         if (data.TryGetValue(nameof(this.Video0Name), out var name))
-          MkvPropEdit.SetVideoName(file, (string) name);
+          MkvPropEdit.SetVideoName(file, (string?)name);
 
         if (data.TryGetValue(nameof(this.Video0StereoscopicMode), out var stereoMode))
-          MkvPropEdit.SetVideoStereoscopicMode(file, (int) stereoMode);
+          MkvPropEdit.SetVideoStereoscopicMode(file, (int)stereoMode!);
 
-        if (data.TryGetValue(nameof(this.Audio0Language), out object audio0Language) &&
-            (LanguageType)audio0Language != LanguageType.Other)
+        if (data.TryGetValue(nameof(this.Audio0Language), out var audio0Language) &&
+            (LanguageType)audio0Language! != LanguageType.Other)
           MkvPropEdit.SetAudioLanguage(file, _ToCulture((LanguageType)audio0Language));
 
-        if (data.TryGetValue(nameof(this.Audio1Language), out object audio1Language) &&
-            (LanguageType)audio1Language != LanguageType.Other)
+        if (data.TryGetValue(nameof(this.Audio1Language), out var audio1Language) &&
+            (LanguageType)audio1Language! != LanguageType.Other)
           MkvPropEdit.SetAudioLanguage(file, _ToCulture((LanguageType)audio1Language), 1);
 
-        if (data.TryGetValue(nameof(this.Audio0IsDefault), out object audio0IsDefault) && audio0IsDefault != null)
+        if (data.TryGetValue(nameof(this.Audio0IsDefault), out var audio0IsDefault) && audio0IsDefault is not null)
           MkvPropEdit.SetAudioDefault(file, 0, (bool)audio0IsDefault);
 
-        if (data.TryGetValue(nameof(this.Audio1IsDefault), out object audio1IsDefault) && audio1IsDefault != null)
+        if (data.TryGetValue(nameof(this.Audio1IsDefault), out var audio1IsDefault) && audio1IsDefault is not null)
           MkvPropEdit.SetAudioDefault(file, 1, (bool)audio1IsDefault);
 
         data.Clear();
         break;
-      } catch (Exception e) {
+      } catch (Exception) {
         if (attempt < maxRetries)
           continue;
 
-  #if DEBUG
+#if DEBUG
         if (!Debugger.IsAttached)
           Debugger.Launch();
 
         Debugger.Break();
-  #endif
-        // Handle or log the exception after max retries if necessary
+#endif
       }
     }
 
     this.MediaFile = MediaFile.FromFile(file);
   }
 
-  public static bool IsWriteableMediaType(FileInfo file) => file.Extension == ".mkv";
+  public static bool IsWriteableMediaType(FileInfo file) => file.Extension.Equals(FileExtensions.Mkv, StringComparison.OrdinalIgnoreCase);
 
   public static GuiMediaItem FromMediaFile(MediaFile mediaFile) => new(mediaFile);
 

@@ -11,6 +11,7 @@
     <OutputPath>bin\$(Configuration)\</OutputPath>
     <LangVersion>default</LangVersion>
     <ImplicitUsings>disable</ImplicitUsings>
+    <Nullable>enable</Nullable>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugType>full</DebugType>
@@ -24,9 +25,10 @@
     <StartupObject>MassMediaEdit.Program</StartupObject>
   </PropertyGroup>
   <ItemGroup>
+    <InternalsVisibleTo Include="MassMediaEdit.Tests" />
     <Compile Include="..\..\..\Hawkynt.svn\C#\Libraries\ApplicationTitler.cs" Link="Libraries\ApplicationTitler.cs" />
     <Compile Include="..\..\..\Hawkynt.svn\C#\Libraries\FilesizeFormatter.cs" Link="Libraries\FilesizeFormatter.cs" />
-    <Compile Update="Classes\GUI\GuiMediaItem.t4.cs">
+    <Compile Update="Models\GuiMediaItem.t4.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>GuiMediaItem.t4.tt</DependentUpon>
@@ -57,7 +59,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="App.ico" />
-    <Content Include="Classes\GUI\GuiMediaItem.t4.tt">
+    <Content Include="Models\GuiMediaItem.t4.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>GuiMediaItem.t4.cs</LastGenOutput>
     </Content>
