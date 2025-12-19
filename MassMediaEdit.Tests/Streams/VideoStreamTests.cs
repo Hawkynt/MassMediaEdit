@@ -257,4 +257,223 @@ public sealed class VideoStreamTests {
     => Assert.That(this._stream.StereoscopicMode, Is.EqualTo(StereoscopicMode.None));
 
   #endregion
+
+  #region Extended Stereoscopic Mode Tests
+
+  [Test]
+  public void StereoscopicMode_SideBySideLeft_ReturnsCorrectValue() {
+    var data = CreateVideoDataWithStereo("side by side left");
+    var stream = StreamFactory.CreateVideoStream(data);
+    
+    Assert.That(stream.StereoscopicMode, Is.EqualTo(StereoscopicMode.SideBySideLeftFirst));
+  }
+
+  [Test]
+  public void StereoscopicMode_SideBySideRight_ReturnsCorrectValue() {
+    var data = CreateVideoDataWithStereo("side by side right");
+    var stream = StreamFactory.CreateVideoStream(data);
+    
+    Assert.That(stream.StereoscopicMode, Is.EqualTo(StereoscopicMode.SideBySideRightFirst));
+  }
+
+  [Test]
+  public void StereoscopicMode_TopBottomLeft_ReturnsCorrectValue() {
+    var data = CreateVideoDataWithStereo("top-bottom left");
+    var stream = StreamFactory.CreateVideoStream(data);
+    
+    Assert.That(stream.StereoscopicMode, Is.EqualTo(StereoscopicMode.HorizontalOverUnderLeftFirst));
+  }
+
+  [Test]
+  public void StereoscopicMode_TopBottomRight_ReturnsCorrectValue() {
+    var data = CreateVideoDataWithStereo("top-bottom right");
+    var stream = StreamFactory.CreateVideoStream(data);
+    
+    Assert.That(stream.StereoscopicMode, Is.EqualTo(StereoscopicMode.HorizontalOverUnderRightFirst));
+  }
+
+  [Test]
+  public void StereoscopicMode_CheckerboardLeft_ReturnsCorrectValue() {
+    var data = CreateVideoDataWithStereo("checkboard left");
+    var stream = StreamFactory.CreateVideoStream(data);
+    
+    Assert.That(stream.StereoscopicMode, Is.EqualTo(StereoscopicMode.CheckerboardLeftFirst));
+  }
+
+  [Test]
+  public void StereoscopicMode_CheckerboardRight_ReturnsCorrectValue() {
+    var data = CreateVideoDataWithStereo("checkboard right");
+    var stream = StreamFactory.CreateVideoStream(data);
+    
+    Assert.That(stream.StereoscopicMode, Is.EqualTo(StereoscopicMode.CheckerboardRightFirst));
+  }
+
+  [Test]
+  public void StereoscopicMode_RowInterleavedLeft_ReturnsCorrectValue() {
+    var data = CreateVideoDataWithStereo("row interleaved left");
+    var stream = StreamFactory.CreateVideoStream(data);
+    
+    Assert.That(stream.StereoscopicMode, Is.EqualTo(StereoscopicMode.RowInterleavedLeftFirst));
+  }
+
+  [Test]
+  public void StereoscopicMode_RowInterleavedRight_ReturnsCorrectValue() {
+    var data = CreateVideoDataWithStereo("row interleaved right");
+    var stream = StreamFactory.CreateVideoStream(data);
+    
+    Assert.That(stream.StereoscopicMode, Is.EqualTo(StereoscopicMode.RowInterleavedRightFirst));
+  }
+
+  [Test]
+  public void StereoscopicMode_ColumnInterleavedLeft_ReturnsCorrectValue() {
+    var data = CreateVideoDataWithStereo("column interleaved left");
+    var stream = StreamFactory.CreateVideoStream(data);
+    
+    Assert.That(stream.StereoscopicMode, Is.EqualTo(StereoscopicMode.ColumnInterleavedLeftFirst));
+  }
+
+  [Test]
+  public void StereoscopicMode_ColumnInterleavedRight_ReturnsCorrectValue() {
+    var data = CreateVideoDataWithStereo("column interleaved right");
+    var stream = StreamFactory.CreateVideoStream(data);
+    
+    Assert.That(stream.StereoscopicMode, Is.EqualTo(StereoscopicMode.ColumnInterleavedRightFirst));
+  }
+
+  [Test]
+  public void StereoscopicMode_AnaglyphCyanRed_ReturnsCorrectValue() {
+    var data = CreateVideoDataWithStereo("anaglyph cyan/red");
+    var stream = StreamFactory.CreateVideoStream(data);
+    
+    Assert.That(stream.StereoscopicMode, Is.EqualTo(StereoscopicMode.AnaglyphCyanRed));
+  }
+
+  [Test]
+  public void StereoscopicMode_AnaglyphGreenMagenta_ReturnsCorrectValue() {
+    var data = CreateVideoDataWithStereo("anaglyph green/magenta");
+    var stream = StreamFactory.CreateVideoStream(data);
+    
+    Assert.That(stream.StereoscopicMode, Is.EqualTo(StereoscopicMode.AnaglyphGreenMagenta));
+  }
+
+  [Test]
+  public void StereoscopicMode_UnknownLayout_ReturnsUnknown() {
+    var data = CreateVideoDataWithStereo("some unknown layout");
+    var stream = StreamFactory.CreateVideoStream(data);
+    
+    Assert.That(stream.StereoscopicMode, Is.EqualTo(StereoscopicMode.Unknown));
+  }
+
+  [Test]
+  public void StereoscopicMode_SideWithoutDirection_ReturnsUnknown() {
+    var data = CreateVideoDataWithStereo("side by side");
+    var stream = StreamFactory.CreateVideoStream(data);
+    
+    Assert.That(stream.StereoscopicMode, Is.EqualTo(StereoscopicMode.Unknown));
+  }
+
+  [Test]
+  public void StereoscopicMode_InterleavedWithoutType_ReturnsUnknown() {
+    var data = CreateVideoDataWithStereo("interleaved left");
+    var stream = StreamFactory.CreateVideoStream(data);
+    
+    Assert.That(stream.StereoscopicMode, Is.EqualTo(StereoscopicMode.Unknown));
+  }
+
+  private static string CreateVideoDataWithStereo(string stereoLayout) => $"""
+    Count                                    : 10
+    Kind of stream                           : Video
+    MultiView_Count                          : 2
+    MultiView_Layout                         : {stereoLayout}
+    Format                                   : AVC
+    Width                                    : 1920
+    Height                                   : 1080
+    """;
+
+  #endregion
+
+  #region Frame Rate Mode Edge Cases
+
+  [Test]
+  public void FrameRateModeValue_WithVfr_ReturnsVariable() {
+    var data = """
+      Kind of stream                           : Video
+      Frame rate mode                          : VFR
+      """;
+    var stream = StreamFactory.CreateVideoStream(data);
+    
+    Assert.That(stream.FrameRateModeValue, Is.EqualTo(FrameRateMode.Variable));
+  }
+
+  [Test]
+  public void FrameRateModeValue_WithVariable_ReturnsVariable() {
+    var data = """
+      Kind of stream                           : Video
+      Frame rate mode                          : Variable
+      """;
+    var stream = StreamFactory.CreateVideoStream(data);
+    
+    Assert.That(stream.FrameRateModeValue, Is.EqualTo(FrameRateMode.Variable));
+  }
+
+  [Test]
+  public void FrameRateModeValue_WithUnknownValue_ReturnsUnknown() {
+    var data = """
+      Kind of stream                           : Video
+      Frame rate mode                          : SomethingElse
+      """;
+    var stream = StreamFactory.CreateVideoStream(data);
+    
+    Assert.That(stream.FrameRateModeValue, Is.EqualTo(FrameRateMode.Unknown));
+  }
+
+  [Test]
+  public void FrameRateModeValue_WhenMissing_ReturnsUnknown() {
+    var data = """
+      Kind of stream                           : Video
+      Format                                   : AVC
+      """;
+    var stream = StreamFactory.CreateVideoStream(data);
+    
+    Assert.That(stream.FrameRateModeValue, Is.EqualTo(FrameRateMode.Unknown));
+  }
+
+  #endregion
+
+  #region Scan Type Edge Cases
+
+  [Test]
+  public void ScanTypeValue_WithInterlaced_ReturnsInterlaced() {
+    var data = """
+      Kind of stream                           : Video
+      Scan type                                : Interlaced
+      """;
+    var stream = StreamFactory.CreateVideoStream(data);
+    
+    Assert.That(stream.ScanTypeValue, Is.EqualTo(ScanType.Interlaced));
+  }
+
+  [Test]
+  public void ScanTypeValue_WithUnknownValue_ReturnsUnknown() {
+    var data = """
+      Kind of stream                           : Video
+      Scan type                                : SomethingElse
+      """;
+    var stream = StreamFactory.CreateVideoStream(data);
+    
+    Assert.That(stream.ScanTypeValue, Is.EqualTo(ScanType.Unknown));
+  }
+
+  [Test]
+  public void ScanTypeValue_WhenMissing_ReturnsUnknown() {
+    var data = """
+      Kind of stream                           : Video
+      Format                                   : AVC
+      """;
+    var stream = StreamFactory.CreateVideoStream(data);
+    
+    Assert.That(stream.ScanTypeValue, Is.EqualTo(ScanType.Unknown));
+  }
+
+  #endregion
 }

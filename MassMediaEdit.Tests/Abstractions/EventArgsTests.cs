@@ -42,6 +42,23 @@ public sealed class EventArgsTests {
     Assert.That(args, Is.InstanceOf<EventArgs>());
   }
 
+  [Test]
+  public void FilesDroppedEventArgs_PathsAreReadOnly() {
+    var originalPaths = new[] { "/path1.mkv", "/path2.mkv" };
+    var args = new FilesDroppedEventArgs(originalPaths);
+
+    // Paths should reference the original array
+    Assert.That(args.Paths, Is.SameAs(originalPaths));
+  }
+
+  [Test]
+  public void FilesDroppedEventArgs_WithSinglePath_WorksCorrectly() {
+    var args = new FilesDroppedEventArgs(["/single/file.mkv"]);
+
+    Assert.That(args.Paths, Has.Length.EqualTo(1));
+    Assert.That(args.Paths[0], Is.EqualTo("/single/file.mkv"));
+  }
+
   #endregion
 
   #region RenameRequestedEventArgs Tests
@@ -74,6 +91,24 @@ public sealed class EventArgsTests {
     var args = new RenameRequestedEventArgs("mask");
 
     Assert.That(args, Is.InstanceOf<EventArgs>());
+  }
+
+  [Test]
+  public void RenameRequestedEventArgs_WithWhitespaceMask_PreservesWhitespace() {
+    const string mask = "  {title}  ";
+
+    var args = new RenameRequestedEventArgs(mask);
+
+    Assert.That(args.Mask, Is.EqualTo(mask));
+  }
+
+  [Test]
+  public void RenameRequestedEventArgs_WithComplexMask_PreservesMask() {
+    const string mask = "{filename} - {title} [{video:name}].{extension}";
+
+    var args = new RenameRequestedEventArgs(mask);
+
+    Assert.That(args.Mask, Is.EqualTo(mask));
   }
 
   #endregion
@@ -120,6 +155,26 @@ public sealed class EventArgsTests {
     var args = new AudioLanguageChangedEventArgs(0, language);
 
     Assert.That(args.Language, Is.EqualTo(language));
+  }
+
+  [TestCase(0)]
+  [TestCase(1)]
+  [TestCase(2)]
+  [TestCase(5)]
+  [TestCase(10)]
+  public void AudioLanguageChangedEventArgs_AcceptsVariousTrackIndices(int trackIndex) {
+    var args = new AudioLanguageChangedEventArgs(trackIndex, GuiMediaItem.LanguageType.English);
+
+    Assert.That(args.TrackIndex, Is.EqualTo(trackIndex));
+  }
+
+  [Test]
+  public void AudioLanguageChangedEventArgs_TrackIndexAndLanguage_AreIndependent() {
+    var args1 = new AudioLanguageChangedEventArgs(0, GuiMediaItem.LanguageType.German);
+    var args2 = new AudioLanguageChangedEventArgs(1, GuiMediaItem.LanguageType.German);
+
+    Assert.That(args1.TrackIndex, Is.Not.EqualTo(args2.TrackIndex));
+    Assert.That(args1.Language, Is.EqualTo(args2.Language));
   }
 
   #endregion
