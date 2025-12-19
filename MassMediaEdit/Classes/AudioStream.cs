@@ -47,6 +47,15 @@ public class AudioStream : MediaStream {
   /// <summary>Gets additional format features (e.g., "LC" for AAC LC).</summary>
   public string FormatAdditionalFeatures => this.GetStringOrDefault("format_additionalfeatures");
 
+  /// <summary>Gets the format combined with profile/additional features (e.g., "AAC LC").</summary>
+  public string FormatWithProfile {
+    get {
+      var format = this.Format;
+      var features = this.FormatAdditionalFeatures;
+      return string.IsNullOrEmpty(features) ? format : $"{format} {features}";
+    }
+  }
+
   #endregion
 
   #region Compression

@@ -1,13 +1,25 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
-VisualStudioVersion = 17.10.35004.147
+# Visual Studio Version 18
+VisualStudioVersion = 18.0.11222.15 d18.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MassMediaEdit", "MassMediaEdit\MassMediaEdit.csproj", "{48C03795-8960-4B76-9F93-E85E132C53F6}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NfoFileFormat", "NfoFileFormat\NfoFileFormat.csproj", "{3985A8DF-ACFE-4FC1-BEE9-FECA6AB5424B}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MassMediaEdit.Tests", "MassMediaEdit.Tests\MassMediaEdit.Tests.csproj", "{8595A794-16AC-451B-95E4-34F605A7BF51}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NfoFileFormat.Tests", "NfoFileFormat.Tests\NfoFileFormat.Tests.csproj", "{19BE416B-A7F4-4FFE-98AB-DEF50029DE0E}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".github", ".github", "{51C35EAC-A1BB-48A0-B8EB-C22B00AD102C}"
+	ProjectSection(SolutionItems) = preProject
+		.github\FUNDING.yml = .github\FUNDING.yml
+		.github\workflows\NewBuild.yml = .github\workflows\NewBuild.yml
+		.github\workflows\NuGet.yml = .github\workflows\NuGet.yml
+		.github\workflows\Tests.yml = .github\workflows\Tests.yml
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{2C8AAB8E-6530-44B2-8B23-FE4C299965EE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -55,9 +67,25 @@ Global
 		{8595A794-16AC-451B-95E4-34F605A7BF51}.Release|x64.Build.0 = Release|Any CPU
 		{8595A794-16AC-451B-95E4-34F605A7BF51}.Release|x86.ActiveCfg = Release|Any CPU
 		{8595A794-16AC-451B-95E4-34F605A7BF51}.Release|x86.Build.0 = Release|Any CPU
+		{19BE416B-A7F4-4FFE-98AB-DEF50029DE0E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{19BE416B-A7F4-4FFE-98AB-DEF50029DE0E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{19BE416B-A7F4-4FFE-98AB-DEF50029DE0E}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{19BE416B-A7F4-4FFE-98AB-DEF50029DE0E}.Debug|x64.Build.0 = Debug|Any CPU
+		{19BE416B-A7F4-4FFE-98AB-DEF50029DE0E}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{19BE416B-A7F4-4FFE-98AB-DEF50029DE0E}.Debug|x86.Build.0 = Debug|Any CPU
+		{19BE416B-A7F4-4FFE-98AB-DEF50029DE0E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{19BE416B-A7F4-4FFE-98AB-DEF50029DE0E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{19BE416B-A7F4-4FFE-98AB-DEF50029DE0E}.Release|x64.ActiveCfg = Release|Any CPU
+		{19BE416B-A7F4-4FFE-98AB-DEF50029DE0E}.Release|x64.Build.0 = Release|Any CPU
+		{19BE416B-A7F4-4FFE-98AB-DEF50029DE0E}.Release|x86.ActiveCfg = Release|Any CPU
+		{19BE416B-A7F4-4FFE-98AB-DEF50029DE0E}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{8595A794-16AC-451B-95E4-34F605A7BF51} = {2C8AAB8E-6530-44B2-8B23-FE4C299965EE}
+		{19BE416B-A7F4-4FFE-98AB-DEF50029DE0E} = {2C8AAB8E-6530-44B2-8B23-FE4C299965EE}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {3C656FDE-56B5-44F8-8A16-1F33FE270DC5}

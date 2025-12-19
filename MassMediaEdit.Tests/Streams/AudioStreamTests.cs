@@ -178,4 +178,108 @@ public sealed class AudioStreamTests {
     => Assert.That(this._stream.StreamIdentifier, Is.EqualTo(0));
 
   #endregion
+
+  #region Compression Mode Edge Cases
+
+  [Test]
+  public void CompressionModeValue_WithLossless_ReturnsLossless() {
+    var data = """
+      Kind of stream                           : Audio
+      Compression mode                         : Lossless
+      """;
+    var stream = StreamFactory.CreateAudioStream(data);
+    
+    Assert.That(stream.CompressionModeValue, Is.EqualTo(CompressionMode.Lossless));
+  }
+
+  [Test]
+  public void CompressionModeValue_WithUnknownValue_ReturnsUnknown() {
+    var data = """
+      Kind of stream                           : Audio
+      Compression mode                         : SomethingElse
+      """;
+    var stream = StreamFactory.CreateAudioStream(data);
+    
+    Assert.That(stream.CompressionModeValue, Is.EqualTo(CompressionMode.Unknown));
+  }
+
+  [Test]
+  public void CompressionModeValue_WhenMissing_ReturnsUnknown() {
+    var data = """
+      Kind of stream                           : Audio
+      Format                                   : AAC
+      """;
+    var stream = StreamFactory.CreateAudioStream(data);
+    
+    Assert.That(stream.CompressionModeValue, Is.EqualTo(CompressionMode.Unknown));
+  }
+
+  #endregion
+
+  #region Replay Gain Tests
+
+  [Test]
+  public void ReplayGain_WhenPresent_ReturnsValue() {
+    var data = """
+      Kind of stream                           : Audio
+      Replay gain                              : -3.5
+      """;
+    var stream = StreamFactory.CreateAudioStream(data);
+    
+    Assert.That(stream.ReplayGain, Is.EqualTo(-3.5).Within(0.01));
+  }
+
+  [Test]
+  public void ReplayGain_WhenMissing_ReturnsNull() {
+    var stream = StreamFactory.CreateAudioStream();
+    
+    Assert.That(stream.ReplayGain, Is.Null);
+  }
+
+  [Test]
+  public void ReplayPeak_WhenPresent_ReturnsValue() {
+    var data = """
+      Kind of stream                           : Audio
+      Replay gain peak                         : 0.95
+      """;
+    var stream = StreamFactory.CreateAudioStream(data);
+    
+    Assert.That(stream.ReplayPeak, Is.EqualTo(0.95).Within(0.01));
+  }
+
+  [Test]
+  public void ReplayPeak_WhenMissing_ReturnsNull() {
+    var stream = StreamFactory.CreateAudioStream();
+    
+    Assert.That(stream.ReplayPeak, Is.Null);
+  }
+
+  #endregion
+
+  #region Format With Profile Edge Cases
+
+  [Test]
+  public void FormatWithProfile_WithoutAdditionalFeatures_ReturnsFormatOnly() {
+    var data = """
+      Kind of stream                           : Audio
+      Format                                   : FLAC
+      """;
+    var stream = StreamFactory.CreateAudioStream(data);
+    
+    Assert.That(stream.FormatWithProfile, Is.EqualTo("FLAC"));
+  }
+
+  [Test]
+  public void FormatWithProfile_WithEmptyAdditionalFeatures_ReturnsFormatOnly() {
+    var data = """
+      Kind of stream                           : Audio
+      Format                                   : FLAC
+      Format_AdditionalFeatures                : 
+      """;
+    var stream = StreamFactory.CreateAudioStream(data);
+    
+    Assert.That(stream.FormatWithProfile, Is.EqualTo("FLAC"));
+  }
+
+  #endregion
 }

@@ -1,11 +1,18 @@
 # MassMediaEdit
 
-![.NET Version](https://img.shields.io/badge/.NET-8.0-blue)
-![License](https://img.shields.io/github/license/Hawkynt/MassMediaEdit?style=flat-square)
+[![License](https://img.shields.io/badge/License-LGPL_3.0-blue)](https://licenses.nuget.org/LGPL-3.0-or-later)
+![Language](https://img.shields.io/github/languages/top/Hawkynt/MassMediaEdit?color=purple)
+[![Build](https://github.com/Hawkynt/MassMediaEdit/actions/workflows/NewBuild.yml/badge.svg)](https://github.com/Hawkynt/MassMediaEdit/actions/workflows/NewBuild.yml)
+[![Tests](https://github.com/Hawkynt/MassMediaEdit/actions/workflows/Tests.yml/badge.svg)](https://github.com/Hawkynt/MassMediaEdit/actions/workflows/Tests.yml)
+[![Last Commit](https://img.shields.io/github/last-commit/Hawkynt/MassMediaEdit?branch=master) ![Activity](https://img.shields.io/github/commit-activity/y/Hawkynt/MassMediaEdit?branch=master)](https://github.com/Hawkynt/MassMediaEdit/commits/master)
+![LineCount](https://tokei.rs/b1/github/Hawkynt/MassMediaEdit?color=magenta)
+![Size](https://img.shields.io/github/languages/code-size/Hawkynt/MassMediaEdit?color=green) /
+ ![Repo-Size](https://img.shields.io/github/repo-size/Hawkynt/MassMediaEdit?color=red)
+[![Stars](https://img.shields.io/github/stars/Hawkynt/MassMediaEdit?color=yellow)](https://github.com/Hawkynt/MassMediaEdit/stargazers)
 
-## Overview
+![Build History](https://buildstats.info/github/chart/hawkynt/MassMediaEdit)
 
-**MassMediaEdit** is a Windows Forms application designed for batch editing and managing media files. This tool provides various functionalities to streamline the organization and manipulation of media files, including support for different media formats and metadata editing.
+> **MassMediaEdit** is a Windows Forms application designed for batch editing and managing media files. This tool provides various functionalities to streamline the organization and manipulation of media files, including support for different media formats and metadata editing.
 
 ## Features
 

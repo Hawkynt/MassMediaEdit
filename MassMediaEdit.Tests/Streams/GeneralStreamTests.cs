@@ -175,4 +175,201 @@ public sealed class GeneralStreamTests {
     => Assert.That(this._stream.ProportionOfStream, Is.EqualTo(0.00327).Within(0.00001));
 
   #endregion
+
+  #region Album/Music Metadata Tests
+
+  [Test]
+  public void Album_WhenPresent_ReturnsValue() {
+    var data = """
+      Kind of stream                           : General
+      Album                                    : Greatest Hits
+      """;
+    var stream = StreamFactory.CreateGeneralStream(data);
+    
+    Assert.That(stream.Album, Is.EqualTo("Greatest Hits"));
+  }
+
+  [Test]
+  public void Album_WhenMissing_ReturnsNull() {
+    var stream = StreamFactory.CreateGeneralStream();
+    
+    Assert.That(stream.Album, Is.Null);
+  }
+
+  [Test]
+  public void Artist_WhenPresent_ReturnsValue() {
+    var data = """
+      Kind of stream                           : General
+      Performer                                : The Band
+      """;
+    var stream = StreamFactory.CreateGeneralStream(data);
+    
+    Assert.That(stream.Artist, Is.EqualTo("The Band"));
+  }
+
+  [Test]
+  public void AlbumArtist_WhenPresent_ReturnsValue() {
+    var data = """
+      Kind of stream                           : General
+      Album/Performer                          : Various Artists
+      """;
+    var stream = StreamFactory.CreateGeneralStream(data);
+    
+    Assert.That(stream.AlbumArtist, Is.EqualTo("Various Artists"));
+  }
+
+  [Test]
+  public void Title_WhenPresent_ReturnsValue() {
+    var data = """
+      Kind of stream                           : General
+      Title                                    : Song Name
+      """;
+    var stream = StreamFactory.CreateGeneralStream(data);
+    
+    Assert.That(stream.Title, Is.EqualTo("Song Name"));
+  }
+
+  [Test]
+  public void Track_WhenPresent_ReturnsValue() {
+    var data = """
+      Kind of stream                           : General
+      Track name/Position                      : 5
+      """;
+    var stream = StreamFactory.CreateGeneralStream(data);
+    
+    Assert.That(stream.Track, Is.EqualTo(5));
+  }
+
+  [Test]
+  public void TrackCount_WhenPresent_ReturnsValue() {
+    var data = """
+      Kind of stream                           : General
+      Track name/Total                         : 12
+      """;
+    var stream = StreamFactory.CreateGeneralStream(data);
+    
+    Assert.That(stream.TrackCount, Is.EqualTo(12));
+  }
+
+  [Test]
+  public void Disc_WhenPresent_ReturnsValue() {
+    var data = """
+      Kind of stream                           : General
+      Part/Position                            : 2
+      """;
+    var stream = StreamFactory.CreateGeneralStream(data);
+    
+    Assert.That(stream.Disc, Is.EqualTo(2));
+  }
+
+  [Test]
+  public void DiscCount_WhenPresent_ReturnsValue() {
+    var data = """
+      Kind of stream                           : General
+      Part/Total                               : 3
+      """;
+    var stream = StreamFactory.CreateGeneralStream(data);
+    
+    Assert.That(stream.DiscCount, Is.EqualTo(3));
+  }
+
+  [Test]
+  public void RecordingDate_WhenPresent_ReturnsValue() {
+    var data = """
+      Kind of stream                           : General
+      Recorded date                            : 2020-05-15
+      """;
+    var stream = StreamFactory.CreateGeneralStream(data);
+    
+    Assert.That(stream.RecordingDate, Is.EqualTo("2020-05-15"));
+  }
+
+  [Test]
+  public void AlbumGain_WhenPresent_ReturnsValue() {
+    var data = """
+      Kind of stream                           : General
+      Album replay gain                        : -6.5
+      """;
+    var stream = StreamFactory.CreateGeneralStream(data);
+    
+    Assert.That(stream.AlbumGain, Is.EqualTo(-6.5).Within(0.01));
+  }
+
+  [Test]
+  public void AlbumGain_WhenMissing_ReturnsNull() {
+    var stream = StreamFactory.CreateGeneralStream();
+    
+    Assert.That(stream.AlbumGain, Is.Null);
+  }
+
+  [Test]
+  public void AlbumPeak_WhenPresent_ReturnsValue() {
+    var data = """
+      Kind of stream                           : General
+      Album replay gain peak                   : 0.98
+      """;
+    var stream = StreamFactory.CreateGeneralStream(data);
+    
+    Assert.That(stream.AlbumPeak, Is.EqualTo(0.98).Within(0.01));
+  }
+
+  [Test]
+  public void AlbumPeak_WhenMissing_ReturnsNull() {
+    var stream = StreamFactory.CreateGeneralStream();
+    
+    Assert.That(stream.AlbumPeak, Is.Null);
+  }
+
+  #endregion
+
+  #region Streamability Tests Extended
+
+  [Test]
+  public void IsInterleaved_WhenPresent_ReturnsTrue() {
+    var data = """
+      Kind of stream                           : General
+      Interleaved                              : Yes
+      """;
+    var stream = StreamFactory.CreateGeneralStream(data);
+    
+    Assert.That(stream.IsInterleaved, Is.True);
+  }
+
+  [Test]
+  public void IsInterleaved_WhenNo_ReturnsFalse() {
+    var data = """
+      Kind of stream                           : General
+      Interleaved                              : No
+      """;
+    var stream = StreamFactory.CreateGeneralStream(data);
+    
+    Assert.That(stream.IsInterleaved, Is.False);
+  }
+
+  [Test]
+  public void IsInterleaved_WhenMissing_ReturnsFalse() {
+    var stream = StreamFactory.CreateGeneralStream();
+    
+    Assert.That(stream.IsInterleaved, Is.False);
+  }
+
+  #endregion
+
+  #region File Date Tests
+
+  [Test]
+  public void FileCreationDate_WhenPresent_ReturnsValue() {
+    var stream = StreamFactory.CreateGeneralStream();
+    
+    Assert.That(stream.FileCreationDate, Does.Contain("2024-01-15"));
+  }
+
+  [Test]
+  public void FileModificationDate_WhenPresent_ReturnsValue() {
+    var stream = StreamFactory.CreateGeneralStream();
+    
+    Assert.That(stream.FileModificationDate, Does.Contain("2024-01-15"));
+  }
+
+  #endregion
 }
