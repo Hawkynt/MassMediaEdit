@@ -14,23 +14,16 @@ namespace MassMediaEdit.Presenters;
 /// <summary>
 /// Main presenter implementing the MVP pattern for the media editor.
 /// </summary>
-public sealed class MainPresenter : IMainPresenter {
+public sealed class MainPresenter(
+  IBackgroundTaskRunner backgroundTaskRunner,
+  IUiSynchronizer uiSynchronizer
+) : IMainPresenter {
   private static readonly TimeSpan MinimumDuration = TimeSpan.FromSeconds(1);
 
-  private readonly IBackgroundTaskRunner _backgroundTaskRunner;
-  private readonly IUiSynchronizer _uiSynchronizer;
+  private readonly IBackgroundTaskRunner _backgroundTaskRunner = backgroundTaskRunner ?? throw new ArgumentNullException(nameof(backgroundTaskRunner));
+  private readonly IUiSynchronizer _uiSynchronizer = uiSynchronizer ?? throw new ArgumentNullException(nameof(uiSynchronizer));
 
   private IMainView? _view;
-
-  /// <summary>
-  /// Creates a new instance of the main presenter.
-  /// </summary>
-  public MainPresenter(
-    IBackgroundTaskRunner backgroundTaskRunner,
-    IUiSynchronizer uiSynchronizer) {
-    this._backgroundTaskRunner = backgroundTaskRunner ?? throw new ArgumentNullException(nameof(backgroundTaskRunner));
-    this._uiSynchronizer = uiSynchronizer ?? throw new ArgumentNullException(nameof(uiSynchronizer));
-  }
 
   /// <inheritdoc/>
   public void Initialize(IMainView view) {

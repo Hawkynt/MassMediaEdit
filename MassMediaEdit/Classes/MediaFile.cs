@@ -56,55 +56,51 @@ public class MediaFile {
 
   #region statics
 
-  internal static IEnumerable<MediaStream> _GetStreams(IEnumerable<Tuple<string, SectionDictionary>> sections) {
-    foreach (var tuple in sections) {
-      switch ((tuple.Item1 + " ").Split([' '], 2)[0]) {
-        case "General": {
-          yield return new GeneralStream(tuple.Item2);
+  internal static IEnumerable<MediaStream> _GetStreams(IEnumerable<(string Name, SectionDictionary Values)> sections) {
+    foreach (var (name, values) in sections) {
+      switch ((name + " ").Split([' '], 2)[0]) {
+        case "General":
+          yield return new GeneralStream(values);
           break;
-        }
-        case "Audio": {
-          yield return new AudioStream(tuple.Item2);
+        case "Audio":
+          yield return new AudioStream(values);
           break;
-        }
-        case "Video": {
-          yield return new VideoStream(tuple.Item2);
+        case "Video":
+          yield return new VideoStream(values);
           break;
-        }
       }
     }
   }
 
-  internal static IEnumerable<Tuple<string, SectionDictionary>> _GetSections(IEnumerable<string> lines) {
-    foreach (var section in _ParseSections(lines)) {
+  internal static IEnumerable<(string Name, SectionDictionary Values)> _GetSections(IEnumerable<string> lines) {
+    foreach (var (name, sectionLines) in _ParseSections(lines)) {
       var values = new SectionDictionary();
-      foreach (var kvp in section.Item2) {
+      foreach (var kvp in sectionLines) {
         var parts = kvp.Split([':'], 2);
         values.Add(parts[0].TrimEnd(), parts[1].TrimStart());
       }
-      yield return Tuple.Create(section.Item1, values);
+      yield return (name, values);
     }
 
     yield break;
 
-    static IEnumerable<Tuple<string, string[]>> _ParseSections(IEnumerable<string> lines) {
+    static IEnumerable<(string Name, string[] Lines)> _ParseSections(IEnumerable<string> lines) {
       string currentSection = null;
-      var currentLines = new List<string>();
+      List<string> currentLines = [];
       foreach (var line in lines) {
         var parts = line.Split([':'], 2);
         if (parts.Length < 2) {
           if (currentSection != null)
-            yield return Tuple.Create(currentSection, currentLines.ToArray());
+            yield return (currentSection, currentLines.ToArray());
 
           currentSection = parts[0];
           currentLines.Clear();
-        } else {
+        } else
           currentLines.Add(line);
-        }
       }
 
       if (currentSection != null)
-        yield return Tuple.Create(currentSection, currentLines.ToArray());
+        yield return (currentSection, currentLines.ToArray());
     }
   }
   

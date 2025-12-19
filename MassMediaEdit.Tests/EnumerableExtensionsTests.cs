@@ -29,7 +29,7 @@ public sealed class EnumerableExtensionsTests {
 
   [Test]
   public void OneOrDefault_WithEmptyEnumerable_ReturnsDefault() {
-    var items = System.Array.Empty<int>();
+    int[] items = [];
     
     var result = items.OneOrDefault();
     

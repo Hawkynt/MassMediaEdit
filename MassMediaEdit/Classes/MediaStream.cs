@@ -8,9 +8,7 @@ namespace Classes;
 
 public class MediaStream {
   private readonly SectionDictionary _values;
-  internal MediaStream(SectionDictionary values) {
-    this._values = values;
-  }
+  internal MediaStream(SectionDictionary values) => this._values = values;
 
   #region Common Properties
 

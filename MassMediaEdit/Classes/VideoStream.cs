@@ -36,9 +36,7 @@ public enum ScanType {
 }
 
 public class VideoStream : MediaStream {
-
-  internal VideoStream(SectionDictionary values) : base(values) {
-  }
+  internal VideoStream(SectionDictionary values) : base(values) { }
 
   #region Dimensions
 

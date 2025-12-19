@@ -88,6 +88,7 @@
     <None Include="Resources\16x16 Undo.png" />
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="T4.Build" Version="0.2.4" PrivateAssets="All" />
     <PackageReference Include="FrameworkExtensions.System.Windows.Forms" Version="*" />
   </ItemGroup>
   <ItemGroup>
@@ -110,5 +111,8 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\NfoFileFormat\NfoFileFormat.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
   </ItemGroup>
 </Project>
