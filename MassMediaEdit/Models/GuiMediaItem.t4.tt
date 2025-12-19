@@ -154,7 +154,7 @@ partial class GuiMediaItem{
   [DisplayName("Codec")]
   [DataGridViewCellStyle(backColor:"<#=AUDIO_BACKGROUND_COLORS[i%AUDIO_BACKGROUND_COLORS.Length]#>")]
   [DataGridViewColumnWidth(DataGridViewAutoSizeColumnMode.AllCells)]
-  public string Audio<#=i#>Codec => this.MediaFile.AudioStreams.Skip(<#=i#>).FirstOrDefault()?.Codec;
+  public string Audio<#=i#>Codec => this.MediaFile.AudioStreams.Skip(<#=i#>).FirstOrDefault()?.Format;
     
   [DisplayName("Rate")]
   [DataGridViewCellStyle(backColor:"<#=AUDIO_BACKGROUND_COLORS[i%AUDIO_BACKGROUND_COLORS.Length]#>")]
