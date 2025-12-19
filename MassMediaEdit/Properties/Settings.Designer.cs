@@ -49,5 +49,21 @@ namespace MassMediaEdit.Properties {
                 return ((string)(this["MKVMergePath"]));
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute(@"<?xml version=""1.0"" encoding=""utf-16""?>
+<ArrayOfString xmlns:xsd=""http://www.w3.org/2001/XMLSchema"" xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"">
+  <string>{title}.{extension}</string>
+  <string>{video:name}.{extension}</string>
+</ArrayOfString>")]
+        public global::System.Collections.Specialized.StringCollection FileRenameMasks {
+            get {
+                return ((global::System.Collections.Specialized.StringCollection)(this["FileRenameMasks"]));
+            }
+            set {
+                this["FileRenameMasks"] = value;
+            }
+        }
     }
 }
