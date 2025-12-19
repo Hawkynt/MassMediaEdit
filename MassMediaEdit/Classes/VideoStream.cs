@@ -17,12 +17,162 @@ public enum StereoscopicMode {
   Unknown,
 }
 
-public class VideoStream : MediaStream {
+/// <summary>
+/// Represents the frame rate mode of a video stream.
+/// </summary>
+public enum FrameRateMode {
+  Unknown,
+  Constant,
+  Variable
+}
 
+/// <summary>
+/// Represents the scan type of a video stream.
+/// </summary>
+public enum ScanType {
+  Unknown,
+  Progressive,
+  Interlaced
+}
+
+public class VideoStream : MediaStream {
 
   internal VideoStream(SectionDictionary values) : base(values) {
   }
 
+  #region Dimensions
+
+  /// <summary>Gets the width in pixels.</summary>
+  public int WidthInPixels => this.GetSomeIntOrDefault("width");
+  
+  /// <summary>Gets the height in pixels.</summary>
+  public int HeightInPixels => this.GetSomeIntOrDefault("height");
+  
+  /// <summary>Gets the stored height in pixels (may differ from display height due to padding).</summary>
+  public int StoredHeightInPixels => this.GetSomeIntOrDefault("stored_height");
+  
+  /// <summary>Gets the sampled width in pixels.</summary>
+  public int SampledWidthInPixels => this.GetSomeIntOrDefault("sampled_width");
+  
+  /// <summary>Gets the sampled height in pixels.</summary>
+  public int SampledHeightInPixels => this.GetSomeIntOrDefault("sampled_height");
+  
+  /// <summary>Gets the pixel aspect ratio.</summary>
+  public double PixelAspectRatio => this.GetDoubleOrDefault("pixel aspect ratio", defaultValue: 1.0);
+  
+  /// <summary>Gets the display aspect ratio as a decimal value.</summary>
+  public double DisplayAspectRatio => this.GetDoubleOrDefault("display aspect ratio");
+  
+  /// <summary>Gets the display aspect ratio as a string (e.g., "16:9").</summary>
+  public string DisplayAspectRatioString => this.GetStringOrDefault("display aspect ratio", 1);
+
+  #endregion
+
+  #region Frame Rate
+
+  /// <summary>Gets the frame rate in frames per second.</summary>
+  public double FramesPerSecond => this.GetDoubleOrDefault("frame rate");
+  
+  /// <summary>Gets the frame rate mode (Constant or Variable).</summary>
+  public FrameRateMode FrameRateModeValue {
+    get {
+      var mode = this.GetStringOrDefault("frame rate mode")?.ToLowerInvariant();
+      return mode switch {
+        "cfr" or "constant" => FrameRateMode.Constant,
+        "vfr" or "variable" => FrameRateMode.Variable,
+        _ => FrameRateMode.Unknown
+      };
+    }
+  }
+  
+  /// <summary>Gets the original frame rate mode before any conversion.</summary>
+  public string OriginalFrameRateMode => this.GetStringOrDefault("framerate_mode_original");
+  
+  /// <summary>Gets the frame rate numerator.</summary>
+  public int FrameRateNumerator => this.GetIntOrDefault("framerate_num");
+  
+  /// <summary>Gets the frame rate denominator.</summary>
+  public int FrameRateDenominator => this.GetIntOrDefault("framerate_den");
+
+  #endregion
+
+  #region Format Details
+  
+  /// <summary>Gets the format profile (e.g., "High@L3" for AVC).</summary>
+  public string FormatProfile => this.GetStringOrDefault("format profile");
+  
+  /// <summary>Gets the format settings description.</summary>
+  public string FormatSettings => this.GetStringOrDefault("format settings");
+  
+  /// <summary>Gets whether CABAC is used (AVC specific).</summary>
+  public bool UsesCabac => this.GetBoolOrDefault("format settings, cabac");
+  
+  /// <summary>Gets the number of reference frames.</summary>
+  public int ReferenceFrames => this.GetSomeIntOrDefault("format settings, reference frames");
+  
+  /// <summary>Gets the internet media type.</summary>
+  public string InternetMediaType => this.GetStringOrDefault("internet media type");
+
+  #endregion
+
+  #region Color Information
+
+  /// <summary>Gets the color space (e.g., "YUV").</summary>
+  public string ColorSpace => this.GetStringOrDefault("color space");
+  
+  /// <summary>Gets the chroma subsampling (e.g., "4:2:0").</summary>
+  public string ChromaSubsampling => this.GetStringOrDefault("chroma subsampling");
+  
+  /// <summary>Gets the bit depth in bits.</summary>
+  public int BitDepth => this.GetSomeIntOrDefault("bit depth");
+  
+  /// <summary>Gets the color range (Limited or Full).</summary>
+  public string ColorRange => this.GetStringOrDefault("color range");
+  
+  /// <summary>Gets whether color description is present in the stream.</summary>
+  public bool HasColorDescription => this.GetBoolOrDefault("colour_description_present");
+  
+  /// <summary>Gets the matrix coefficients (e.g., "BT.709").</summary>
+  public string MatrixCoefficients => this.GetStringOrDefault("matrix coefficients");
+
+  #endregion
+
+  #region Scan Type
+
+  /// <summary>Gets the scan type (Progressive or Interlaced).</summary>
+  public ScanType ScanTypeValue {
+    get {
+      var type = this.GetStringOrDefault("scan type")?.ToLowerInvariant();
+      return type switch {
+        "progressive" => ScanType.Progressive,
+        "interlaced" => ScanType.Interlaced,
+        _ => ScanType.Unknown
+      };
+    }
+  }
+
+  #endregion
+
+  #region Encoding Information
+
+  /// <summary>Gets the bits per pixel per frame.</summary>
+  public double BitsPerPixelFrame => this.GetDoubleOrDefault("bits/(pixel*frame)");
+  
+  /// <summary>Gets the writing/encoding library.</summary>
+  public string WritingLibrary => this.GetStringOrDefault("writing library");
+  
+  /// <summary>Gets the encoding library name.</summary>
+  public string EncodingLibraryName => this.GetStringOrDefault("encoded_library_name");
+  
+  /// <summary>Gets the encoding library version.</summary>
+  public string EncodingLibraryVersion => this.GetStringOrDefault("encoded_library_version");
+  
+  /// <summary>Gets the full encoding settings string.</summary>
+  public string EncodingSettings => this.GetStringOrDefault("encoding settings");
+
+  #endregion
+
+  #region Stereoscopic 3D
 
   public StereoscopicMode StereoscopicMode {
     get {
@@ -87,8 +237,6 @@ public class VideoStream : MediaStream {
   }
 
   public bool IsStereoscopic => this.GetIntOrDefault("MultiView_Count") == 2;
-  public string Format => this.GetStringOrDefault("format");
-  public int WidthInPixels => this.GetIntOrDefault("width");
-  public int HeightInPixels => this.GetIntOrDefault("height");
-  public double FramesPerSecond => this.GetDoubleOrDefault("frame rate");
+
+  #endregion
 }

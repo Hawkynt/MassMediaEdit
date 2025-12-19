@@ -3,7 +3,10 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
+
+[assembly: InternalsVisibleTo("MassMediaEdit.Tests")]
 
 namespace Classes;
 
@@ -27,6 +30,14 @@ public class MediaFile {
   private MediaFile(FileInfo file) {
     this.File = file;
   }
+  
+  /// <summary>
+  /// Internal constructor for testing purposes that accepts pre-parsed streams.
+  /// </summary>
+  internal MediaFile(FileInfo file, MediaStream[] streams) {
+    this.File = file;
+    this._streams = streams;
+  }
 
   private string[] _GatherCommandlineInfo() {
     var mediaInfoExecutable = MediaInfoExecutable;
@@ -45,7 +56,7 @@ public class MediaFile {
 
   #region statics
 
-  private static IEnumerable<MediaStream> _GetStreams(IEnumerable<Tuple<string, SectionDictionary>> sections) {
+  internal static IEnumerable<MediaStream> _GetStreams(IEnumerable<Tuple<string, SectionDictionary>> sections) {
     foreach (var tuple in sections) {
       switch ((tuple.Item1 + " ").Split([' '], 2)[0]) {
         case "General": {
@@ -64,7 +75,7 @@ public class MediaFile {
     }
   }
 
-  private static IEnumerable<Tuple<string, SectionDictionary>> _GetSections(IEnumerable<string> lines) {
+  internal static IEnumerable<Tuple<string, SectionDictionary>> _GetSections(IEnumerable<string> lines) {
     foreach (var section in _ParseSections(lines)) {
       var values = new SectionDictionary();
       foreach (var kvp in section.Item2) {
