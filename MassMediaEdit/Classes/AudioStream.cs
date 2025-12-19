@@ -10,8 +10,7 @@ public enum CompressionMode {
 }
 
 public class AudioStream : MediaStream {
-  internal AudioStream(SectionDictionary values) : base(values) {
-  }
+  internal AudioStream(SectionDictionary values) : base(values) { }
 
   #region Channel Information
 

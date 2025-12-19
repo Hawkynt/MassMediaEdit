@@ -3,8 +3,7 @@
 namespace Classes;
 
 public class GeneralStream : MediaStream {
-  internal GeneralStream(SectionDictionary values) : base(values) {
-  }
+  internal GeneralStream(SectionDictionary values) : base(values) { }
 
   #region File Information
 

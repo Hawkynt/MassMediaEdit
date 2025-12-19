@@ -8,8 +8,10 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using System.Windows.Forms;
 
+using Classes;
 using Libraries;
 
 namespace Models;
@@ -26,7 +28,7 @@ partial class GuiMediaItem{
   [DataGridViewColumnWidth((char)20)]
   public string Video<#=i#>Name {
     get {
-      return (string)this.commitData.GetValueOrDefault(nameof(this.Video<#=i#>Name), () => this._OriginalVideo<#=i#>Name);
+      return (string)this._commitData.GetValueOrDefault(nameof(this.Video<#=i#>Name), () => this._OriginalVideo<#=i#>Name);
     }
     set {
       value = value.DefaultIfNullOrWhiteSpace()?.Trim();
@@ -35,9 +37,9 @@ partial class GuiMediaItem{
         return;
 
       if (value == this._OriginalVideo<#=i#>Name)
-        this.commitData.Remove(nameof(this.Video<#=i#>Name));
+        this._commitData.Remove(nameof(this.Video<#=i#>Name));
       else
-        this.commitData.AddOrUpdate(nameof(this.Video<#=i#>Name), value);
+        this._commitData.AddOrUpdate(nameof(this.Video<#=i#>Name), value);
 
       this.OnPropertyChanged();
       this.OnNeedsCommitChanged();
@@ -80,13 +82,13 @@ partial class GuiMediaItem{
   [DataGridViewColumnWidth(DataGridViewAutoSizeColumnMode.AllCells)]
   public StereoscopicMode Video<#=i#>StereoscopicMode {
     get{
-      return (StereoscopicMode)this.commitData.GetValueOrDefault(nameof(this.Video<#=i#>StereoscopicMode), () => this._OriginalVideo<#=i#>StereoscopicMode);
+      return (StereoscopicMode)this._commitData.GetValueOrDefault(nameof(this.Video<#=i#>StereoscopicMode), () => this._OriginalVideo<#=i#>StereoscopicMode);
     }
     set{
       if (value == this._OriginalVideo<#=i#>StereoscopicMode)
-        this.commitData.Remove(nameof(this.Video<#=i#>StereoscopicMode));
+        this._commitData.Remove(nameof(this.Video<#=i#>StereoscopicMode));
       else
-        this.commitData.AddOrUpdate(nameof(this.Video<#=i#>StereoscopicMode), value);
+        this._commitData.AddOrUpdate(nameof(this.Video<#=i#>StereoscopicMode), value);
 
       this.OnPropertyChanged();
       this.OnNeedsCommitChanged();
@@ -108,7 +110,7 @@ partial class GuiMediaItem{
   [DataGridViewCheckboxColumn]
   public bool? Audio<#=i#>IsDefault {
     get {
-      return (bool?)this.commitData.GetValueOrDefault(nameof(this.Audio<#=i#>IsDefault), () => this._OriginalAudio<#=i#>IsDefault);
+      return (bool?)this._commitData.GetValueOrDefault(nameof(this.Audio<#=i#>IsDefault), () => this._OriginalAudio<#=i#>IsDefault);
     }
     set {
       if(value == true) {
@@ -121,9 +123,9 @@ partial class GuiMediaItem{
       }
 
       if (value == this._OriginalAudio<#=i#>IsDefault)
-        this.commitData.Remove(nameof(this.Audio<#=i#>IsDefault));
+        this._commitData.Remove(nameof(this.Audio<#=i#>IsDefault));
       else
-        this.commitData.AddOrUpdate(nameof(this.Audio<#=i#>IsDefault), value);
+        this._commitData.AddOrUpdate(nameof(this.Audio<#=i#>IsDefault), value);
 
       this.OnPropertyChanged();
       this.OnNeedsCommitChanged();
@@ -138,13 +140,13 @@ partial class GuiMediaItem{
   [DataGridViewColumnWidth(DataGridViewAutoSizeColumnMode.AllCells)]
   public LanguageType Audio<#=i#>Language {
     get{
-      return (LanguageType)this.commitData.GetValueOrDefault(nameof(this.Audio<#=i#>Language), () => this._OriginalAudio<#=i#>Language);
+      return (LanguageType)this._commitData.GetValueOrDefault(nameof(this.Audio<#=i#>Language), () => this._OriginalAudio<#=i#>Language);
     }
     set{
       if (value == this._OriginalAudio<#=i#>Language)
-        this.commitData.Remove(nameof(this.Audio<#=i#>Language));
+        this._commitData.Remove(nameof(this.Audio<#=i#>Language));
       else
-        this.commitData.AddOrUpdate(nameof(this.Audio<#=i#>Language), value);
+        this._commitData.AddOrUpdate(nameof(this.Audio<#=i#>Language), value);
 
       this.OnPropertyChanged();
       this.OnNeedsCommitChanged();
