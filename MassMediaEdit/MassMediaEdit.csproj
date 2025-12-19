@@ -26,8 +26,6 @@
   </PropertyGroup>
   <ItemGroup>
     <InternalsVisibleTo Include="MassMediaEdit.Tests" />
-    <Compile Include="..\..\..\Hawkynt.svn\C#\Libraries\ApplicationTitler.cs" Link="Libraries\ApplicationTitler.cs" />
-    <Compile Include="..\..\..\Hawkynt.svn\C#\Libraries\FilesizeFormatter.cs" Link="Libraries\FilesizeFormatter.cs" />
     <Compile Update="Models\GuiMediaItem.t4.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
