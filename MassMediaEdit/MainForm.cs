@@ -219,12 +219,12 @@ public partial class MainForm : Form, IMainView {
         selectedItems.Any(static i => i.NeedsCommit);
 
     if (this.tsmiAudio0.Enabled = selectedItems.Any(static i => i.HasAudio0))
-      this.tscbAudio0Language.SelectedItem = selectedItems.Select(static i => i.Audio0Language).Distinct().SingleOrDefault();
+      this.tscbAudio0Language.SelectedItem = selectedItems.Select(static i => i.Audio0Language).Distinct().OneOrDefault();
     else
       this.tscbAudio0Language.SelectedItem = null;
 
     if (this.tsmiAudio1.Enabled = selectedItems.Any(static i => i.HasAudio1))
-      this.tscbAudio1Language.SelectedItem = selectedItems.Select(static i => i.Audio1Language).Distinct().SingleOrDefault();
+      this.tscbAudio1Language.SelectedItem = selectedItems.Select(static i => i.Audio1Language).Distinct().OneOrDefault();
     else
       this.tscbAudio1Language.SelectedItem = null;
 
