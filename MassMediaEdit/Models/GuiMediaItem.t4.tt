@@ -1,4 +1,4 @@
-﻿<#@ template debug="false" hostspecific="false" language="C#" #>
+<#@ template debug="false" hostspecific="false" language="C#" #>
 <#@ output extension=".cs" #>
 <#@ assembly name="System.Core" #>
 <#@ import namespace="System.Linq" #>
@@ -12,28 +12,102 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Globalization;
 using System.Linq;
 using System.Windows.Forms;
 
 using Classes;
 using Libraries;
+using MassMediaEdit;
 
 namespace Models;
 
-partial class GuiMediaItem{
-    
+partial class GuiMediaItem {
+
+  #region Cached field values
+
 <#for(var i=0;i<VIDEO_STREAM_COUNT;++i){#>
-    
-  private string _OriginalVideo<#=i#>Name => this.MediaFile.VideoStreams.Skip(<#=i#>).FirstOrDefault()?.Name;
+  // Video<#=i#> cached values
+  private string _cachedVideo<#=i#>Name;
+  private string _cachedVideo<#=i#>Codec;
+  private int _cachedVideo<#=i#>WidthInPixels;
+  private int _cachedVideo<#=i#>HeightInPixels;
+  private long _cachedVideo<#=i#>BitRateInBitsPerSecond;
+  private StereoscopicMode _cachedVideo<#=i#>StereoscopicMode;
+
+<#}#>
+<#for(var i=0;i<AUDIO_STREAM_COUNT;++i){#>
+  // Audio<#=i#> cached values
+  private bool _hasAudio<#=i#>;
+  private bool? _cachedAudio<#=i#>IsDefault;
+  private CultureInfo _cachedAudio<#=i#>Language;
+  private string _cachedAudio<#=i#>Codec;
+  private int? _cachedAudio<#=i#>SamplingRate;
+  private int? _cachedAudio<#=i#>Channels;
+  private long? _cachedAudio<#=i#>BitRateInBitsPerSecond;
+
+<#}#>
+  #endregion
+
+  private void _PopulateCachedValues(MediaFile mediaFile) {
+    var videoStreams = mediaFile.VideoStreams.ToArray();
+    var audioStreams = mediaFile.AudioStreams.ToArray();
+
+<#for(var i=0;i<VIDEO_STREAM_COUNT;++i){#>
+    // Video<#=i#>
+    if (<#=i#> < videoStreams.Length) {
+      var v<#=i#> = videoStreams[<#=i#>];
+      this._cachedVideo<#=i#>Name = v<#=i#>.Name;
+      this._cachedVideo<#=i#>Codec = v<#=i#>.Format;
+      this._cachedVideo<#=i#>WidthInPixels = v<#=i#>.WidthInPixels;
+      this._cachedVideo<#=i#>HeightInPixels = v<#=i#>.HeightInPixels;
+      this._cachedVideo<#=i#>BitRateInBitsPerSecond = v<#=i#>.BitRateInBitsPerSecond;
+      this._cachedVideo<#=i#>StereoscopicMode = v<#=i#>.StereoscopicMode;
+    } else {
+      this._cachedVideo<#=i#>Name = null;
+      this._cachedVideo<#=i#>Codec = null;
+      this._cachedVideo<#=i#>WidthInPixels = 0;
+      this._cachedVideo<#=i#>HeightInPixels = 0;
+      this._cachedVideo<#=i#>BitRateInBitsPerSecond = 0;
+      this._cachedVideo<#=i#>StereoscopicMode = StereoscopicMode.Unknown;
+    }
+
+<#}#>
+<#for(var i=0;i<AUDIO_STREAM_COUNT;++i){#>
+    // Audio<#=i#>
+    if (<#=i#> < audioStreams.Length) {
+      var a<#=i#> = audioStreams[<#=i#>];
+      this._hasAudio<#=i#> = true;
+      this._cachedAudio<#=i#>IsDefault = a<#=i#>.IsDefault;
+      this._cachedAudio<#=i#>Language = a<#=i#>.Language;
+      this._cachedAudio<#=i#>Codec = a<#=i#>.Format;
+      this._cachedAudio<#=i#>SamplingRate = a<#=i#>.SamplingRate;
+      this._cachedAudio<#=i#>Channels = a<#=i#>.Channels;
+      this._cachedAudio<#=i#>BitRateInBitsPerSecond = a<#=i#>.BitRateInBitsPerSecond;
+    } else {
+      this._hasAudio<#=i#> = false;
+      this._cachedAudio<#=i#>IsDefault = null;
+      this._cachedAudio<#=i#>Language = null;
+      this._cachedAudio<#=i#>Codec = null;
+      this._cachedAudio<#=i#>SamplingRate = null;
+      this._cachedAudio<#=i#>Channels = null;
+      this._cachedAudio<#=i#>BitRateInBitsPerSecond = null;
+    }
+
+<#}#>
+  }
+
+  #region Video stream properties
+
+<#for(var i=0;i<VIDEO_STREAM_COUNT;++i){#>
+  private string _OriginalVideo<#=i#>Name => this._cachedVideo<#=i#>Name;
 
   [DisplayName("Name")]
   [DataGridViewConditionalReadOnly(nameof(IsReadOnly))]
   [DataGridViewCellStyle(backColor:"<#=VIDEO_BACKGROUND_COLORS[i%VIDEO_BACKGROUND_COLORS.Length]#>")]
   [DataGridViewColumnWidth((char)20)]
   public string Video<#=i#>Name {
-    get {
-      return (string)this._commitData.GetValueOrDefault(nameof(this.Video<#=i#>Name), () => this._OriginalVideo<#=i#>Name);
-    }
+    get => (string)this._commitData.GetValueOrDefault(nameof(this.Video<#=i#>Name), () => this._OriginalVideo<#=i#>Name);
     set {
       value = value.DefaultIfNullOrWhiteSpace()?.Trim();
 
@@ -53,42 +127,37 @@ partial class GuiMediaItem{
   [DisplayName("Codec")]
   [DataGridViewCellStyle(backColor:"<#=VIDEO_BACKGROUND_COLORS[i%VIDEO_BACKGROUND_COLORS.Length]#>")]
   [DataGridViewColumnWidth(DataGridViewAutoSizeColumnMode.AllCells)]
-  public string Video<#=i#>Codec => this.MediaFile.VideoStreams.Skip(<#=i#>).FirstOrDefault()?.Format;
-    
+  public string Video<#=i#>Codec => this._cachedVideo<#=i#>Codec;
+
   [DisplayName("Width")]
   [DataGridViewCellStyle(backColor:"<#=VIDEO_BACKGROUND_COLORS[i%VIDEO_BACKGROUND_COLORS.Length]#>")]
   [DataGridViewColumnWidth(DataGridViewAutoSizeColumnMode.AllCells)]
-  public int Video<#=i#>WidthInPixels => this.MediaFile.VideoStreams.Skip(<#=i#>).FirstOrDefault()?.WidthInPixels ?? 0;
+  public int Video<#=i#>WidthInPixels => this._cachedVideo<#=i#>WidthInPixels;
 
   [DisplayName("Height")]
   [DataGridViewCellStyle(backColor:"<#=VIDEO_BACKGROUND_COLORS[i%VIDEO_BACKGROUND_COLORS.Length]#>")]
   [DataGridViewColumnWidth(DataGridViewAutoSizeColumnMode.AllCells)]
-  public int Video<#=i#>HeightInPixels => this.MediaFile.VideoStreams.Skip(<#=i#>).FirstOrDefault()?.HeightInPixels ?? 0;
+  public int Video<#=i#>HeightInPixels => this._cachedVideo<#=i#>HeightInPixels;
 
   [DisplayName("Bitrate")]
   [DataGridViewCellStyle(backColor:"<#=VIDEO_BACKGROUND_COLORS[i%VIDEO_BACKGROUND_COLORS.Length]#>")]
   [DataGridViewColumnWidth(DataGridViewAutoSizeColumnMode.AllCells)]
   public string Video<#=i#>BitRateInBitsPerSecond {
     get {
-      var result = this.MediaFile.VideoStreams.Skip(<#=i#>).FirstOrDefault()?.BitRateInBitsPerSecond ?? 0;
-      if(result < 1)
-        return null;
-
-      return FilesizeFormatter.FormatUnit(result,true)+"Bit/s";
+      var result = this._cachedVideo<#=i#>BitRateInBitsPerSecond;
+      return result < 1 ? null : FilesizeFormatter.FormatUnit(result, true) + "Bit/s";
     }
   }
-    
-  private StereoscopicMode _OriginalVideo<#=i#>StereoscopicMode => this.MediaFile.VideoStreams.Skip(<#=i#>).FirstOrDefault()?.StereoscopicMode ?? StereoscopicMode.Unknown;
-    
+
+  private StereoscopicMode _OriginalVideo<#=i#>StereoscopicMode => this._cachedVideo<#=i#>StereoscopicMode;
+
   [DisplayName("3D-Mode")]
   [DataGridViewConditionalReadOnly(nameof(IsReadOnly))]
   [DataGridViewCellStyle(backColor:"<#=VIDEO_BACKGROUND_COLORS[i%VIDEO_BACKGROUND_COLORS.Length]#>")]
   [DataGridViewColumnWidth(DataGridViewAutoSizeColumnMode.AllCells)]
   public StereoscopicMode Video<#=i#>StereoscopicMode {
-    get{
-      return (StereoscopicMode)this._commitData.GetValueOrDefault(nameof(this.Video<#=i#>StereoscopicMode), () => this._OriginalVideo<#=i#>StereoscopicMode);
-    }
-    set{
+    get => (StereoscopicMode)this._commitData.GetValueOrDefault(nameof(this.Video<#=i#>StereoscopicMode), () => this._OriginalVideo<#=i#>StereoscopicMode);
+    set {
       if (value == this._OriginalVideo<#=i#>StereoscopicMode)
         this._commitData.Remove(nameof(this.Video<#=i#>StereoscopicMode));
       else
@@ -98,14 +167,17 @@ partial class GuiMediaItem{
       this.OnNeedsCommitChanged();
     }
   }
-        
+
 <#}#>
+  #endregion
+
+  #region Audio stream properties
+
 <#for(var i=0;i<AUDIO_STREAM_COUNT;++i){#>
-    
-  private bool? _OriginalAudio<#=i#>IsDefault => this.MediaFile.AudioStreams.Skip(<#=i#>).FirstOrDefault()?.IsDefault;
+  private bool? _OriginalAudio<#=i#>IsDefault => this._cachedAudio<#=i#>IsDefault;
 
   [Browsable(false)]
-  public bool HasAudio<#=i#> => this.MediaFile.AudioStreams.Count() > <#=i#>;
+  public bool HasAudio<#=i#> => this._hasAudio<#=i#>;
 
   [DisplayName("Default")]
   [DataGridViewConditionalReadOnly(nameof(IsReadOnly))]
@@ -113,14 +185,12 @@ partial class GuiMediaItem{
   [DataGridViewColumnWidth(DataGridViewAutoSizeColumnMode.AllCells)]
   [DataGridViewCheckboxColumn]
   public bool? Audio<#=i#>IsDefault {
-    get {
-      return (bool?)this._commitData.GetValueOrDefault(nameof(this.Audio<#=i#>IsDefault), () => this._OriginalAudio<#=i#>IsDefault);
-    }
+    get => (bool?)this._commitData.GetValueOrDefault(nameof(this.Audio<#=i#>IsDefault), () => this._OriginalAudio<#=i#>IsDefault);
     set {
-      if(value == true) {
+      if (value == true) {
 <#for(var j=0;j<AUDIO_STREAM_COUNT;++j){#>
 <#  if(j!=i){#>
-        if(this.Audio<#=j#>IsDefault.HasValue && this.Audio<#=j#>IsDefault.Value)
+        if (this.Audio<#=j#>IsDefault.HasValue && this.Audio<#=j#>IsDefault.Value)
           this.Audio<#=j#>IsDefault = false;
 <#  }#>
 <#}#>
@@ -136,17 +206,15 @@ partial class GuiMediaItem{
     }
   }
 
-  private LanguageType _OriginalAudio<#=i#>Language => _FromCulture(this.MediaFile.AudioStreams.Skip(<#=i#>).FirstOrDefault()?.Language);
+  private LanguageType _OriginalAudio<#=i#>Language => _FromCulture(this._cachedAudio<#=i#>Language);
 
   [DisplayName("Language")]
   [DataGridViewConditionalReadOnly(nameof(IsReadOnly))]
   [DataGridViewCellStyle(backColor:"<#=AUDIO_BACKGROUND_COLORS[i%AUDIO_BACKGROUND_COLORS.Length]#>")]
   [DataGridViewColumnWidth(DataGridViewAutoSizeColumnMode.AllCells)]
   public LanguageType Audio<#=i#>Language {
-    get{
-      return (LanguageType)this._commitData.GetValueOrDefault(nameof(this.Audio<#=i#>Language), () => this._OriginalAudio<#=i#>Language);
-    }
-    set{
+    get => (LanguageType)this._commitData.GetValueOrDefault(nameof(this.Audio<#=i#>Language), () => this._OriginalAudio<#=i#>Language);
+    set {
       if (value == this._OriginalAudio<#=i#>Language)
         this._commitData.Remove(nameof(this.Audio<#=i#>Language));
       else
@@ -160,39 +228,34 @@ partial class GuiMediaItem{
   [DisplayName("Codec")]
   [DataGridViewCellStyle(backColor:"<#=AUDIO_BACKGROUND_COLORS[i%AUDIO_BACKGROUND_COLORS.Length]#>")]
   [DataGridViewColumnWidth(DataGridViewAutoSizeColumnMode.AllCells)]
-  public string Audio<#=i#>Codec => this.MediaFile.AudioStreams.Skip(<#=i#>).FirstOrDefault()?.Format;
-    
+  public string Audio<#=i#>Codec => this._cachedAudio<#=i#>Codec;
+
   [DisplayName("Rate")]
   [DataGridViewCellStyle(backColor:"<#=AUDIO_BACKGROUND_COLORS[i%AUDIO_BACKGROUND_COLORS.Length]#>")]
   [DataGridViewColumnWidth(DataGridViewAutoSizeColumnMode.AllCells)]
   public string Audio<#=i#>SamplingRate {
-    get{
-      var result=this.MediaFile.AudioStreams.Skip(<#=i#>).FirstOrDefault()?.SamplingRate;
-      if(result==null)
-        return null;
-
-      return FilesizeFormatter.FormatUnit(result.Value,true,format: "0.#")+"Hz";
+    get {
+      var result = this._cachedAudio<#=i#>SamplingRate;
+      return result == null ? null : FilesizeFormatter.FormatUnit(result.Value, true, format: "0.#") + "Hz";
     }
   }
 
   [DisplayName("Channels")]
   [DataGridViewCellStyle(backColor:"<#=AUDIO_BACKGROUND_COLORS[i%AUDIO_BACKGROUND_COLORS.Length]#>")]
   [DataGridViewColumnWidth(DataGridViewAutoSizeColumnMode.AllCells)]
-  public int? Audio<#=i#>Channels => this.MediaFile.AudioStreams.Skip(<#=i#>).FirstOrDefault()?.Channels;
-    
+  public int? Audio<#=i#>Channels => this._cachedAudio<#=i#>Channels;
+
   [DisplayName("Bitrate")]
   [DataGridViewCellStyle(backColor:"<#=AUDIO_BACKGROUND_COLORS[i%AUDIO_BACKGROUND_COLORS.Length]#>")]
   [DataGridViewColumnWidth(DataGridViewAutoSizeColumnMode.AllCells)]
   public string Audio<#=i#>BitRateInBitsPerSecond {
     get {
-      var result=this.MediaFile.AudioStreams.Skip(<#=i#>).FirstOrDefault()?.BitRateInBitsPerSecond;
-      if(result == null)
-        return null;
-
-      return FilesizeFormatter.FormatUnit(result.Value,true)+"Bit/s";
+      var result = this._cachedAudio<#=i#>BitRateInBitsPerSecond;
+      return result == null ? null : FilesizeFormatter.FormatUnit(result.Value, true) + "Bit/s";
     }
   }
-    
+
 <#}#>
+  #endregion
 
 }
