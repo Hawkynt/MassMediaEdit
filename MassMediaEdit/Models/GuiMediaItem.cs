@@ -72,6 +72,7 @@ public sealed partial class GuiMediaItem : INotifyPropertyChanged {
     private set
     {
       field = value;
+      this._PopulateCachedValues(value);
       this._RefreshAllProperties();
     }
   }

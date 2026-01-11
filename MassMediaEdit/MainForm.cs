@@ -21,6 +21,7 @@ public partial class MainForm : Form, IMainView {
     this.SetFormTitle();
     this._BuildFileRenameMenu();
 
+    this.dgvResults.EnableDoubleBuffering();
     this.dgvResults.EnableExtendedAttributes();
     this.dgvResults.DataSource = this._items;
     this.dgvResults.Sort(this.dgvResults.Columns[0], ListSortDirection.Ascending);
