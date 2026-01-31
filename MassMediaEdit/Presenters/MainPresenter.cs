@@ -97,12 +97,13 @@ public sealed class MainPresenter(
     var batchQueue = new BlockingCollection<FileInfo[]>(new ConcurrentQueue<FileInfo[]>());
     var resultQueue = new ConcurrentQueue<GuiMediaItem>();
     var processedCount = 0;
+    var acceptedCount = 0;
     var discoveredCount = 0;
     var discoveryComplete = false;
 
     void UpdateProgress() =>
       this._uiSynchronizer.Invoke(() =>
-        this._view?.SetLoadingProgress(IndicatorKeys.Loading, processedCount, discoveredCount, discoveryComplete));
+        this._view?.SetLoadingProgress(IndicatorKeys.Loading, acceptedCount, processedCount, discoveredCount, discoveryComplete));
 
     void PushItemsToUi(List<GuiMediaItem> itemsToPush, bool applySort) {
       if (itemsToPush.Count == 0)
@@ -180,8 +181,10 @@ public sealed class MainPresenter(
           .Where(static m => (m.AudioStreams.Any() || m.VideoStreams.Any()) && m.GeneralStream?.Duration > MinimumDuration)
           .Select(GuiMediaItem.FromMediaFile);
 
-        foreach (var item in results)
+        foreach (var item in results) {
           resultQueue.Enqueue(item);
+          Interlocked.Increment(ref acceptedCount);
+        }
 
         Interlocked.Add(ref processedCount, batch.Length);
         UpdateProgress();

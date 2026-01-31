@@ -93,7 +93,7 @@ public partial class MainForm : Form, IMainView {
     });
 
   /// <inheritdoc/>
-  public void SetLoadingProgress(string indicatorKey, int processed, int discovered, bool discoveryComplete) =>
+  public void SetLoadingProgress(string indicatorKey, int accepted, int processed, int discovered, bool discoveryComplete) =>
     this.SafelyInvoke(() => {
       var indicator = indicatorKey switch {
         IndicatorKeys.Loading => this.tsslLoadingFiles,
@@ -105,7 +105,7 @@ public partial class MainForm : Form, IMainView {
         return;
 
       var suffix = discoveryComplete ? string.Empty : "+";
-      indicator.Text = $"Loading {processed}/{discovered}{suffix}...";
+      indicator.Text = $"Found {accepted} ({processed}/{discovered}{suffix})...";
     });
 
   /// <inheritdoc/>

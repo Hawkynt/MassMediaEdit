@@ -46,10 +46,11 @@ public interface IMainView {
   /// Updates the loading progress display.
   /// </summary>
   /// <param name="indicatorKey">The key identifying the indicator.</param>
-  /// <param name="processed">Number of files processed.</param>
-  /// <param name="discovered">Number of files discovered so far.</param>
+  /// <param name="accepted">Number of files that passed all filters and were added to the grid.</param>
+  /// <param name="processed">Number of files processed by MediaInfo.</param>
+  /// <param name="discovered">Number of media files discovered so far.</param>
   /// <param name="discoveryComplete">Whether file discovery has completed.</param>
-  void SetLoadingProgress(string indicatorKey, int processed, int discovered, bool discoveryComplete);
+  void SetLoadingProgress(string indicatorKey, int accepted, int processed, int discovered, bool discoveryComplete);
 
   /// <summary>
   /// Refreshes the display of the specified items.
