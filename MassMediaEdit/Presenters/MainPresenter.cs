@@ -1,7 +1,9 @@
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Classes;
 using MassMediaEdit.Abstractions;
@@ -19,6 +21,18 @@ public sealed class MainPresenter(
   IUiSynchronizer uiSynchronizer
 ) : IMainPresenter {
   private static readonly TimeSpan MinimumDuration = TimeSpan.FromSeconds(1);
+
+  private static readonly HashSet<string> MediaExtensions = new(StringComparer.OrdinalIgnoreCase) {
+    // Video
+    ".mkv", ".mp4", ".avi", ".mov", ".wmv", ".flv", ".webm", ".m4v", ".mpg", ".mpeg",
+    ".3gp", ".3g2", ".ogv", ".ts", ".m2ts", ".mts", ".vob", ".divx", ".xvid", ".rm",
+    ".rmvb", ".asf", ".f4v", ".h264", ".h265", ".hevc",
+    // Audio
+    ".mp3", ".wav", ".flac", ".aac", ".ogg", ".wma", ".m4a", ".opus", ".aiff", ".ape",
+    ".alac", ".dts", ".ac3", ".eac3", ".mka", ".mid", ".midi", ".ra", ".amr",
+    // Images (for completeness, though MediaInfo may not process all)
+    ".jpg", ".jpeg", ".png", ".gif", ".bmp", ".tiff", ".tif", ".webp", ".heic", ".heif"
+  };
 
   private readonly IBackgroundTaskRunner _backgroundTaskRunner = backgroundTaskRunner ?? throw new ArgumentNullException(nameof(backgroundTaskRunner));
   private readonly IUiSynchronizer _uiSynchronizer = uiSynchronizer ?? throw new ArgumentNullException(nameof(uiSynchronizer));
@@ -76,26 +90,130 @@ public sealed class MainPresenter(
   }
 
   private void ProcessDroppedItems(FileSystemInfo[] items) {
-    var files = items
-      .SelectMany(static i => i switch {
-        FileInfo fi => [fi],
-        DirectoryInfo di => di.EnumerateFiles("*.*", SearchOption.AllDirectories),
-        _ => []
-      });
+    const int filesPerBatch = 20;
+    const int uiUpdateIntervalMs = 250;
 
-    var mediaItems = files
-      .AsParallel()
-      .WithDegreeOfParallelism(Environment.ProcessorCount)
-      .Select(MediaFile.FromFile)
-      .Where(m => (m.AudioStreams.Any() || m.VideoStreams.Any()) && m.GeneralStream?.Duration > MinimumDuration)
-      .Select(GuiMediaItem.FromMediaFile)
-      .ToList();
+    var fileQueue = new BlockingCollection<FileInfo>(new ConcurrentQueue<FileInfo>());
+    var batchQueue = new BlockingCollection<FileInfo[]>(new ConcurrentQueue<FileInfo[]>());
+    var resultQueue = new ConcurrentQueue<GuiMediaItem>();
+    var processedCount = 0;
+    var discoveredCount = 0;
+    var discoveryComplete = false;
 
-    foreach (var chunk in mediaItems.Chunk(64))
+    void UpdateProgress() =>
+      this._uiSynchronizer.Invoke(() =>
+        this._view?.SetLoadingProgress(IndicatorKeys.Loading, processedCount, discoveredCount, discoveryComplete));
+
+    void PushItemsToUi(List<GuiMediaItem> itemsToPush, bool applySort) {
+      if (itemsToPush.Count == 0)
+        return;
+      var chunk = itemsToPush.ToArray();
+      itemsToPush.Clear();
       this._uiSynchronizer.Invoke(() => {
         this._view?.AddItems(chunk);
-        this._view?.ReapplySorting();
+        if (applySort)
+          this._view?.ReapplySorting();
       });
+    }
+
+    // Producer: enumerate files in background, filtering by extension
+    var producerTask = Task.Run(() => {
+      try {
+        foreach (var item in items) {
+          var files = item switch {
+            FileInfo fi => [fi],
+            DirectoryInfo di => di.EnumerateFiles("*.*", SearchOption.AllDirectories),
+            _ => Enumerable.Empty<FileInfo>()
+          };
+
+          foreach (var file in files) {
+            if (!MediaExtensions.Contains(file.Extension))
+              continue;
+
+            fileQueue.Add(file);
+            Interlocked.Increment(ref discoveredCount);
+
+            if (discoveredCount % 50 == 0)
+              UpdateProgress();
+          }
+        }
+      } finally {
+        fileQueue.CompleteAdding();
+        discoveryComplete = true;
+        UpdateProgress();
+      }
+    });
+
+    // Batcher: collect files into batches, with timeout to avoid waiting too long
+    var batcherTask = Task.Run(() => {
+      var batchBuffer = new List<FileInfo>(filesPerBatch);
+      var batchTimeout = TimeSpan.FromMilliseconds(500);
+
+      while (!fileQueue.IsCompleted) {
+        if (fileQueue.TryTake(out var file, batchTimeout)) {
+          batchBuffer.Add(file);
+          if (batchBuffer.Count >= filesPerBatch) {
+            batchQueue.Add(batchBuffer.ToArray());
+            batchBuffer.Clear();
+          }
+        } else if (batchBuffer.Count > 0) {
+          // Timeout - send partial batch to start processing sooner
+          batchQueue.Add(batchBuffer.ToArray());
+          batchBuffer.Clear();
+        }
+      }
+
+      // Drain any remaining files
+      while (fileQueue.TryTake(out var file))
+        batchBuffer.Add(file);
+
+      if (batchBuffer.Count > 0)
+        batchQueue.Add(batchBuffer.ToArray());
+      batchQueue.CompleteAdding();
+    });
+
+    // Parallel consumers: process batches
+    var consumerCount = Math.Max(1, Environment.ProcessorCount - 1);
+    var consumerTasks = Enumerable.Range(0, consumerCount).Select(_ => Task.Run(() => {
+      foreach (var batch in batchQueue.GetConsumingEnumerable()) {
+        var results = MediaFile.FromFiles(batch)
+          .Where(static m => (m.AudioStreams.Any() || m.VideoStreams.Any()) && m.GeneralStream?.Duration > MinimumDuration)
+          .Select(GuiMediaItem.FromMediaFile);
+
+        foreach (var item in results)
+          resultQueue.Enqueue(item);
+
+        Interlocked.Add(ref processedCount, batch.Length);
+        UpdateProgress();
+      }
+    })).ToArray();
+
+    // UI updater: push results to UI as soon as available
+    var pendingItems = new List<GuiMediaItem>();
+    var lastSortTime = DateTime.UtcNow;
+    var sortInterval = TimeSpan.FromSeconds(2);
+
+    while (!Task.WaitAll(consumerTasks, uiUpdateIntervalMs)) {
+      while (resultQueue.TryDequeue(out var item))
+        pendingItems.Add(item);
+
+      if (pendingItems.Count > 0) {
+        var shouldSort = DateTime.UtcNow - lastSortTime > sortInterval;
+        PushItemsToUi(pendingItems, shouldSort);
+        if (shouldSort)
+          lastSortTime = DateTime.UtcNow;
+      }
+    }
+
+    // Drain remaining results
+    while (resultQueue.TryDequeue(out var item))
+      pendingItems.Add(item);
+
+    // Final push with sorting
+    PushItemsToUi(pendingItems, applySort: true);
+
+    producerTask.Wait();
+    batcherTask.Wait();
   }
 
   /// <inheritdoc/>

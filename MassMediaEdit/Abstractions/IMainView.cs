@@ -43,6 +43,15 @@ public interface IMainView {
   void SetLoadingIndicator(string indicatorKey, bool visible);
 
   /// <summary>
+  /// Updates the loading progress display.
+  /// </summary>
+  /// <param name="indicatorKey">The key identifying the indicator.</param>
+  /// <param name="processed">Number of files processed.</param>
+  /// <param name="discovered">Number of files discovered so far.</param>
+  /// <param name="discoveryComplete">Whether file discovery has completed.</param>
+  void SetLoadingProgress(string indicatorKey, int processed, int discovered, bool discoveryComplete);
+
+  /// <summary>
   /// Refreshes the display of the specified items.
   /// </summary>
   /// <param name="items">The items to refresh, or <see langword="null"/> to refresh all.</param>

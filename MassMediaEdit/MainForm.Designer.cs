@@ -144,7 +144,7 @@
       this.dgvResults.AllowUserToAddRows = false;
       this.dgvResults.AllowUserToDeleteRows = false;
       this.dgvResults.AllowUserToResizeRows = false;
-      this.dgvResults.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
+      this.dgvResults.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.None;
       this.dgvResults.BackgroundColor = System.Drawing.SystemColors.Window;
       this.dgvResults.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
       this.dgvResults.ContextMenuStrip = cmsItems;
