@@ -273,7 +273,7 @@ public sealed partial class GuiMediaItem : INotifyPropertyChanged {
     }
   }
 
-  public void Run() => Process.Start(this.MediaFile.File.FullName);
+  public void Run() => Process.Start(new ProcessStartInfo(this.MediaFile.File.FullName) { UseShellExecute = true });
 
   public void RenameFileToMask(string mask) {
     var sourceFile = this.MediaFile.File;

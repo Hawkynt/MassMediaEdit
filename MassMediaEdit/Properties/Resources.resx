@@ -154,4 +154,10 @@
   <data name="_24x24_Tags_From_Data" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\24x24 Tags From Data.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="_24x24_Copy" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\24x24 Copy.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="_24x24_Open_Folder" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\24x24 Open Folder.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
 </root>

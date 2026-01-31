@@ -125,6 +125,8 @@ The application consists of:
 - **Revert** - Discard pending changes
 - **Audio Stream 1/2** - Set audio track language
 - **Convert to MKV** - Convert selected files to MKV format
+- **Copy File Path** - Copy absolute path(s) to clipboard (multiple files = newline-separated)
+- **Open Containing Folder** - Open folder in Explorer with file selected (single selection only)
 
 ### Tags From Name Menu
 
