@@ -26,6 +26,11 @@ Get the latest release from the [Releases page](https://github.com/Hawkynt/MassM
 
 ## Features
 
+- **High Performance Loading**: Optimized for handling large media collections
+  - Producer/consumer architecture with parallel MediaInfo processing
+  - Batch processing reduces process spawn overhead (20 files per MediaInfo call)
+  - Smart file filtering by extension before processing
+  - Live progress display during loading ("15/70+" during discovery, "60/60" when complete)
 - **Batch Media File Editing**: Quickly and efficiently edit multiple media files at once
 - **Metadata Management**: Modify and update media file metadata including:
   - Video stream names and 3D mode settings

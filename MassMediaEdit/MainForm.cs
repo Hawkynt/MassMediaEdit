@@ -26,6 +26,11 @@ public partial class MainForm : Form, IMainView {
     this.dgvResults.DataSource = this._items;
     this.dgvResults.Sort(this.dgvResults.Columns[0], ListSortDirection.Ascending);
 
+    this.dgvResults.DataBindingComplete += (_, _) => {
+      if (this.dgvResults.Columns["FileName"] is { } col)
+        col.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+    };
+
     foreach (var item in Enum.GetValues(typeof(GuiMediaItem.LanguageType))) {
       this.tscbAudio0Language.Items.Add(item);
       this.tscbAudio1Language.Items.Add(item);
@@ -50,7 +55,12 @@ public partial class MainForm : Form, IMainView {
   /// <inheritdoc/>
   public void AddItems(IEnumerable<GuiMediaItem> items) =>
     this.SafelyInvoke(() => {
-      this._items.AddRange(items);
+      try {
+        this.dgvResults.SuspendLayout();
+        this._items.AddRange(items);
+      } finally {
+        this.dgvResults.ResumeLayout();
+      }
       this.ReapplySorting();
     });
 
@@ -69,7 +79,33 @@ public partial class MainForm : Form, IMainView {
         IndicatorKeys.Converting => this.tsslConvertingFiles,
         _ => null
       };
-      indicator?.Visible = visible;
+      if (indicator is null)
+        return;
+
+      indicator.Visible = visible;
+      if (!visible)
+        indicator.Text = indicatorKey switch {
+          IndicatorKeys.Loading => "Loading files...",
+          IndicatorKeys.Committing => "Writing changes...",
+          IndicatorKeys.Converting => "Converting files...",
+          _ => indicator.Text
+        };
+    });
+
+  /// <inheritdoc/>
+  public void SetLoadingProgress(string indicatorKey, int processed, int discovered, bool discoveryComplete) =>
+    this.SafelyInvoke(() => {
+      var indicator = indicatorKey switch {
+        IndicatorKeys.Loading => this.tsslLoadingFiles,
+        IndicatorKeys.Committing => this.tsslCommittingChanges,
+        IndicatorKeys.Converting => this.tsslConvertingFiles,
+        _ => null
+      };
+      if (indicator is null)
+        return;
+
+      var suffix = discoveryComplete ? string.Empty : "+";
+      indicator.Text = $"Loading {processed}/{discovered}{suffix}...";
     });
 
   /// <inheritdoc/>
