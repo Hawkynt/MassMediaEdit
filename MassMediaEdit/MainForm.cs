@@ -266,8 +266,34 @@ public partial class MainForm : Form, IMainView {
       this.tscbAudio1Language.SelectedItem = null;
 
     this.tsmiConvertToMkv.Enabled = selectedItems.Any(static i => i.IsMkvConversionEnabled);
+    this.tsmiOpenContainingFolder.Enabled = selectedItems.Length == 1;
 
     this._duringMenuPreset = false;
+  }
+
+  private void tsmiCopyFilePath_Click(object? _, EventArgs __) {
+    var paths = this.SelectedItems.Select(static i => i.MediaFile.File.FullName).ToArray();
+    if (paths.Length == 0)
+      return;
+
+    var text = string.Join(Environment.NewLine, paths);
+    Clipboard.SetText(text);
+  }
+
+  private void tsmiOpenContainingFolder_Click(object? _, EventArgs __) {
+    var selectedItems = this.SelectedItems.ToArray();
+    if (selectedItems.Length != 1)
+      return;
+
+    var file = selectedItems[0].MediaFile.File;
+    if (!file.Exists)
+      return;
+
+    System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo {
+      FileName = "explorer.exe",
+      Arguments = $"/select,\"{file.FullName}\"",
+      UseShellExecute = true
+    });
   }
 
   /// <summary>

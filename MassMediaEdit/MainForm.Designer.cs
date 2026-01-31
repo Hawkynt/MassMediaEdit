@@ -38,6 +38,9 @@
       System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
       this.tsslDragDropInfo = new System.Windows.Forms.ToolStripStatusLabel();
       this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
+      this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
+      this.tsmiCopyFilePath = new System.Windows.Forms.ToolStripMenuItem();
+      this.tsmiOpenContainingFolder = new System.Windows.Forms.ToolStripMenuItem();
       this.dgvResults = new System.Windows.Forms.DataGridView();
       this.tsmiConvertToMkv = new System.Windows.Forms.ToolStripMenuItem();
       this.tsmiCommitSelected = new System.Windows.Forms.ToolStripMenuItem();
@@ -109,7 +112,10 @@
             this.toolStripSeparator3,
             this.tsmiAudio0,
             this.tsmiAudio1,
-            this.tsmiConvertToMkv});
+            this.tsmiConvertToMkv,
+            this.toolStripSeparator4,
+            this.tsmiCopyFilePath,
+            this.tsmiOpenContainingFolder});
       cmsItems.Name = "cmsItems";
       cmsItems.Size = new System.Drawing.Size(181, 192);
       cmsItems.Opening += new System.ComponentModel.CancelEventHandler(this.cmsItems_Opening);
@@ -166,7 +172,28 @@
       this.tsmiConvertToMkv.Size = new System.Drawing.Size(180, 22);
       this.tsmiConvertToMkv.Text = "Convert to MKV";
       this.tsmiConvertToMkv.Click += new System.EventHandler(this.tsmiConvertToMkv_Click);
-      // 
+      //
+      // toolStripSeparator4
+      //
+      this.toolStripSeparator4.Name = "toolStripSeparator4";
+      this.toolStripSeparator4.Size = new System.Drawing.Size(177, 6);
+      //
+      // tsmiCopyFilePath
+      //
+      this.tsmiCopyFilePath.Image = global::MassMediaEdit.Properties.Resources._24x24_Copy;
+      this.tsmiCopyFilePath.Name = "tsmiCopyFilePath";
+      this.tsmiCopyFilePath.Size = new System.Drawing.Size(180, 22);
+      this.tsmiCopyFilePath.Text = "Copy File Path";
+      this.tsmiCopyFilePath.Click += new System.EventHandler(this.tsmiCopyFilePath_Click);
+      //
+      // tsmiOpenContainingFolder
+      //
+      this.tsmiOpenContainingFolder.Image = global::MassMediaEdit.Properties.Resources._24x24_Open_Folder;
+      this.tsmiOpenContainingFolder.Name = "tsmiOpenContainingFolder";
+      this.tsmiOpenContainingFolder.Size = new System.Drawing.Size(180, 22);
+      this.tsmiOpenContainingFolder.Text = "Open Containing Folder";
+      this.tsmiOpenContainingFolder.Click += new System.EventHandler(this.tsmiOpenContainingFolder_Click);
+      //
       // tsmiClearItems
       // 
       tsmiClearItems.Image = ((System.Drawing.Image)(resources.GetObject("tsmiClearItems.Image")));
@@ -457,5 +484,8 @@
     private System.Windows.Forms.ToolStripComboBox tscbAudio1Language;
     private System.Windows.Forms.ToolStripMenuItem tsmiConvertToMkv;
     private System.Windows.Forms.ToolStripStatusLabel tsslConvertingFiles;
+    private System.Windows.Forms.ToolStripSeparator toolStripSeparator4;
+    private System.Windows.Forms.ToolStripMenuItem tsmiCopyFilePath;
+    private System.Windows.Forms.ToolStripMenuItem tsmiOpenContainingFolder;
   }
 }
