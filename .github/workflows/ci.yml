@@ -1,0 +1,67 @@
+name: CI
+
+on:
+  push:
+    branches: [master, main]
+  pull_request:
+    branches: [master, main]
+  workflow_call: {}
+
+jobs:
+  test:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.x'
+
+      - name: Stamp versions into csprojs
+        shell: bash
+        run: perl .github/workflows/scripts/version.pl --stamp
+
+      - name: Restore
+        run: dotnet restore MassMediaEdit.sln
+
+      - name: Build
+        run: dotnet build MassMediaEdit.sln --configuration Release --no-restore
+
+      - name: Test
+        run: dotnet test MassMediaEdit.sln --configuration Release --no-build --logger "trx;LogFileName=tests.trx"
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: test-results
+          path: '**/TestResults/*.trx'
+
+  coverage:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.x'
+
+      - name: Stamp versions
+        shell: bash
+        run: perl .github/workflows/scripts/version.pl --stamp
+
+      - name: Test with coverage
+        run: dotnet test MassMediaEdit.sln --configuration Release --collect:"XPlat Code Coverage" --results-directory ./coverage
+
+      - name: Generate coverage report
+        shell: bash
+        run: |
+          dotnet tool install -g dotnet-reportgenerator-globaltool
+          reportgenerator -reports:./coverage/**/coverage.cobertura.xml -targetdir:./coverage/report -reporttypes:HtmlInline_AzurePipelines
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: ./coverage/report

@@ -1,0 +1,81 @@
+name: Build artifacts
+
+# Called by release.yml + nightly.yml. Produces:
+#   * MassMediaEdit-win-x64-<version>.zip          -- WinForms app
+#   * Hawkynt.NfoFileFormat.<version>.nupkg        -- NuGet (release only)
+on:
+  workflow_call:
+    inputs:
+      version: { required: true, type: string }
+      release-kind: { required: true, type: string }
+      changelog-flag: { required: true, type: string }
+      ref: { required: false, type: string, default: "" }
+    outputs:
+      exe-artifact:
+        value: ${{ jobs.build-exe.outputs.artifact-name }}
+      nuget-artifact:
+        value: ${{ jobs.pack-nuget.outputs.artifact-name }}
+
+jobs:
+  build-exe:
+    runs-on: windows-latest
+    outputs:
+      artifact-name: MassMediaEdit-win-x64-${{ inputs.version }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.ref || github.ref }}
+          fetch-depth: 0
+
+      - uses: actions/setup-dotnet@v4
+        with: { dotnet-version: '8.x' }
+
+      - uses: actions/setup-node@v4
+        with: { node-version: '22' }
+
+      - name: Update CHANGELOG
+        shell: bash
+        run: node .github/workflows/scripts/update-changelog.mjs ${{ inputs.changelog-flag }}
+
+      - name: Stamp versions
+        shell: bash
+        run: perl .github/workflows/scripts/version.pl --stamp
+
+      - name: Publish MassMediaEdit (win-x64, self-contained)
+        run: dotnet publish MassMediaEdit/MassMediaEdit.csproj -r win-x64 -c Release --self-contained --output publish/exe
+
+      - name: Package zip
+        shell: pwsh
+        run: |
+          $v = "${{ inputs.version }}"
+          Compress-Archive -Path publish/exe/* -DestinationPath "MassMediaEdit-win-x64-$v.zip"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: MassMediaEdit-win-x64-${{ inputs.version }}
+          path: MassMediaEdit-win-x64-${{ inputs.version }}.zip
+
+  pack-nuget:
+    if: inputs.release-kind == 'release'
+    runs-on: ubuntu-latest
+    outputs:
+      artifact-name: NfoFileFormat-nupkg-${{ inputs.version }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.ref || github.ref }}
+          fetch-depth: 0
+
+      - uses: actions/setup-dotnet@v4
+        with: { dotnet-version: '8.x' }
+
+      - name: Stamp versions
+        run: perl .github/workflows/scripts/version.pl --stamp
+
+      - name: Pack NuGet
+        run: dotnet pack NfoFileFormat/NfoFileFormat.csproj --configuration Release --output artifacts
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: NfoFileFormat-nupkg-${{ inputs.version }}
+          path: artifacts/*.nupkg
