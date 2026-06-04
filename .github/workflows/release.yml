@@ -1,14 +1,17 @@
 name: Release
 
 on:
-  push:
-    tags: ['v*']
   workflow_dispatch:
     inputs:
       reason: { description: 'Manual release trigger', required: false }
 
 permissions:
   contents: write
+
+# Force JavaScript-based actions to run on Node 24 instead of the deprecated Node 20 ahead of
+# the 2026-06-16 hard cutover, until we bump each action to a Node-24-native major version.
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: 'true'
 
 jobs:
   test:
@@ -31,17 +34,33 @@ jobs:
     with:
       version: ${{ needs.version.outputs.version }}
       release-kind: release
-      changelog-flag: --release ${{ github.ref_name }}
+      changelog-flag: --release v${{ needs.version.outputs.version }}
 
   publish-github:
     needs: [version, build]
-    if: startsWith(github.ref, 'refs/tags/')
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
       - uses: actions/download-artifact@v4
         with: { name: "${{ needs.build.outputs.exe-artifact }}",   path: dist }
       - uses: actions/download-artifact@v4
         with: { name: "${{ needs.build.outputs.nuget-artifact }}", path: dist }
+
+      # Notes = a short curated header + the commit-prefix changelog (+ - * # !),
+      # NOT GitHub's PR-based "What's Changed".
+      - name: Compose release notes
+        env:
+          V: ${{ needs.version.outputs.version }}
+        run: |
+          node .github/workflows/scripts/update-changelog.mjs --release "v$V" --notes CHANGES.md
+          echo "## MassMediaEdit v$V" > RELEASE_NOTES.md
+          echo >> RELEASE_NOTES.md
+          cat CHANGES.md >> RELEASE_NOTES.md
 
       - uses: softprops/action-gh-release@v2
         with:
@@ -50,11 +69,10 @@ jobs:
           files: |
             dist/*.zip
             dist/*.nupkg
-          generate_release_notes: true
+          body_path: RELEASE_NOTES.md
 
   publish-nuget:
     needs: [version, build]
-    if: startsWith(github.ref, 'refs/tags/')
     runs-on: ubuntu-latest
     steps:
       - uses: actions/download-artifact@v4

@@ -1,18 +1,22 @@
 # MassMediaEdit
 
-[![CI](https://github.com/Hawkynt/MassMediaEdit/actions/workflows/ci.yml/badge.svg?branch=master)](https://github.com/Hawkynt/MassMediaEdit/actions/workflows/ci.yml)
-[![Release](https://github.com/Hawkynt/MassMediaEdit/actions/workflows/release.yml/badge.svg)](https://github.com/Hawkynt/MassMediaEdit/actions/workflows/release.yml)
-[![Latest release](https://img.shields.io/github/v/release/Hawkynt/MassMediaEdit?label=release&sort=semver)](https://github.com/Hawkynt/MassMediaEdit/releases/latest)
-[![Latest nightly](https://img.shields.io/github/v/release/Hawkynt/MassMediaEdit?include_prereleases&label=nightly&sort=date)](https://github.com/Hawkynt/MassMediaEdit/releases?q=prerelease%3Atrue)
-[![License](https://img.shields.io/badge/License-LGPL_3.0-blue)](https://licenses.nuget.org/LGPL-3.0-or-later)
-![Language](https://img.shields.io/github/languages/top/Hawkynt/MassMediaEdit?color=purple)
-[![Last Commit](https://img.shields.io/github/last-commit/Hawkynt/MassMediaEdit?branch=master) ![Activity](https://img.shields.io/github/commit-activity/y/Hawkynt/MassMediaEdit?branch=master)](https://github.com/Hawkynt/MassMediaEdit/commits/master)
-![LineCount](https://tokei.rs/b1/github/Hawkynt/MassMediaEdit?color=magenta)
-![Size](https://img.shields.io/github/languages/code-size/Hawkynt/MassMediaEdit?color=green) /
- ![Repo-Size](https://img.shields.io/github/repo-size/Hawkynt/MassMediaEdit?color=red)
-[![Stars](https://img.shields.io/github/stars/Hawkynt/MassMediaEdit?color=yellow)](https://github.com/Hawkynt/MassMediaEdit/stargazers)
+[![License](https://img.shields.io/github/license/Hawkynt/MassMediaEdit)](https://github.com/Hawkynt/MassMediaEdit/blob/master/LICENSE)
+[![Language](https://img.shields.io/github/languages/top/Hawkynt/MassMediaEdit?color=8957D5)](https://github.com/Hawkynt/MassMediaEdit)
 
-![Build History](https://buildstats.info/github/chart/hawkynt/MassMediaEdit)
+[![CI](https://github.com/Hawkynt/MassMediaEdit/actions/workflows/ci.yml/badge.svg?branch=master)](https://github.com/Hawkynt/MassMediaEdit/actions/workflows/ci.yml)
+![Last Commit](https://img.shields.io/github/last-commit/Hawkynt/MassMediaEdit?branch=master)
+![Activity](https://img.shields.io/github/commit-activity/m/Hawkynt/MassMediaEdit)
+
+[![Stars](https://img.shields.io/github/stars/Hawkynt/MassMediaEdit?color=FFD700)](https://github.com/Hawkynt/MassMediaEdit/stargazers)
+[![Forks](https://img.shields.io/github/forks/Hawkynt/MassMediaEdit?color=008080)](https://github.com/Hawkynt/MassMediaEdit/network/members)
+[![Issues](https://img.shields.io/github/issues/Hawkynt/MassMediaEdit)](https://github.com/Hawkynt/MassMediaEdit/issues)
+![Code Size](https://img.shields.io/github/languages/code-size/Hawkynt/MassMediaEdit?color=4CAF50)
+![Repo Size](https://img.shields.io/github/repo-size/Hawkynt/MassMediaEdit?color=FF9800)
+
+[![Release](https://img.shields.io/github/v/release/Hawkynt/MassMediaEdit?sort=semver)](https://github.com/Hawkynt/MassMediaEdit/releases/latest)
+[![Nightly](https://img.shields.io/github/v/release/Hawkynt/MassMediaEdit?include_prereleases=true&sort=date&label=nightly&color=FF9800)](https://github.com/Hawkynt/MassMediaEdit/releases)
+[![Downloads](https://img.shields.io/github/downloads/Hawkynt/MassMediaEdit/total)](https://github.com/Hawkynt/MassMediaEdit/releases)
+[![NuGet NfoFileFormat](https://img.shields.io/nuget/v/Hawkynt.NfoFileFormat?label=NfoFileFormat)](https://www.nuget.org/packages/Hawkynt.NfoFileFormat/)
 
 > **MassMediaEdit** is a Windows Forms application designed for batch editing and managing media files. This tool provides various functionalities to streamline the organization and manipulation of media files, including support for different media formats and metadata editing.
 
