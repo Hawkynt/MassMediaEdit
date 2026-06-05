@@ -1,10 +1,10 @@
 # MassMediaEdit
 
-[![License](https://img.shields.io/github/license/Hawkynt/MassMediaEdit)](https://github.com/Hawkynt/MassMediaEdit/blob/master/LICENSE)
+[![License](https://img.shields.io/github/license/Hawkynt/MassMediaEdit)](https://github.com/Hawkynt/MassMediaEdit/blob/main/LICENSE)
 [![Language](https://img.shields.io/github/languages/top/Hawkynt/MassMediaEdit?color=8957D5)](https://github.com/Hawkynt/MassMediaEdit)
 
-[![CI](https://github.com/Hawkynt/MassMediaEdit/actions/workflows/ci.yml/badge.svg?branch=master)](https://github.com/Hawkynt/MassMediaEdit/actions/workflows/ci.yml)
-![Last Commit](https://img.shields.io/github/last-commit/Hawkynt/MassMediaEdit?branch=master)
+[![CI](https://github.com/Hawkynt/MassMediaEdit/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/Hawkynt/MassMediaEdit/actions/workflows/ci.yml)
+![Last Commit](https://img.shields.io/github/last-commit/Hawkynt/MassMediaEdit?branch=main)
 ![Activity](https://img.shields.io/github/commit-activity/m/Hawkynt/MassMediaEdit)
 
 [![Stars](https://img.shields.io/github/stars/Hawkynt/MassMediaEdit?color=FFD700)](https://github.com/Hawkynt/MassMediaEdit/stargazers)
@@ -18,7 +18,7 @@
 [![Downloads](https://img.shields.io/github/downloads/Hawkynt/MassMediaEdit/total)](https://github.com/Hawkynt/MassMediaEdit/releases)
 [![NuGet NfoFileFormat](https://img.shields.io/nuget/v/Hawkynt.NfoFileFormat?label=NfoFileFormat)](https://www.nuget.org/packages/Hawkynt.NfoFileFormat/)
 
-> **MassMediaEdit** is a Windows Forms application designed for batch editing and managing media files. This tool provides various functionalities to streamline the organization and manipulation of media files, including support for different media formats and metadata editing.
+> A Windows Forms application for batch editing and managing media files — bulk metadata editing, renaming and organisation across the formats your collection actually contains, including NFO sidecars.
 
 ## Download
 
@@ -29,7 +29,7 @@ Get the latest release from the [Releases page](https://github.com/Hawkynt/MassM
 - Windows 10 or later
 - [.NET 8.0 Runtime](https://dotnet.microsoft.com/en-us/download/dotnet/8.0)
 
-## Features
+## ✨ Features
 
 - **High Performance Loading**: Optimized for handling large media collections
   - Producer/consumer architecture with parallel MediaInfo processing
@@ -47,14 +47,14 @@ Get the latest release from the [Releases page](https://github.com/Hawkynt/MassM
   - [MKVToolNix](https://github.com/Kissaki/MKVToolNix) - MKV file manipulation
   - [GPAC](https://github.com/gpac/gpac) - MP4 file operations
 
-## Screenshots
+## 🖼️ Screenshots
 
 ### Main Window
 ![Main Window](screenshots/main-window.png)
 
 The main window shows a data grid where you can drag and drop media files for batch editing. The toolbar at the top provides quick access to renaming and metadata operations.
 
-## Installation
+## 📦 Installation
 
 ### Option 1: Download Release (Recommended)
 
@@ -84,7 +84,7 @@ The main window shows a data grid where you can drag and drop media files for ba
    dotnet run --project MassMediaEdit
    ```
 
-## Usage
+## 🚀 Usage
 
 ### Getting Started
 
@@ -193,7 +193,7 @@ The application bundles the following tools in the `Tools` directory:
 - `FrameworkExtensions.System.Windows.Forms` - WinForms extensions
 - `T4.Build` - T4 template build support
 
-## Contributing
+## 🤝 Contributing
 
 Contributions are welcome! Please:
 
@@ -203,17 +203,20 @@ Contributions are welcome! Please:
 4. Push to the branch (`git push origin feature/amazing-feature`)
 5. Open a Pull Request
 
-See the [contribution guidelines](https://github.com/Hawkynt/MassMediaEdit/blob/master/CONTRIBUTING.md) for more details.
+See the [contribution guidelines](https://github.com/Hawkynt/MassMediaEdit/blob/main/CONTRIBUTING.md) for more details.
 
-## License
-
-This project is licensed under the LGPL-3.0-or-later License. See the [LICENSE](./LICENSE) file for details.
-
-## Support
+## 🆘 Getting Help
 
 - **Issues**: [GitHub Issues](https://github.com/Hawkynt/MassMediaEdit/issues)
 - **Discussions**: [GitHub Discussions](https://github.com/Hawkynt/MassMediaEdit/discussions)
 
----
+## ❤️ Support
 
-Made with care by [Hawkynt](https://github.com/Hawkynt)
+If this project saves you time or money, consider supporting its development:
+
+[![GitHub Sponsors](https://img.shields.io/badge/GitHub-Sponsor-EA4AAA?logo=githubsponsors)](https://github.com/sponsors/Hawkynt)
+[![PayPal](https://img.shields.io/badge/PayPal-Donate-00457C?logo=paypal)](https://www.paypal.me/hawkynt)
+
+## 📜 License
+
+Licensed under LGPL-3.0-or-later — see [LICENSE](LICENSE).
