@@ -7,7 +7,7 @@
     <Version>1.0.0</Version>
     <Authors>Hawkynt</Authors>
     <Description>This package provides classes messing with NFO media metadata files.</Description>
-    <PackageReadmeFile>Readme.md</PackageReadmeFile>
+    <PackageReadmeFile>ReadMe.md</PackageReadmeFile>
     <PackageProjectUrl>https://github.com/Hawkynt/MassMediaEdit</PackageProjectUrl>
     <PackageTags>Hawkynt;Nfo;Media;Metadata;Kodi;TinyMediaManager;Jellyfin</PackageTags>
     <RepositoryUrl>https://github.com/Hawkynt/MassMediaEdit/tree/master/NfoFileFormat</RepositoryUrl>

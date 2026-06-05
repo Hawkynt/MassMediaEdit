@@ -103,9 +103,9 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="FrameworkExtensions.Corlib" Version="*" />
-    <None Include="..\ReadMe.md" Pack="True" PackagePath=".">
+    <None Include="..\README.md" Pack="True" PackagePath=".">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <Link>ReadMe.md</Link>
+      <Link>README.md</Link>
     </None>
     <None Include="..\LICENSE" Pack="True" PackagePath=".">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
