@@ -14,7 +14,7 @@
 ![Repo Size](https://img.shields.io/github/repo-size/Hawkynt/MassMediaEdit?color=FF9800)
 
 [![Release](https://img.shields.io/github/v/release/Hawkynt/MassMediaEdit?sort=semver)](https://github.com/Hawkynt/MassMediaEdit/releases/latest)
-[![Nightly](https://img.shields.io/github/v/release/Hawkynt/MassMediaEdit?include_prereleases=true&sort=date&label=nightly&color=FF9800)](https://github.com/Hawkynt/MassMediaEdit/releases)
+[![Nightly](https://img.shields.io/github/v/release/Hawkynt/MassMediaEdit?include_prereleases&sort=date&label=nightly&color=FF9800)](https://github.com/Hawkynt/MassMediaEdit/releases)
 [![Downloads](https://img.shields.io/github/downloads/Hawkynt/MassMediaEdit/total)](https://github.com/Hawkynt/MassMediaEdit/releases)
 [![NuGet NfoFileFormat](https://img.shields.io/nuget/v/Hawkynt.NfoFileFormat?label=NfoFileFormat)](https://www.nuget.org/packages/Hawkynt.NfoFileFormat/)
 
