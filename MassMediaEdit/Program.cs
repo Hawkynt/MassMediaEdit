@@ -1,6 +1,9 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
+using System.Linq;
 using System.Windows.Forms;
 using Classes;
+using MassMediaEdit.Documentation;
 using MassMediaEdit.Presenters;
 using MassMediaEdit.Properties;
 using MassMediaEdit.Services;
@@ -21,6 +24,12 @@ internal static class Program {
     Application.EnableVisualStyles();
     Application.SetCompatibleTextRenderingDefault(false);
 
+    var screenshotArgument = args?.FirstOrDefault(arg =>
+      string.Equals(arg, ScreenshotDemoData.Argument, StringComparison.OrdinalIgnoreCase)
+      || arg.StartsWith(ScreenshotDemoData.Argument + "=", StringComparison.OrdinalIgnoreCase)
+    );
+    using var screenshotDemo = screenshotArgument is not null ? ScreenshotDemoData.Create() : null;
+
     // Create the main form (View in MVP)
     using var mainForm = new MainForm();
 
@@ -32,8 +41,16 @@ internal static class Program {
     var presenter = new MainPresenter(backgroundTaskRunner, uiSynchronizer);
     presenter.Initialize(mainForm);
 
-    // Handle command-line arguments
-    if (args is { Length: > 0 } && !string.IsNullOrWhiteSpace(args[0]))
+    // Documentation screenshots use deterministic, pre-parsed media rows and never invoke the external tools.
+    if (screenshotDemo is not null) {
+      FileInfo? screenshotOutput = null;
+      if (screenshotArgument!.StartsWith(ScreenshotDemoData.Argument + "=", StringComparison.OrdinalIgnoreCase)) {
+        var outputPath = screenshotArgument[(ScreenshotDemoData.Argument.Length + 1)..];
+        if (!string.IsNullOrWhiteSpace(outputPath))
+          screenshotOutput = new FileInfo(Path.GetFullPath(outputPath));
+      }
+      screenshotDemo.ApplyTo(mainForm, screenshotOutput);
+    } else if (args is { Length: > 0 } && !string.IsNullOrWhiteSpace(args[0]))
       presenter.AddFile(new FileInfo(args[0]));
 
     Application.Run(mainForm);
