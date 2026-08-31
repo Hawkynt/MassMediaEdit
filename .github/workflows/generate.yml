@@ -1,0 +1,102 @@
+name: Generate
+
+# Cheap generation stage: every push to a working branch refreshes derived files and commits them
+# straight back onto that branch. By the time the pull request runs its full CI battery, the README
+# screenshot is already part of the branch rather than being a CI-only artifact.
+#
+# Never on main: that branch takes changes through pull requests only, and the shared action refuses
+# to touch the default branch as an additional guard.
+on:
+  push:
+    branches-ignore: [main]
+  workflow_dispatch: {}
+
+permissions:
+  actions: write
+  contents: write
+  pull-requests: read
+
+concurrency:
+  group: generate-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: 'true'
+
+jobs:
+  screenshot:
+    name: refresh the screenshot
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.x'
+
+      - name: Build MassMediaEdit
+        run: dotnet build MassMediaEdit/MassMediaEdit.csproj --configuration Release
+
+      - name: Generate main window screenshot with documentation data
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force -Path screenshots | Out-Null
+          $application = Resolve-Path 'MassMediaEdit/bin/Release/net8.0-windows/MassMediaEdit.exe'
+          $output = Join-Path (Get-Location) 'screenshots/main-window.png'
+          $process = Start-Process `
+            -FilePath $application `
+            -ArgumentList "--screenshot-demo=$output" `
+            -PassThru `
+            -Wait `
+            -NoNewWindow
+          if ($process.ExitCode -ne 0) { exit $process.ExitCode }
+          if (-not (Test-Path $output)) {
+            Write-Error "MassMediaEdit exited 0 but wrote no screenshot to $output."
+            exit 1
+          }
+
+          $bytes = [IO.File]::ReadAllBytes($output)
+          if ($bytes.Length -lt 10000) {
+            Write-Error "Generated screenshot is unexpectedly small ($($bytes.Length) bytes)."
+            exit 1
+          }
+          $png = [byte[]](0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A)
+          for ($i = 0; $i -lt $png.Length; ++$i) {
+            if ($bytes[$i] -ne $png[$i]) {
+              Write-Error 'Generated screenshot is not a PNG file.'
+              exit 1
+            }
+          }
+
+      - name: Commit refreshed README screenshot
+        uses: Hawkynt/RepositoryTemplate/commit-generated-file@v1
+        with:
+          file: screenshots/main-window.png
+          message: '* refresh the application screenshot'
+
+      # GITHUB_TOKEN updates to an already-open PR intentionally create an approval-required
+      # pull_request/synchronize run. workflow_dispatch is the documented exception that may start
+      # another workflow with GITHUB_TOKEN, so dispatch CI explicitly when the generated-file action
+      # actually advanced a branch that already belongs to an open PR.
+      - name: Run CI on the generated head
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          branch="$GITHUB_REF_NAME"
+          generated_head=$(gh api "repos/$GITHUB_REPOSITORY/branches/$branch" --jq '.commit.sha')
+          if [ "$generated_head" = "$GITHUB_SHA" ]; then
+            echo "::notice::The screenshot was already current; the normal PR synchronize run covers this head."
+            exit 0
+          fi
+
+          owner="${GITHUB_REPOSITORY%%/*}"
+          open_prs=$(gh api --method GET "repos/$GITHUB_REPOSITORY/pulls" \
+            -f state=open -f head="$owner:$branch" --jq 'length')
+          if [ "$open_prs" -eq 0 ]; then
+            echo "::notice::No open pull request for $branch; keeping generation as the cheap pre-PR stage."
+            exit 0
+          fi
+
+          echo "Dispatching CI for generated head $generated_head."
+          gh workflow run ci.yml --ref "$branch"
