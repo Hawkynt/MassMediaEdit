@@ -14,6 +14,8 @@ jobs:
   ci:
     uses: Hawkynt/RepositoryTemplate/.github/workflows/dotnet-ci.yml@v1
     with:
+      repo-readme: true
+      repo-readme-gui: true
       solution: MassMediaEdit.sln
       dotnet-version: '8.x'
       runs-on: windows-latest

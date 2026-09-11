@@ -20,14 +20,17 @@
 
 > A Windows Forms application for batch editing and managing media files — bulk metadata editing, renaming and organisation across the formats your collection actually contains, including NFO sidecars.
 
-## Download
+![The main window: a grid of media files ready for batch editing](screenshots/main-window.png)
 
-Get the latest release from the [Releases page](https://github.com/Hawkynt/MassMediaEdit/releases/latest).
+## 🧭 Vision
 
-### System Requirements
+A media collection accumulates metadata the way a house accumulates cables: mostly wrong, never
+consistent, and painful to fix one file at a time. MassMediaEdit does it in bulk — read what the
+files actually contain, correct it across a selection, rename to match, and keep the NFO sidecars in
+step.
 
-- Windows 10 or later
-- [.NET 8.0 Runtime](https://dotnet.microsoft.com/en-us/download/dotnet/8.0)
+It leans on the tools that already know these containers — MediaInfo, mkvtoolnix, mp4box — and
+bundles them, so the work happens on the real formats rather than on a guess about them.
 
 ## ✨ Features
 
@@ -46,13 +49,6 @@ Get the latest release from the [Releases page](https://github.com/Hawkynt/MassM
   - [MediaInfo](https://github.com/MediaArea/MediaInfo) - Extract detailed media information
   - [MKVToolNix](https://github.com/Kissaki/MKVToolNix) - MKV file manipulation
   - [GPAC](https://github.com/gpac/gpac) - MP4 file operations
-
-## 🖼️ Screenshots
-
-### Main Window
-![Main Window](screenshots/main-window.png)
-
-The main window shows a data grid where you can drag and drop media files for batch editing. The toolbar at the top provides quick access to renaming and metadata operations.
 
 ## 📦 Installation
 
@@ -84,7 +80,7 @@ The main window shows a data grid where you can drag and drop media files for ba
    dotnet run --project MassMediaEdit
    ```
 
-## 🚀 Usage
+## 🚀 Quick start
 
 ### Getting Started
 
@@ -159,7 +155,23 @@ The toolbar's "Tags From Name" dropdown provides:
 - **Format Conversion**: Convert MP4 and other formats to MKV
 - **NFO Integration**: Extract metadata from Kodi/XBMC NFO files
 
-## Project Structure
+## 🖼️ Screenshots
+
+### Main Window
+![Main Window](screenshots/main-window.png)
+
+The main window shows a data grid where you can drag and drop media files for batch editing. The toolbar at the top provides quick access to renaming and metadata operations.
+
+## ⬇️ Download
+
+Get the latest release from the [Releases page](https://github.com/Hawkynt/MassMediaEdit/releases/latest).
+
+### System Requirements
+
+- Windows 10 or later
+- [.NET 8.0 Runtime](https://dotnet.microsoft.com/en-us/download/dotnet/8.0)
+
+## 📁 Project structure
 
 ```
 MassMediaEdit/
@@ -176,7 +188,7 @@ MassMediaEdit/
 └── NfoFileFormat.Tests/     # NFO library tests
 ```
 
-## Dependencies
+## 🔌 Dependencies
 
 ### External Tools (Included)
 
@@ -193,6 +205,13 @@ The application bundles the following tools in the `Tools` directory:
 - `FrameworkExtensions.System.Windows.Forms` - WinForms extensions
 - `T4.Build` - T4 template build support
 
+## 🛠️ Building
+
+```bash
+dotnet build -c Release
+dotnet test
+```
+
 ## 🤝 Contributing
 
 Contributions are welcome! Please:
@@ -202,8 +221,6 @@ Contributions are welcome! Please:
 3. Commit your changes (`git commit -m 'Add amazing feature'`)
 4. Push to the branch (`git push origin feature/amazing-feature`)
 5. Open a Pull Request
-
-See the [contribution guidelines](https://github.com/Hawkynt/MassMediaEdit/blob/main/CONTRIBUTING.md) for more details.
 
 ## 🆘 Getting Help
 
